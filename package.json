@@ -9,7 +9,7 @@
   "scripts": {
     "docs:build": "vuepress-webpack build themeHope",
     "docs:clean-dev": "vuepress-webpack dev themeHope --clean-cache",
-    "docs:dev": "vuepress-webpack dev themeHope",
+    "dev": "vuepress-webpack dev themeHope",
     "docs:update-package": "npx vp-update"
   }
 }
