@@ -5,4 +5,4 @@ cover: /assets/images/cover3.jpg
 
 # 介绍页
 
-将你的个人介绍和档案放置在此处。
+我是bugcode,一个专注写作的后端开发程序员

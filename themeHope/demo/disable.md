@@ -7,8 +7,8 @@ category:
 tag:
   - 禁用
 
-navbar: false
-sidebar: false
+navbar: true
+sidebar: true
 
 breadcrumb: false
 pageInfo: false

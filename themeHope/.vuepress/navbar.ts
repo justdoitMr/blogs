@@ -11,7 +11,7 @@ export default navbar([
       {
         text: "苹果",
         icon: "pen-to-square",
-        prefix: "apple/",
+        prefix: "大数据/",
         children: [
           { text: "苹果1", icon: "pen-to-square", link: "1" },
           { text: "苹果2", icon: "pen-to-square", link: "2" },
@@ -22,7 +22,7 @@ export default navbar([
       {
         text: "香蕉",
         icon: "pen-to-square",
-        prefix: "banana/",
+        prefix: "后端/",
         children: [
           {
             text: "香蕉 1",
@@ -45,7 +45,7 @@ export default navbar([
     ],
   },
   {
-    text: "V2 文档",
+    text: "about",
     icon: "book",
     link: "https://theme-hope.vuejs.press/zh/",
   },
