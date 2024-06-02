@@ -14,9 +14,9 @@ projects:
     link: /KnowledgePlanet/
 
   - icon: link
-    name: 链接名称
-    desc: 链接详细描述
-    link: https://链接地址
+    name: 架构设计
+    desc: MVC DDD 软件结构设计
+    link: /engineeringArchitectureDesign/
 
   - icon: book
     name: 书籍名称
