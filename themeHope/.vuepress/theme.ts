@@ -1,42 +1,72 @@
 import { hopeTheme } from "vuepress-theme-hope";
-import navbar from "./navbar.js";
-import sidebar from "./sidebar.js";
+import navbar from "./navbar";
+import {sidebarConfig} from "./sidebar";
 
 export default hopeTheme({
-  hostname: "https://mister-hope.github.io",
+  hostname: "https://www.bugcode.online",
 
+  // 全局默认作者
   author: {
     name: "Mr.bugcode",
-    url: "https://mister-hope.com",
+    url: "intro.md",
   },
 
-  iconAssets: "fontawesome-with-brands",
 
+  // 网站图标 是网站左上角的那个小图标
   logo: "https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/log.jpg",
+  roundAvatar: true,
+  repo: "https://github.com/justdoitMr/blogs/",
+  docsDir: "themeHope",
 
-  repo: "vuepress-theme-hope/vuepress-theme-hope",
+  // 以前的默认仓库分支名，方便提交 pr 和 issue
+  docsBranch: "master",
+  breadcrumb: false,
 
-  docsDir: "src",
+  // 全屏按钮
+  fullscreen: true,
+  // 在深色模式，浅色模式和自动之间切换 (默认)
+  darkmode: "switch",
+  // 纯净模式，会禁用一些花哨的动画以及一些色彩
+  // pure: true,
+
+  // 阿里妈妈图标的前缀
+  iconPrefix: "iconfont icon-",
+  // Iconfont 精选图标 和 阿里妈妈的互斥
+  iconAssets: "https://at.alicdn.com/t/c/font_4570931_i3acfllzyt.css",
+
 
   // 导航栏
-  navbar,
-
+  navbar: navbar,
   // 侧边栏
-  sidebar,
+  sidebar: sidebarConfig,
 
   // 页脚
-  footer: "默认页脚",
+  // 页脚支持
+  footer: '<a href="https://beian.miit.gov.cn/" target="_blank">备案中ing</a>'
+      +'<img src="https://cdn.tobebetterjavaer.com/tobebetterjavaer/images/beian.png" height="15px" width="15px" />'
+      +'<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41030502000411">'
+      +'<span>豫公网安备 41030502000411号</span>'
+      +'</a>',
   displayFooter: true,
 
   // 博客相关
   blog: {
     description: "路漫漫其修远兮,吾将上下而求索",
+    // 个人介绍地址
     intro: "/intro.html",
+    sidebarDisplay: "mobile",
+    // 博主头像
+    avatar: "https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/log.jpg",
+    // 圆角
+    // roundAvatar: true,
+    // 座右铭
     medias: {
       github: "https://github.com/justdoitMr",
       Zhihu: "https://example.com",
       VuePressThemeHope: {
+        // 自定义图标
         icon: "https://theme-hope-assets.vuejs.press/logo.svg",
+        // 自定义图标的链接
         link: "https://theme-hope.vuejs.press",
       },
     },
@@ -59,29 +89,37 @@ export default hopeTheme({
 
   // 在这里配置主题提供的插件
   plugins: {
+    // 该插件会监听页面滚动事件。
+    // 当页面滚动至某个 标题锚点 后，如果存在对应的 标题链接 ，那么该插件会将路由 Hash 更改为该 标题锚点 。
+    activeHeaderLinks: true,
+    // 启用博客
     blog: true,
-
-    // 启用之前需安装 @waline/client
-    // 警告: 这是一个仅供演示的测试服务，在生产环境中请自行部署并使用自己的服务！
-    // comment: {
-    //   provider: "Waline",
-    //   serverURL: "https://waline-comment.vuejs.press",
-    // },
-
-    components: {
-      components: ["Badge", "VPCard"],
-    },
-
-    // 此处开启了很多功能用于演示，你应仅保留用到的功能。
+    // pwa
+    pwa: true,
     mdEnhance: {
+      // 添加选项卡支持
+      tabs: true,
+      // 流程图
+      // mermaid: true,
+      // 支持任务列表
+      tasklist: true,
+      // 启用图片懒加载
+      imgLazyload: true,
+      // 启用图片标记
+      imgMark: true,
+      // 启用图片大小
+      imgSize: true,
+      // 启用图片标题
+      figure: true,
+      // 自定义对齐
       align: true,
-      attrs: true,
+      // 支持幻灯片
+      revealJs: true,
+      // 你的 Markdown 行为与 GitHub 保持一致
+      gfm: true,
       codetabs: true,
       component: true,
       demo: true,
-      figure: true,
-      imgLazyload: true,
-      imgSize: true,
       include: true,
       mark: true,
       plantuml: true,
@@ -99,50 +137,58 @@ export default hopeTheme({
           },
         },
       ],
-      sub: true,
-      sup: true,
-      tabs: true,
-      tasklist: true,
-      vPre: true,
-
-      // 在启用之前安装 chart.js
-      // chart: true,
-
-      // insert component easily
-
-      // 在启用之前安装 echarts
-      // echarts: true,
-
-      // 在启用之前安装 flowchart.ts
-      // flowchart: true,
-
-      // gfm requires mathjax-full to provide tex support
-      // gfm: true,
-
-      // 在启用之前安装 katex
-      // katex: true,
-
-      // 在启用之前安装 mathjax-full
-      // mathjax: true,
-
-      // 在启用之前安装 mermaid
-      // mermaid: true,
-
-      // playground: {
-      //   presets: ["ts", "vue"],
-      // },
-
-      // 在启用之前安装 reveal.js
-      // revealJs: {
-      //   plugins: ["highlight", "math", "search", "notes", "zoom"],
-      // },
-
-      // 在启用之前安装 @vue/repl
-      // vuePlayground: true,
-
-      // install sandpack-vue3 before enabling it
-      // sandpack: true,
     },
+    // sub: true,
+    // sup: true,
+    // tabs: true,
+    // tasklist: true,
+    // vPre: true,
+
+    // 在启用之前安装 chart.js
+    // chart: true,
+
+    // insert component easily
+
+    // 在启用之前安装 echarts
+    // echarts: true,
+
+    // 在启用之前安装 flowchart.ts
+    // flowchart: true,
+
+    // gfm requires mathjax-full to provide tex support
+    // gfm: true,
+
+    // 在启用之前安装 katex
+    // katex: true,
+
+    // 在启用之前安装 mathjax-full
+    // mathjax: true,
+
+    // 在启用之前安装 mermaid
+    // mermaid: true,
+
+    // playground: {
+    //   presets: ["ts", "vue"],
+    // },
+
+    // 在启用之前安装 reveal.js
+    // revealJs: {
+    //   plugins: ["highlight", "math", "search", "notes", "zoom"],
+    // },
+
+    // 在启用之前安装 @vue/repl
+    // vuePlayground: true,
+
+    // install sandpack-vue3 before enabling it
+    // sandpack: true,
+  },
+
+
+
+  components: {
+      components: ["Badge", "VPCard"],
+    },
+
 
     // 如果你需要 PWA。安装 @vuepress/plugin-pwa 并取消下方注释
     // pwa: {
@@ -150,8 +196,8 @@ export default hopeTheme({
     //   cacheHTML: true,
     //   cacheImage: true,
     //   appendBase: true,
-    //   大数据: {
-    //     icon: "/assets/icon/大数据-icon-152.png",
+    //   javaBasic: {
+    //     icon: "/assets/icon/javaBasic-icon-152.png",
     //     statusBarColor: "black",
     //   },
     //   msTile: {
@@ -187,7 +233,7 @@ export default hopeTheme({
     //       {
     //         name: "Demo",
     //         short_name: "Demo",
-    //         url: "/demo/",
+    //         url: "/articles/",
     //         icons: [
     //           {
     //             src: "/assets/icon/guide-maskable.png",
@@ -200,5 +246,4 @@ export default hopeTheme({
     //     ],
     //   },
     // },
-  },
 });
