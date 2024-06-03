@@ -7,9 +7,5 @@ tag:
   - spring
   - source code
 ---
-a
-# 1、spring框架介绍
 
-## 1.1 引言
-
-什么是架构
+# 2、SpringBean定义

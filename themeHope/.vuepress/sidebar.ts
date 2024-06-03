@@ -29,11 +29,22 @@ export const sidebarConfig = sidebar({
         "README.md",
     ],
     "/frameDesignAndSourceCode/springSourceCode/" :[
-        "first-springIntroduction.md",
+        "act_one-springIntroduction.md",
+        "act_two-springBeanDefineAndRegister.md",
+        "act_three-springConstructurInstantiation.md",
+        "act_four-springPropertyAutowareAnddepObj.md",
+        "act_five-springResourceLoadAndObjRegister.md",
+        "act_six-springContext.md",
+        "act_seven-springInitAndDestoryMethod.md",
+        "act_eight-springAwareContainerObj.md",
+        "act_nine-springActOnAndBeanFactory.md",
+        "act_ten-springContainerAndEventListener.md",
     ],
+    // mybatis源码
     "/frameDesignAndSourceCode/mybatisSourceCode/" :[
         "first-mybatisintroduction.md",
     ],
+    // 架构专题
     "/engineeringArchitectureDesign/" :[
         "first-mvcDesignArchitecture.md",
         "second-mvcDesignArchitecture.md"

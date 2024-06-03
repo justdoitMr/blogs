@@ -16,7 +16,7 @@ export default navbar([
       {
         text: "算法专题",
         link: "/algorithm/algor/",
-        collapsible: true,
+        // collapsible: true,
         icon: "pen-to-square",
       },
       {
@@ -29,13 +29,13 @@ export default navbar([
   //   源码专题
   {
     text: "源码",
-    collapsible: true,
+    // collapsible: true,
     icon: "pen-to-square",
     children: [
       {
         text: "Spring源码实现",
         link: "/frameDesignAndSourceCode/springSourceCode/",
-        collapsible: true,
+        // collapsible: true,
         icon: "pen-to-square",
       },
       {
