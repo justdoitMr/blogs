@@ -44,7 +44,7 @@ export const sidebarConfig = sidebar({
     "/frameDesignAndSourceCode/mybatisSourceCode/" :[
         "first-mybatisintroduction.md",
     ],
-    // 架构专题
+    // 架构专题/frameDesignAndSourceCode/
     "/engineeringArchitectureDesign/" :[
         "first-mvcDesignArchitecture.md",
         "second-mvcDesignArchitecture.md"

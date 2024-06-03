@@ -48,7 +48,7 @@ export default navbar([
   {
     text: "架构专题",
     icon: "gaishu",
-    link: "/frameDesignAndSourceCode/"
+    link: "/engineeringArchitectureDesign/"
   },
   {
     text: "面试篇",
@@ -119,7 +119,7 @@ export default navbar([
   {
     text: "about",
     icon: "book",
-    link: "intro.md",
+    link: "/intro.md/",
   },
 ]);
 
