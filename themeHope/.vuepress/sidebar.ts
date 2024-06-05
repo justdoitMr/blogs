@@ -104,10 +104,28 @@ export const sidebarConfig = sidebar({
                   }
               ]
       },
+      // 第三章节：Spring
+      {
+          // 大章节目录
+          text: "三、Spring篇",
+          collapsible: true,
+          children:
+              [
+                  // 第三章 第一节
+                  {
+                      prefix: "SpringPrinciple/",
+                      text: "1、Spring",
+                      collapsible: true,
+                      children: [
+                          "SpringAopPrinciple.md",
+                      ],
+                  },
+              ]
+      },
       // 第三章节：大数据
       {
           // 大章节目录
-          text: "三、大数据篇",
+          text: "四、大数据篇",
           collapsible: true,
           children:
               [
@@ -134,7 +152,7 @@ export const sidebarConfig = sidebar({
       // 第四章节: 容器云
       {
           // 大章节目录
-          text: "三、云原生",
+          text: "五、云原生",
           collapsible: true,
           children:
               [
