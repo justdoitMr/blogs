@@ -118,6 +118,8 @@ export const sidebarConfig = sidebar({
                       collapsible: true,
                       children: [
                           "SpringAopPrinciple.md",
+                          "SpringAnnotation.md",
+                          "SpringAopBasic.md"
                       ],
                   },
               ]
@@ -174,6 +176,24 @@ export const sidebarConfig = sidebar({
                           "README.md",
                       ],
                   }
+              ]
+      },
+      // 第五章节: 前端
+      {
+          text: "五、前端篇",
+          collapsible: true,
+          children:
+              [
+                  // 第五章 第一节
+                  {
+                      prefix: "backend/react/",
+                      text: "1、React",
+                      collapsible: true,
+                      children: [
+                          // "act_one_reactIntroduction.md",
+                          // "act_two_componentCodding.md",
+                      ],
+                  },
               ]
       },
   ]

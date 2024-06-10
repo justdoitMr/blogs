@@ -4,9 +4,9 @@ layout: BlogHome
 icon: home
 title: 主页
 heroImage: https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/log.jpg
-heroText: bugcode
+heroText: bugcode 架构之路
 heroFullScreen: false
-tagline: 
+tagline: 思考，分享，沉淀
 projects:
   - icon: project
     name: java核心
@@ -40,4 +40,3 @@ projects:
 
 #footer: 备案中ing
 ---
-
