@@ -113,13 +113,32 @@ export const sidebarConfig = sidebar({
               [
                   // 第三章 第一节
                   {
-                      prefix: "SpringPrinciple/",
+                      prefix: "SpringPrinciple/spring/",
                       text: "1、Spring",
                       collapsible: true,
                       children: [
-                          "SpringAopPrinciple.md",
-                          "SpringAnnotation.md",
-                          "SpringAopBasic.md"
+                          "act_one_SpringAopPrinciple.md",
+                          "act_two_SpringAnnotation.md",
+                          "act_three_SpringAopBasic.md",
+                          "act_four_SpringTransaction.md"
+                      ],
+                  },
+                  // 第三章 第二节
+                  {
+                      prefix: "SpringPrinciple/springmvc/",
+                      text: "2、SpringMvc",
+                      collapsible: true,
+                      children: [
+                          "act_one_springMvcCharacterOne.md",
+                      ],
+                  },
+                  // 第三章 第三节
+                  {
+                      prefix: "SpringPrinciple/springboot/",
+                      text: "3、SpringBoot",
+                      collapsible: true,
+                      children: [
+
                       ],
                   },
               ]
