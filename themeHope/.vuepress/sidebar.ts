@@ -56,7 +56,7 @@ export const sidebarConfig = sidebar({
         "act_one_classDiagram.md",
     ],
     "/designpattern/creational/" :[
-        "",
+        "act_one_builderPattern.md",
     ],
     "/designpattern/Behavior/" :[
         "",
