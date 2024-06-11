@@ -41,17 +41,17 @@ export default navbar([
       {
         text: "创建型",
         icon: "pen-to-square",
-        link: "/algorithm/dataStructure/"
+        link: "/designpattern/creational/"
       },
       {
         text: "行为型",
         icon: "pen-to-square",
-        link: "/algorithm/dataStructure/"
+        link: "/designpattern/Behavior/"
       },
       {
         text: "结构型",
         icon: "pen-to-square",
-        link: "/algorithm/dataStructure/"
+        link: "/designpattern/structural/"
       },
     ],
   },
