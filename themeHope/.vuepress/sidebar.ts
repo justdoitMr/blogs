@@ -39,6 +39,8 @@ export const sidebarConfig = sidebar({
         "act_eight-springAwareContainerObj.md",
         "act_nine-springActOnAndBeanFactory.md",
         "act_ten-springContainerAndEventListener.md",
+        "act_eleven-spring-aopJdkAndCglib.md",
+        "act_tweve-spring-UseAopInSpringContainer.md"
     ],
     // mybatis源码
     "/frameDesignAndSourceCode/mybatisSourceCode/" :[
@@ -48,6 +50,19 @@ export const sidebarConfig = sidebar({
     "/engineeringArchitectureDesign/" :[
         "first-mvcDesignArchitecture.md",
         "second-mvcDesignArchitecture.md"
+    ],
+    // 设计模式篇
+    "/designpattern/designPrinciple/" :[
+        "act_one_classDiagram.md",
+    ],
+    "/designpattern/creational/" :[
+        "",
+    ],
+    "/designpattern/Behavior/" :[
+        "",
+    ],
+    "/designpattern/structural/" :[
+        "",
     ],
 
 
@@ -113,14 +128,14 @@ export const sidebarConfig = sidebar({
               [
                   // 第三章 第一节
                   {
-                      prefix: "SpringPrinciple/spring/",
+                      prefix: "SpringPrinciple/Spring/",
                       text: "1、Spring",
                       collapsible: true,
                       children: [
                           "act_one_SpringAopPrinciple.md",
                           "act_two_SpringAnnotation.md",
                           "act_three_SpringAopBasic.md",
-                          "act_four_SpringTransaction.md"
+                          "act_four_SpringTransaction.md",
                       ],
                   },
                   // 第三章 第二节

@@ -26,6 +26,35 @@ export default navbar([
       },
     ],
   },
+  //   设计模式篇
+  {
+    text: "设计模式",
+    // collapsible: true,
+    icon: "pen-to-square",
+    children: [
+      {
+        text: "设计原则",
+        link: "/designpattern/designPrinciple/",
+        // collapsible: true,
+        icon: "pen-to-square",
+      },
+      {
+        text: "创建型",
+        icon: "pen-to-square",
+        link: "/algorithm/dataStructure/"
+      },
+      {
+        text: "行为型",
+        icon: "pen-to-square",
+        link: "/algorithm/dataStructure/"
+      },
+      {
+        text: "结构型",
+        icon: "pen-to-square",
+        link: "/algorithm/dataStructure/"
+      },
+    ],
+  },
   //   源码专题
   {
     text: "源码",

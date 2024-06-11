@@ -1,4 +1,4 @@
-# 第十一章、基于JDK，Cglib实现AOP切面
+# 11、基于JDK，Cglib实现AOP切面
 
 ## 1、目标
 
