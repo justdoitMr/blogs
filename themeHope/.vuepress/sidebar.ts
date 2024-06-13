@@ -40,7 +40,10 @@ export const sidebarConfig = sidebar({
         "act_nine-springActOnAndBeanFactory.md",
         "act_ten-springContainerAndEventListener.md",
         "act_eleven-spring-aopJdkAndCglib.md",
-        "act_tweve-spring-UseAopInSpringContainer.md"
+        "act_tweve-spring-UseAopInSpringContainer.md",
+        "act_thirteen-spring-UseAopInSpringContainer.md",
+        "act_fourteen-spring-UseAnnotationAutoPro.md",
+        "act_fifteen-spring-ProxyObjSetPro.md"
     ],
     // mybatis源码
     "/frameDesignAndSourceCode/mybatisSourceCode/" :[
