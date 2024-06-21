@@ -9,9 +9,9 @@ heroFullScreen: false
 tagline: 思考，分享，沉淀
 projects:
   - icon: project
-    name: java核心
-    desc: 项目详细描述
-    link: /KnowledgePlanet/
+    name: Spring源码设计实现
+    desc: Spring源码解析和简单实现
+    link: /frameDesignAndSourceCode/springSourceCode/
 
   - icon: link
     name: 架构设计
@@ -19,33 +19,33 @@ projects:
     link: /engineeringArchitectureDesign/
 
   - icon: book
-    name: 书籍名称
-    desc: 书籍详细描述
-    link: https://你的书籍链接
+    name: 项目经验
+    desc: 生产环境项目开发经验
+    link: /excellentBook/project/
 
   - icon: article
-    name: 文章名称
-    desc: 文章详细描述
-    link: https://你的文章链接
+    name: 业务知识
+    desc: 金融及其他业务知识
+    link: /excellentBook/business/
 
   - icon: friend
-    name: 伙伴名称
-    desc: 伙伴详细介绍
-    link: https://你的伙伴链接
-
+    name: 业务场景设计
+    desc: 业务场景设计题
+    link: 
+    
   - icon: https://theme-hope-assets.vuejs.press/logo.svg
-    name: 自定义项目
-    desc: 自定义详细介绍
+    name: 归档文章
+    desc: 基础归档
     link: https://你的自定义链接
     
   - icon: https://theme-hope-assets.vuejs.press/logo.svg
-    name: 自定义项目
-    desc: 自定义详细介绍
+    name: 面试题
+    desc: 后端，大数据，云面试宝典
     link: https://你的自定义链接
     
   - icon: https://theme-hope-assets.vuejs.press/logo.svg
-    name: 自定义项目
-    desc: 自定义详细介绍
+    name: 其他
+    desc: 其他内容
     link: https://你的自定义链接
 
 #footer: 备案中ing

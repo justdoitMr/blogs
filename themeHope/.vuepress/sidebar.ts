@@ -1,4 +1,3 @@
-
 import { sidebar } from "vuepress-theme-hope";
 
 //将其他文件下的内容导入此文件
@@ -67,6 +66,9 @@ export const sidebarConfig = sidebar({
     ],
     "/designpattern/structural/" :[
         "",
+    ],
+    "/project/" :[
+        "act_one-K8SDeployApplicatinn.md",
     ],
     "/about/" :[
         "intro.md",

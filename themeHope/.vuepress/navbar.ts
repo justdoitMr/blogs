@@ -80,9 +80,39 @@ export default navbar([
     link: "/engineeringArchitectureDesign/"
   },
   {
-    text: "面试篇",
-    icon: "gaishu",
-    link: "/interview/"
+    text: "精选博文",
+    icon: "pen-to-square",
+    prefix: "/excellentBook/",
+    children: [
+      {
+        text: "业务知识",
+        icon: "pen-to-square",
+        prefix: "business/",
+        children: [
+          { text: "金融业务", icon: "pen-to-square", link: "README.md" },
+          { text: "其他业务", icon: "pen-to-square", link: "" },
+        ],
+      },
+      {
+        text: "项目经验",
+        icon: "pen-to-square",
+        prefix: "project/",
+        children: [
+          {
+            text: "K8S部署项目",
+            icon: "pen-to-square",
+            link: "README",
+          },
+          {
+            text: "大数据项目开发部署",
+            icon: "pen-to-square",
+            link: "",
+          },
+        ],
+      },
+      { text: "通用数据设计", icon: "pen-to-square", link: "" },
+      { text: "业务场景设计", icon: "pen-to-square", link: "" },
+    ],
   },
   {
     text: "基础归档",
@@ -90,45 +120,9 @@ export default navbar([
     link: "/home.md"
   },
   {
-    text: "精选博文",
-    icon: "pen-to-square",
-    prefix: "/algorithm/",
-    children: [
-      {
-        text: "算法",
-        icon: "pen-to-square",
-        prefix: "algor/",
-        children: [
-          { text: "算法", icon: "pen-to-square", link: "README.md" },
-          { text: "算法分类", icon: "pen-to-square", link: "" },
-        ],
-      },
-      {
-        text: "数据结构",
-        icon: "pen-to-square",
-        prefix: "dataStructure/",
-        children: [
-          {
-            text: "数据结构分类",
-            icon: "pen-to-square",
-            link: "README",
-          },
-          {
-            text: "数据结构",
-            icon: "pen-to-square",
-            link: "",
-          },
-        ],
-      },
-      { text: "设计模式", icon: "pen-to-square", link: "" },
-      { text: "架构设计", icon: "pen-to-square", link: "" },
-      "Readme.md",
-    ],
-  },
-  {
-    text: "业务专题",
+    text: "面试篇",
     icon: "gaishu",
-    link: "/business/"
+    link: "/interview/"
   },
   {
     text: "知识星球",
