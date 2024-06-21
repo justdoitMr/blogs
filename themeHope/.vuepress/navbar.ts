@@ -146,9 +146,9 @@ export default navbar([
     link: "/KnowledgePlanet/"
   },
   {
-    text: "about",
+    text: "关于我",
     icon: "book",
-    link: "/intro.md/",
+    link: "/about/",
   },
 ]);
 

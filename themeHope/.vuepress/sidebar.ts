@@ -1,3 +1,4 @@
+
 import { sidebar } from "vuepress-theme-hope";
 
 //将其他文件下的内容导入此文件
@@ -66,6 +67,9 @@ export const sidebarConfig = sidebar({
     ],
     "/designpattern/structural/" :[
         "",
+    ],
+    "/about/" :[
+        "intro.md",
     ],
 
 
@@ -157,7 +161,8 @@ export const sidebarConfig = sidebar({
                       collapsible: true,
                       children: [
                           "act_one_springIntroduction.md",
-                          "act_two_springboot_basic.md"
+                          "act_two_springboot_basic.md",
+                          "act_three_springboot_webDev.md"
                       ],
                   },
               ]
