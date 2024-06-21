@@ -12,8 +12,13 @@ tag:
 
 ## 1、目标
 
+其实本章节要解决的问题就是关于如何给代理对象中的属性填充相应的值，因为在之前把AOP动态代理，融入到Bean的生命周期时，创建代理对象是在整个创建 Bean 对象之前，也就是说这个代理对象的创建并不是在 Bean 生命周期中。
+所以本章节中我们要把代理对象的创建融入到 Bean 的生命周期中，也就是需要把创建代理对象的逻辑迁移到 Bean 对象执行初始化方法之后，在执行代理对象的创建。
+
 
 ## 2、设计
+
+按照创建代理对象的操作 DefaultAdvisorAutoProxyCreator 实现的 InstantiationAwareBeanPostProcessor 接口，那么原本在 Before 中的操作，则需要放到 After 中处理
 
 
 ## 3、实现
@@ -29,199 +34,154 @@ PropertyPlaceholderConfigurer 目前看上去像一块单独的内容，后续�
 
 
 
-### 3.2、处理占位符配置
+### 3.2、判断CGlib对象
 
 ```java
-public class PropertyPlaceholderConfigurer implements BeanFactoryPostProcessor {
-
-//    处理占位符配置
-    /**
-     * Default placeholder prefix: {@value}
-     */
-    public static final String DEFAULT_PLACEHOLDER_PREFIX = "${";
+public class TargetSource {
 
     /**
-     * Default placeholder suffix: {@value}
+     * Return the type of targets returned by this {@link TargetSource}.
+     * <p>Can return <code>null</code>, although certain usages of a
+     * <code>TargetSource</code> might just work with a predetermined
+     * target class.
+     *
+     * @return the type of targets returned by this {@link TargetSource}
      */
-    public static final String DEFAULT_PLACEHOLDER_SUFFIX = "}";
+    public Class<?>[] getTargetClass() {
+        Class<?> clazz = this.target.getClass();
+        clazz = ClassUtils.isCglibProxyClass(clazz) ? clazz.getSuperclass() : clazz;
+        return clazz.getInterfaces();
+    }
+}
+```
 
-    private String location;
+在 TargetSource#getTargetClass 是用于获取 target 对象的接口信息的，那么这个 target 可能是 JDK代理 创建也可能是 CGlib创建，为了保证都能正确的获取到结果，这里需要增加判读 ClassUtils.isCglibProxyClass(clazz
+### 3.3、迁移创建AOP代理方法
+
+
+```java
+public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPostProcessor, BeanFactoryAware {
 
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        // 加载属性文件
-        try {
-            DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
-            Resource resource = resourceLoader.getResource(location);
-            Properties properties = new Properties();
-            properties.load(resource.getInputStream());
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 
-            String[] beanDefinitionNames = beanFactory.getBeanDefinitionNames();
-            for (String beanName : beanDefinitionNames) {
-                BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
+        if (isInfrastructureClass(bean.getClass())) return bean;
 
-                PropertyValues propertyValues = beanDefinition.getPropertyValues();
-                for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {
-                    Object value = propertyValue.getValue();
-                    if (!(value instanceof String)) continue;
-                    String strVal = (String) value;
-                    StringBuilder buffer = new StringBuilder(strVal);
-                    int startIdx = strVal.indexOf(DEFAULT_PLACEHOLDER_PREFIX);
-                    int stopIdx = strVal.indexOf(DEFAULT_PLACEHOLDER_SUFFIX);
-                    if (startIdx != -1 && stopIdx != -1 && startIdx < stopIdx) {
-                        String propKey = strVal.substring(startIdx + 2, stopIdx);
-                        String propVal = properties.getProperty(propKey);
-                        buffer.replace(startIdx, stopIdx + 1, propVal);
-                        propertyValues.addPropertyValue(new PropertyValue(propertyValue.getName(), buffer.toString()));
-                    }
-                }
-            }
-        } catch (IOException e) {
-            throw new BeansException("Could not load properties", e);
+        Collection<AspectJExpressionPointcutAdvisor> advisors = beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class).values();
+
+        for (AspectJExpressionPointcutAdvisor advisor : advisors) {
+            ClassFilter classFilter = advisor.getPointcut().getClassFilter();
+            // 过滤匹配类
+            if (!classFilter.matches(bean.getClass())) continue;
+
+            AdvisedSupport advisedSupport = new AdvisedSupport();
+
+            TargetSource targetSource = new TargetSource(bean);
+            advisedSupport.setTargetSource(targetSource);
+            advisedSupport.setMethodInterceptor((MethodInterceptor) advisor.getAdvice());
+            advisedSupport.setMethodMatcher(advisor.getPointcut().getMethodMatcher());
+            advisedSupport.setProxyTargetClass(false);
+
+            // 返回代理对象
+            return new ProxyFactory(advisedSupport).getProxy();
         }
+
+        return bean;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
 }
+
 ```
+关于 DefaultAdvisorAutoProxyCreator 类的操作主要就是把创建 AOP 代理的操作从 postProcessBeforeInstantiation 移动到 postProcessAfterInitialization 中去。
+通过设置一些 AOP 的必备参数后，返回代理对象 new ProxyFactory(advisedSupport).getProxy() 这个代理对象中就包括间接调用了 TargetSource 中对 getTargetClass() 的获取。
 
-BeanFactoryPostProcessor可以修改Befintiion的定义，所以加载属性通过实现此接口，完成对配置文件的架子啊以及获取占位符中的属性在文件里的配置。
-
-### 3.3、定义拦截注解
-
-定义Scope注解：
-```java
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Scope {
-
-    String value() default "singleton";
-}
-```
-
-用于配置作用域的自定义注解，方便通过配置Bean对象注解的时候，拿到Bean对象的作用域。不过一般都使用默认的 singleton
-
-定义Component注解
+### 3.4、在Bean的生命周期中初始化执行
 
 ```java
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Component {
-
-    String value() default "";
-}
-```
-Component注解主要用来配置在Controller，Service中，比较通用的注解，需要自动加载到容器中的对象都可以标注此注解。
-
-### 3.4、对象扫描装配
-
-```java
-public class ClassPathScanningCandidateComponentProvider {
-
-    public Set<BeanDefinition> findCandidateComponents(String basePackage) {
-        Set<BeanDefinition> candidates = new LinkedHashSet<>();
-        Set<Class<?>> classes = ClassUtil.scanPackageByAnnotation(basePackage, Component.class);
-        for (Class<?> clazz : classes) {
-            candidates.add(new BeanDefinition(clazz));
-        }
-        return candidates;
-    }
-}
-```
-这里先要提供一个可以通过配置路径 basePackage=cn.bugstack.springframework.test.bean，解析出 classes 信息的工具方法 findCandidateComponents，通过这个方法就可以扫描到所有 @Component 注解的 Bean 对象了。
-
-```java
-public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateComponentProvider {
-
-
-    private BeanDefinitionRegistry registry;
-
-    public ClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry) {
-        this.registry = registry;
-    }
-
-    public void doScan(String... basePackages) {
-        for (String basePackage : basePackages) {
-            Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
-            for (BeanDefinition beanDefinition : candidates) {
-                // 解析 Bean 的作用域 singleton、prototype
-                String beanScope = resolveBeanScope(beanDefinition);
-                if (StrUtil.isNotEmpty(beanScope)) {
-                    beanDefinition.setScope(beanScope);
-                }
-                registry.registerBeanDefinition(determineBeanName(beanDefinition), beanDefinition);
-            }
-        }
-    }
-
-    private String resolveBeanScope(BeanDefinition beanDefinition) {
-        Class<?> beanClass = beanDefinition.getBeanClass();
-        Scope scope = beanClass.getAnnotation(Scope.class);
-        if (null != scope) return scope.value();
-        return StrUtil.EMPTY;
-    }
-
-    private String determineBeanName(BeanDefinition beanDefinition) {
-        Class<?> beanClass = beanDefinition.getBeanClass();
-        Component component = beanClass.getAnnotation(Component.class);
-        String value = component.value();
-        if (StrUtil.isEmpty(value)) {
-            value = StrUtil.lowerFirst(beanClass.getSimpleName());
-        }
-        return value;
-    }
-}
-```
-
-ClassPathBeanDefinitionScanner 是继承自 ClassPathScanningCandidateComponentProvider 的具体扫描包处理的类，在 doScan 中除了获取到扫描的类信息以后，还需要获取 Bean 的作用域和类名，如果不配置类名基本都是把首字母缩写。
-
-### 3.5、解析xml中调用扫描
-
-```java
-public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
+public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
     /**
-     *公共的加载xml文件的方法
-     * @param inputStream
-     * @throws ClassNotFoundException
+     * 带参数的创建bean对象
+     * @param beanName
+     * @param beanDefinition
+     * @param args
+     * @return
+     * @throws BeansException
      */
-    protected void doLoadBeanDefinitions(InputStream inputStream) throws ClassNotFoundException, DocumentException {
-        SAXReader reader = new SAXReader();
-        Document document = reader.read(inputStream);
-        Element root = document.getRootElement();
-
-        // 解析 context:component-scan 标签，扫描包中的类并提取相关信息，用于组装 BeanDefinition
-        Element componentScan = root.element("component-scan");
-        if (null != componentScan) {
-            String scanPath = componentScan.attributeValue("base-package");
-            if (StrUtil.isEmpty(scanPath)) {
-                throw new BeansException("The value of base-package attribute can not be empty or null");
-            }
-            scanPackage(scanPath);
+    @Override
+    protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
+        Object bean = null;
+        try {
+        
+            // 执行 Bean 的初始化方法和 BeanPostProcessor 的前置和后置处理方法
+            bean = initializeBean(beanName, bean, beanDefinition);
+        } catch (Exception e) {
+            throw new BeansException("Instantiation of bean failed", e);
         }
 
-        List<Element> beanList = root.elements("bean");
-        for (Element bean : beanList) {
-        
-        
-            // 注册 BeanDefinition
-            getRegistry().registerBeanDefinition(beanName, beanDefinition);
+        // 注册实现了 DisposableBean 接口的 Bean 对象
+        registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
+
+        // 判断 SCOPE_SINGLETON、SCOPE_PROTOTYPE
+        if (beanDefinition.isSingleton()) {
+            registerSingleton(beanName, bean);
         }
+        return bean;
     }
 
-    private void scanPackage(String scanPath) {
-        String[] basePackages = StrUtil.splitToArray(scanPath, ',');
-        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(getRegistry());
-        scanner.doScan(basePackages);
+  
+    /**
+     * 前置处理器执行完成后才会执行init()初始化方法
+     * 执行bean的初始化方法，前置 后置处理器方法
+     * @param beanName
+     * @param bean
+     * @param beanDefinition
+     * @return
+     */
+    private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+
+        // invokeAwareMethods 引用Aware接口
+        if (bean instanceof Aware) {
+//            感知BeanFactory
+            if (bean instanceof BeanFactoryAware) {
+                ((BeanFactoryAware) bean).setBeanFactory(this);
+            }
+            if (bean instanceof BeanClassLoaderAware){
+                ((BeanClassLoaderAware) bean).setBeanClassLoader(getBeanClassLoader());
+            }
+            if (bean instanceof BeanNameAware) {
+                ((BeanNameAware) bean).setBeanName(beanName);
+            }
+        }
+
+
+        // 1. 执行 BeanPostProcessor Before 处理
+        Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
+
+        // 待完成内容：invokeInitMethods(beanName, wrappedBean, beanDefinition);
+        // 执行 Bean 对象的初始化方法
+        try {
+            invokeInitMethods(beanName, wrappedBean, beanDefinition);
+        } catch (Exception e) {
+            throw new BeansException("Invocation of init method of bean[" + beanName + "] failed", e);
+        }
+        // 2. 执行 BeanPostProcessor After 处理
+        wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
+        return wrappedBean;
+    }
+
+    @Override
+    public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeansException {
+        Object result = existingBean;
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            Object current = processor.postProcessBeforeInitialization(result, beanName);
+            if (null == current) return result;
+            result = current;
+        }
+        return result;
     }
 }
 ```
-关于 XmlBeanDefinitionReader 中主要是在加载配置文件后，处理新增的自定义配置属性 component-scan，解析后调用 scanPackage 方法，其实也就是我们在 ClassPathBeanDefinitionScanner#doScan 功能。
-另外这里需要注意，为了可以方便的加载和解析xml，XmlBeanDefinitionReader 已经全部替换为 dom4j 的方式进行解析处理
 
 ## 4、测试
 

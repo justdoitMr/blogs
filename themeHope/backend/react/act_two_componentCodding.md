@@ -26,7 +26,7 @@ tag:
 
 **渲染类组件标签的基本流程**
 
-1. React 内部会创建组件实例对象
+1. React 内部会创建组件实例对象，创建一个对象
 2. 调用`render()`得到虚拟 DOM ,并解析为真实 DOM
 3. 插入到指定的页面元素内部
 
@@ -259,7 +259,7 @@ function UserInfo(props) {
 
 核心代码如下：
 
-```js
+```html
 <body>
     <!-- 准备好容器 -->
     <div id="test">
@@ -392,7 +392,7 @@ this.setState(partialState, [callback]);
    ```
 2. 函数：接收两个函数，第一个函数接受两个参数，第一个是当前state，第二个是当前props，该函数返回一个对象，和直接传递对象参数是一样的，就是要修改的state；第二个函数参数是state改变后触发的回调
 
-```js
+```html
 this.setState(state => ({count: state.count+1});
 ```
 
@@ -406,7 +406,7 @@ this.setState(state => ({count: state.count+1});
 1. state的赋值可以不再构造函数中进行
 2. 使用了箭头函数，将this进行了改变
 
-```js
+```html
 <body>
     <!-- 准备好容器 -->
     <div id="test">
@@ -473,7 +473,7 @@ class St extends React.Component{
 
 上面的案例中预期setState使得isHot变成了11，输出也应该是11。然而在控制台打印的却是10，也就是并没有对其进行更新。这是因为异步的进行了处理，在输出的时候还没有对其进行处理。
 
-```js
+```html
 document.getElementById("test").addEventListener("click",()=>{
         this.setState({isHot: this.state.isHot + 1});
         console.log(this.state.isHot);
@@ -626,7 +626,7 @@ function App() {
 
 基本使用：
 
-```js
+```html
 <body>
     <div id = "div">
 
@@ -654,7 +654,7 @@ function App() {
 
 如果传递的数据是一个对象，可以更加简便的使用
 
-```js
+```html
 <script type="text/babel">
     class Person extends React.Component{
         render(){
@@ -729,7 +729,7 @@ react对此提供了相应的解决方法：
 
 > 从 ES2022 开始，你也可以在 React 类组件中将 `defaultProps` 声明为静态属性。欲了解更多信息，请参阅 [class public static fields](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Public_class_fields#public_static_fields)。这种现代语法需要添加额外的编译步骤才能在老版浏览器中工作。
 
-```js
+```html
 <!-- 准备好一个“容器” -->
 <div id="test1"></div>
 <div id="test2"></div>
@@ -909,7 +909,7 @@ MyComponent.propTypes = {
 
 ### 3.3、简写方式
 
-```js
+```html
 <!-- 准备好一个“容器” -->
 <div id="test1"></div>
 <div id="test2"></div>
@@ -972,7 +972,7 @@ MyComponent.propTypes = {
 
 > 函数在使用props的时候，是作为参数进行使用的(props) 函数式组件不能使用state
 
-```js
+```html
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -1104,9 +1104,11 @@ inputBlur = () =>{
 
 **注意**
 
+```text
 不建议使用它，因为 string 类型的 refs 存在 [一些问题](https://github.com/facebook/react/pull/8333#issuecomment-271648615)。它已过时并可能会在未来的版本被移除。
 
 如果你目前还在使用 `this.refs.textInput` 这种方式访问 refs ，我们建议用[回调函数](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html#callback-refs)或 [`createRef` API](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html#creating-refs) 的方式代替。
+```
 
 ### 4.2、回调形式
 
@@ -1121,7 +1123,7 @@ React 也支持另一种设置 refs 的方式，称为“回调 refs”。它能
 
 ```
 
-`e`会接收到当前节点作为参数，然后将当前节点赋值给实例的`input1`属性上面
+e会接收到当前节点作为参数，然后将当前节点赋值给实例的`input1`属性上面
 
 **关于回调 refs 的说明**
 
@@ -1233,7 +1235,7 @@ class Parent extends React.Component {
 在上面的例子中，`Parent` 把它的 refs 回调函数当作 `inputRef` props 传递给了 `CustomTextInput`，而且 `CustomTextInput` 把相同的函数作为特殊的 `ref` 属性传递给了 `<input>`。结果是，在 `Parent` 中的 `this.inputElement` 会被设置为与 `CustomTextInput` 中的 `input` 元素相对应的 DOM 节点。
 
 回调形式使用refs
-```js
+```text
    <script type="text/babel">
       class MyComponent extends React.Component{  
          showData =()=>{
@@ -1266,7 +1268,7 @@ class Parent extends React.Component {
 
 Refs 是使用 `React.createRef()` 创建的，并通过 `ref` 属性附加到 React 元素。在构造组件时，通常将 Refs 分配给实例属性，以便可以在整个组件中引用它们。
 
-```js
+```html
 class MyComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -1294,7 +1296,7 @@ ref 的值根据节点的类型而有所不同：
 - 当 `ref` 属性用于自定义 class 组件时，`ref` 对象接收组件的挂载实例作为其 `current` 属性。
 - **你不能在函数组件上使用 `ref` 属性**，因为他们没有实例。
 
-```js
+```html
  class MyComponent extends React.Component{  
 
         // React.createRef()调用后可以返回一个容器，该容器可以存储被ref表示的节点 该容器专人专用

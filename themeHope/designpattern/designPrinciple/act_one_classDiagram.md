@@ -4,7 +4,7 @@
 
 ## 一、创建型
 
-### 1. Factory Method（工厂方法）
+### 1. Simple Factory Method（简单工厂方法）
 
 定义：定义了一个创建对象的接口，但由子类决定要实例化的类是哪一个。工厂方法让类把实例化推迟到子类。
 
@@ -12,13 +12,21 @@
 
 ![image-20240611195324067](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406111953482.png)
 
-### 2. Abstract Factory（抽象工厂）
+案例说明：
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406201837277.png)
+
+### 2、Factory Method（工厂方法）
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406201838833.png)
+
+### 3. Abstract Factory（抽象工厂）
 
 *定义：提供一个接口，用于创建相关或依赖对象的家族，而不需要明确指定具体类。*
 
 *类图：*
 
 ![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F.png)
+
 
 ### 3. Builder（生成器模式）
 
@@ -28,6 +36,9 @@
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/%E7%94%9F%E6%88%90%E5%99%A8%E6%A8%A1%E5%BC%8F.png" alt="img" style="zoom:150%;" />
 
+实例：
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406211001742.png)
+
 ### 4. Prototype（原型模式）
 
 *定义：用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。*
@@ -35,6 +46,9 @@
 *类图：*
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F.png" alt="img" style="zoom: 150%;" />
+
+案例：
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406211009260.png)
 
 ### 5. Singleton（单件模式）
 
@@ -70,6 +84,9 @@ public class Singleton
 }
 ```
 
+案例：
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406211011262.png)
+
 ## 二、结构性
 
 ### 1. Adapter（适配器模式（类、对象））
@@ -80,6 +97,9 @@ public class Singleton
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/%E9%80%82%E9%85%8D%E5%99%A8.png" alt="img" style="zoom:150%;" />
 
+案例：
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406211014964.png)
+
 ### 2. Bridge（桥连模式）
 
 定义：将抽象部分与它的实现部分分离，使它们都可以独立地变化。
@@ -87,6 +107,9 @@ public class Singleton
 *类图：*
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/%E6%A1%A5%E6%8E%A5.png" alt="img" style="zoom:150%;" />
+
+案例：
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406211016194.png)
 
 ### 3. Composite（组合模式）
 
@@ -96,6 +119,9 @@ public class Singleton
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F.png" alt="img" style="zoom:150%;" />
 
+案例：
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406211018285.png)
+
 ### 4. Decorator（装饰模式）
 
 定义：动态地给一个对象添加一些额外的职责。就增加功能来说，Decorator模式相比生成子类更加灵活。
@@ -103,6 +129,9 @@ public class Singleton
 *类图：*
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/%E8%A3%85%E9%A5%B0%E5%99%A8.png" alt="img" style="zoom:150%;" />
+
+案例
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406211016983.png)
 
 ### 5. Facade（外观模式）
 
@@ -112,6 +141,9 @@ public class Singleton
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/%E5%A4%96%E8%A7%82.png" alt="img" style="zoom:150%;" />
 
+案例：
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406211017371.png)
+
 ### 6. Flyweight（享元模式）
 
 定义：运用共享技术有效地支持大量细粒度的对象。
@@ -120,6 +152,9 @@ public class Singleton
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F.png" alt="img" style="zoom:150%;" />
 
+案例：
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406211019356.png)
+
 ### 7. Proxy（代理模式）
 
 定义：为其他对象提供一种代理以控制对这个对象的访问。
@@ -127,6 +162,9 @@ public class Singleton
 *类图：*
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F.png" alt="img" style="zoom:150%;" />
+
+案例：
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406211012682.png)
 
 ## 三、行为型
 

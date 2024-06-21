@@ -156,7 +156,8 @@ export const sidebarConfig = sidebar({
                       text: "3、SpringBoot",
                       collapsible: true,
                       children: [
-
+                          "act_one_springIntroduction.md",
+                          "act_two_springboot_basic.md"
                       ],
                   },
               ]

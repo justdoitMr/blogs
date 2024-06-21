@@ -69,8 +69,6 @@ tag:
 > - 由于JSX最终需要转换为JS代码执行，所以浏览器并不能正常识别JSX，所以当我们在浏览器中直接使用JSX时，还必须引入babel来完成对代码的编译。
 > - babel下载地址:https://unpkg.com/babel-standalone@6/babel.min.js
 
-![image-20221022171647360](https://i0.hdslb.com/bfs/album/514c5df0f5f8e7242ca17e1c939b4822b716315f.png)
-
 ```
 react.development.js
 react-dom.development.js
@@ -81,7 +79,7 @@ babel.min.js
 
 3.创建虚拟DOM，渲染到容器中
 
-```js
+```html
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -117,7 +115,6 @@ babel.min.js
 
 这样，就会在页面中的这个div容器上添加这个h1.
 
-![image-20221022171539523](https://i0.hdslb.com/bfs/album/7c5713f248cc28bcb531d2eda325e56789df4286.png)
 
 > - React.createElement()
     >   - `React.createElement(type, [props], [...children])`
@@ -140,14 +137,14 @@ JSX 是 JavaScript 的语法扩展，JSX 使得我们可以以类似于 HTML 的
 1. 定义虚拟DOM，JSX不是字符串，不要加引号
 2. 标签中混入JS表达式的时候使用`{}`
 
-```js
+```html
 id = {myId.toUpperCase()}
 ```
 
 3. 样式的类名指定不能使用class，使用`className`
 4. 内敛样式要使用`{{}}`包裹
 
-```js
+```html
 style={{color:'skyblue',fontSize:'24px'}}
 ```
 
@@ -182,7 +179,7 @@ ReactDOM.render(
 2. `class`需要使用`className`代替
 3. `style`中必须使用对象设置` style={{background:'red'}}`
 
-```js
+```html
 <style>
 	.title{
 		background-color: orange;
@@ -335,7 +332,6 @@ jsx语法规则总结：
       console.log(VDOM instanceof Object)
 ```
 
-![image-20221022194600803](https://i0.hdslb.com/bfs/album/3c9c35333c0883a1057bd4c82be8bfbf9b69f04b.png)
 
 **关于虚拟DOM：**
 
