@@ -36,17 +36,17 @@ projects:
   - icon: https://theme-hope-assets.vuejs.press/logo.svg
     name: 归档文章
     desc: 基础归档
-    link: https://你的自定义链接
+    link: 
     
   - icon: https://theme-hope-assets.vuejs.press/logo.svg
     name: 面试题
     desc: 后端，大数据，云面试宝典
-    link: https://你的自定义链接
+    link: 
     
   - icon: https://theme-hope-assets.vuejs.press/logo.svg
     name: 其他
     desc: 其他内容
-    link: https://你的自定义链接
+    link: 
 
 #footer: 备案中ing
 ---

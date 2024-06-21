@@ -73,6 +73,16 @@ export const sidebarConfig = sidebar({
     "/about/" :[
         "intro.md",
     ],
+    // 业务
+    "/excellentBook/business/":[
+        "README.md",
+        "act_one_finance.md"
+    ],
+    // 项目经验
+    "/excellentBook/project/":[
+        "README.md",
+        "act_one-K8SDeployApplicatinn.md"
+    ],
 
 
 //   ------------------------------------------------导航文档导入 end-----------------------------------------------------

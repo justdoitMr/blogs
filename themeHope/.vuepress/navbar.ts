@@ -87,31 +87,25 @@ export default navbar([
       {
         text: "业务知识",
         icon: "pen-to-square",
-        prefix: "business/",
+        prefix: "/excellentBook/business/",
         children: [
-          { text: "金融业务", icon: "pen-to-square", link: "README.md" },
-          { text: "其他业务", icon: "pen-to-square", link: "" },
+          { text: "金融业务", icon: "pen-to-square", link: "/excellentBook/business/" },
         ],
       },
       {
         text: "项目经验",
         icon: "pen-to-square",
-        prefix: "project/",
+        prefix: "/excellentBook/project/",
         children: [
           {
             text: "K8S部署项目",
             icon: "pen-to-square",
-            link: "README",
-          },
-          {
-            text: "大数据项目开发部署",
-            icon: "pen-to-square",
-            link: "",
+            link: "/excellentBook/project/",
           },
         ],
       },
       { text: "通用数据设计", icon: "pen-to-square", link: "" },
-      { text: "业务场景设计", icon: "pen-to-square", link: "" },
+      { text: "业务场景设计", icon: "pen-to-square", link: "scence.md" },
     ],
   },
   {
