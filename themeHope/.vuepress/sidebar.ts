@@ -1,6 +1,6 @@
 import { sidebar } from "vuepress-theme-hope";
 
-//将其他文件下的内容导入此文件
+    //将其他文件下的内容导入此文件
 export const sidebarConfig = sidebar({
     //   ------------------------------------------------导航文档导入 start-----------------------------------------------------
     //  导读专题
@@ -85,11 +85,11 @@ export const sidebarConfig = sidebar({
     ],
 
 
-//   ------------------------------------------------导航文档导入 end-----------------------------------------------------
+    //   ------------------------------------------------导航文档导入 end-----------------------------------------------------
 
 
 
-// --------------------------------------------------下面是目录结构-----------------------------------------------------
+    // --------------------------------------------------下面是目录结构-----------------------------------------------------
 
   "/": [
     {
@@ -245,8 +245,12 @@ export const sidebarConfig = sidebar({
                       text: "1、React",
                       collapsible: true,
                       children: [
-                          // "act_one_reactIntroduction.md",
-                          // "act_two_componentCodding.md",
+                          "act_one_reactIntroduction.md",
+                          "act_two_componentCodding.md",
+                          "act_three_ReactEvent.md",
+                          "act_four_lifeCycle.md",
+                          "act_five_scaffold.md",
+                          "act_six_route.md"
                       ],
                   },
               ]

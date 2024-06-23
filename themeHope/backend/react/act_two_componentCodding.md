@@ -1,12 +1,35 @@
 ---
-icon: pen-to-square
-date: 2024-06-08
-category: React
-  - 
+# 这是文章的标题
+title: 2、面向组件编程
+# 你可以自定义封面图片
+#cover: /assets/images/cover1.jpg
+# 这是页面的图标
+icon: file
+# 这是侧边栏的顺序
+order: 2
+# 设置作者
+author: bugcode
+# 设置写作时间
+date: 2020-01-01
+# 一个页面可以有多个分类
+category:
+  - React
+  - 前端
+# 一个页面可以有多个标签
 tag:
-  - backend
+  - 前端
   - react
+# 此页面会在文章列表置顶
+sticky: false
+# 此页面会出现在星标文章中
+star: true
+# 你可以自定义页脚
+footer: Spring基础
+# 你可以自定义版权信息
+copyright: bugcode
 ---
+
+
 # 2、面向组件编程
 
 ## 1、组件的使用
@@ -18,7 +41,7 @@ tag:
 - 函数组件
 - 类式组件
 
-> **注意：**
+> **注意**:
 >
 > 1. 组件名必须是首字母大写（React 会将以小写字母开头的组件视为原生 DOM 标签。例如，< div />`代表 HTML 的 div 标签，而`< Weclome /> 则代表一个组件，并且需在作用域内使用 `Welcome`）
 > 2. 虚拟DOM元素只能有一个根元素
@@ -246,7 +269,7 @@ function UserInfo(props) {
 **基本使用**
 
 > 我们都说React是一个状态机，体现是什么地方呢，就是体现在state上，通过与用户的交互，实现不同的状态，然后去渲染UI,这样就让用户的数据和界面保持一致了。state是组件的私有属性。
->
+> 
 > 在React中，更新组件的state，结果就会重新渲染用户界面(不需要操作DOM),一句话就是说，用户的界面会随着状态的改变而改变。
 >
 > state是组件对象最重要的属性，值是对象（可以包含多个key-value的组合）
@@ -326,24 +349,24 @@ this.state.isHot = false
 事件：
 
 ```js
-      class Weather extends React.Component{
+class Weather extends React.Component{
 
-        constructor(props){
-            super(props)
-            this.state = {isHot:true}
-        }
-        render(){
-            console.log(this)
-            // demo()如果写括号，那么就是函数调用，react在渲染的时候会直接调用这个函数，如果不带括号，那就是回调，将 函数交给react，当点击的时候进行回调
-            return <h2 onClick={demo}>今天天气热不热:{this.state.isHot ?'炎热':'清爽'}</h2>
-        }
-      }
+    constructor(props){
+        super(props)
+       this.state = {isHot:true}
+    }
+    render(){
+        console.log(this)
+       // demo()如果写括号，那么就是函数调用，react在渲染的时候会直接调用这个函数，如果不带括号，那就是回调，将 函数交给react，当点击的时候进行回调
+       return <h2 onClick={demo}>今天天气热不热:{this.state.isHot ?'炎热':'清爽'}</h2>
+    }
+}
 ```
 
 类中的方法默认开启局部严格模式，所以在demo方法回调的时候会丢失this指向显示unDefine.
 demo()方法被赋值给onClick,onClick只有引用，当点击时候被回调，此时已经属于直接函数调用，而不是通过对象或者this去调用方法，所以直接调用方法丢失this指向。
 
-onClick()={demo}，如果带上括号，就是函数调用，react会在渲染页面的时候进行函数调用，如果函数名梓不带括号，就是函数赋值，将函数的调用交给react，在点击标题的时候进行调用。
+onClick()={demo}，如果带上括号，就是函数调用，react会在渲染页面的时候进行函数调用，如果函数名不带括号，就是函数赋值，将函数的调用交给react，在点击标题的时候进行调用。
 
 修改this指向问题：
 ```js
