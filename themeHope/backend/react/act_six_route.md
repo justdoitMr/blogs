@@ -120,7 +120,7 @@ import { Link, BrowserRouter, Route } from 'react-router-dom'
 <Link className="list-group-item" to="/about">About</Link>
 ```
 
-同时我们需要用 `Route` 标签，来进行路径的匹配，从而实现不同路径的组件切换
+同时我们需要用 `Route` 标签，来进行路径的匹配，从而实现不同路径的组件切换，路由注册：
 
 ```html
 <Route path="/about" component={About}></Route>
@@ -482,7 +482,8 @@ const findResult = DetailData.find((detailObj) => {
 qs是一个npm仓库所管理的包,可通过npm install qs命令进行安装.
 1. qs.parse()将URL解析成对象的形式
 2. qs.stringify()将对象 序列化成URL的形式，以&进行拼接
-3. 
+
+
 ```html
    // nodejs中调试
    const qs = require('qs');
