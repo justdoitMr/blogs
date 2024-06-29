@@ -250,7 +250,11 @@ export const sidebarConfig = sidebar({
                           "act_three_ReactEvent.md",
                           "act_four_lifeCycle.md",
                           "act_five_scaffold.md",
-                          "act_six_route.md"
+                          "act_six_route.md",
+                          "act_seven_ReactHightLevel_one.md",
+                          "act_seven_ReactHightLevel_two.md",
+                          "act_eight_ReactHook_one.md",
+                          "act_eight_ReactHook_two.md"
                       ],
                   },
               ]
