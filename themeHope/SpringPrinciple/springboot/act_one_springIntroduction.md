@@ -13,13 +13,14 @@ author: bugcode
 date: 2020-01-01
 # 一个页面可以有多个分类
 category:
-  - SpringBoot
-  - Spring
+  - SPRINGBOOT
+  - SPRING
+  - JAVA
 # 一个页面可以有多个标签
 tag:
   - 后端
-  - JAVA
-  - Spring
+  - java
+  - spring
 # 此页面会在文章列表置顶
 sticky: false
 # 此页面会出现在星标文章中
