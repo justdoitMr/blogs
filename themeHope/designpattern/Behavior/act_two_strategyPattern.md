@@ -71,6 +71,7 @@ copyright: bugcode
 
 ```java
 public class StrategyPattern {
+//测试
     public static void main(String[] args) {
         Context c = new Context();
         Strategy s = new ConcreteStrategyA();
