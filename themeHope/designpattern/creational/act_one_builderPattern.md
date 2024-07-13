@@ -1,15 +1,38 @@
 ---
-icon: pen-to-square
-date: 2024-06-02
-category: designPattern
-  - 
+# 这是文章的标题
+title: 1、建造者设计模式
+# 你可以自定义封面图片
+#cover: /assets/images/cover1.jpg
+# 这是页面的图标
+icon: file
+# 这是侧边栏的顺序
+order: 1
+# 设置作者
+author: bugcode
+# 设置写作时间
+date: 2023-01-01
+# 一个页面可以有多个分类
+category:
+  - DESIGN PATTERN
+  - JAVA
+  - 设计模式
+# 一个页面可以有多个标签
 tag:
-  - Java
-  - designPattern
+  - 后端
+  - java
+  - 建造者
+# 此页面会在文章列表置顶
+sticky: false
+# 此页面会出现在星标文章中
+star: true
+# 你可以自定义页脚
+footer: java基础
+# 你可以自定义版权信息
+copyright: bugcode
 ---
 
 
-# 建造者模式
+# 1、建造者模式
 
 ## 需求
 
