@@ -60,6 +60,7 @@ export const sidebarConfig = sidebar({
     ],
     "/designpattern/creational/" :[
         "act_one_builderPattern.md",
+        "act_two_factoryPattern.md"
     ],
     "/designpattern/Behavior/" :[
         "",
