@@ -69,6 +69,7 @@ export const sidebarConfig = sidebar({
     "/designpattern/structural/" :[
         "act_one_adapterPattern.md",
         "act_two_proxyPattern.md",
+        "act_three_DecoratorPattern.md"
     ],
     "/project/" :[
         "act_one-K8SDeployApplicatinn.md",
