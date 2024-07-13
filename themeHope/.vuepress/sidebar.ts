@@ -64,7 +64,7 @@ export const sidebarConfig = sidebar({
         "act_three_signPattern.md"
     ],
     "/designpattern/Behavior/" :[
-        "",
+        "act_one_templatePattern.md",
     ],
     "/designpattern/structural/" :[
         "act_one_adapterPattern.md",
