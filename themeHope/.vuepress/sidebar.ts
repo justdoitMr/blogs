@@ -65,6 +65,7 @@ export const sidebarConfig = sidebar({
     ],
     "/designpattern/Behavior/" :[
         "act_one_templatePattern.md",
+        "act_two_strategyPattern.md"
     ],
     "/designpattern/structural/" :[
         "act_one_adapterPattern.md",
