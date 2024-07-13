@@ -13,8 +13,8 @@ author: bugcode
 date: 2020-01-01
 # 一个页面可以有多个分类
 category:
-  - Spring
-  - SpringFrameWork
+  - SPRING
+  - SPRINGBOOT
   - JAVA
 # 一个页面可以有多个标签
 tag:
