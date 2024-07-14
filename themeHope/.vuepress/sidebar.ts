@@ -52,7 +52,6 @@ export const sidebarConfig = sidebar({
     // 架构专题/frameDesignAndSourceCode/
     "/engineeringArchitectureDesign/" :[
         "first-mvcDesignArchitecture.md",
-        "second-mvcDesignArchitecture.md"
     ],
     // 设计模式篇
     "/designpattern/designPrinciple/" :[
