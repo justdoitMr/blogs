@@ -74,10 +74,22 @@ export default navbar([
       },
     ],
   },
+  // {
+  //   text: "架构专题",
+  //   icon: "gaishu",
+  //   link: "/engineeringArchitectureDesign/"
+  // },
   {
     text: "架构专题",
-    icon: "gaishu",
-    link: "/engineeringArchitectureDesign/"
+    icon: "pen-to-square",
+    children: [
+      {
+        text: "MVC和DDD",
+        link: "/engineeringArchitectureDesign/",
+        // collapsible: true,
+        icon: "pen-to-square",
+      },
+    ],
   },
   {
     text: "精选博文",
