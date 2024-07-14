@@ -15,10 +15,9 @@ date: 2020-01-01
 category:
   - MVC
   - DDD
-  - 架构
+  - 架构设计
 # 一个页面可以有多个标签
 tag:
-  - 后端
   - mvc
   - ddd
   - 架构
@@ -27,7 +26,7 @@ sticky: false
 # 此页面会出现在星标文章中
 star: true
 # 你可以自定义页脚
-footer: 软件架构
+footer: Spring基础
 # 你可以自定义版权信息
 copyright: bugcode
 ---
