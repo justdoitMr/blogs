@@ -104,6 +104,9 @@ public class BeanFactory {
 ```
 - BeanFactory#beanDefinitionMap：存放bean的定义，因为我们要在o(1)复杂度内获取到bean对象，所以使用map结构存储定义。
 - BeanFactory第一个作用就是作为一个简单工厂，对外提供获取容器中bean对象的方法，第二个职责就是负责注册bean对象的定义信息。
+- 在spring源码中，BeanFactory是访问spring容器的最顶层接口；The root interface for accessing a Spring bean container.
+
+
 
 ## 4、测试
 ### 4.1、测试用例
