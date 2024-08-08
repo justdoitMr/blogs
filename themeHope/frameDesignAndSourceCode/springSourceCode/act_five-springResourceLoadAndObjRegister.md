@@ -65,14 +65,14 @@ copyright: bugcode
 
 接口：BeanDefinitionReader、抽象类：AbstractBeanDefinitionReader、实现类：XmlBeanDefinitionReader，这三部分内容主要是合理清晰的处理了资源读取后的注册 Bean 容器操作。*接口管定义，抽象类处理非接口功能外的注册Bean组件填充，最终实现类即可只关心具体的业务实现*
 
-*接口扩展：*
+**接口扩展**
 
-- *BeanFactory，已经存在的 Bean 工厂接口用于获取 Bean 对象，这次新增加了按照类型获取 Bean 的方法：**<T> T getBean(String name, Class<T> requiredType)*
-- *ListableBeanFactory，是一个扩展 Bean 工厂接口的接口，新增加了* *getBeansOfType**、**getBeanDefinitionNames()* *方法，在 Spring 源码中还有其他扩展方法。*
-- *HierarchicalBeanFactory，在 Spring 源码中它提供了可以获取父类 BeanFactory 方法，属于是一种扩展工厂的层次子接口。**Sub-interface implemented by bean factories that can be part of a hierarchy.*
-- *AutowireCapableBeanFactory，是一个自动化处理Bean工厂配置的接口，目前案例工程中还没有做相应的实现，后续逐步完善。*
-- *ConfigurableBeanFactory，可获取 BeanPostProcessor、BeanClassLoader等的一个配置化接口。*
-- *ConfigurableListableBeanFactory，提供分析和修改Bean以及预先实例化的操作接口，不过目前只有一个 getBeanDefinition 方法。*
+- BeanFactory,已经存在的 Bean 工厂接口用于获取 Bean 对象，这次新增加了按照类型获取 Bean 的方法:`<T> T getBean(String name, Class<T> requiredType)`
+- ListableBeanFactory，是一个扩展 Bean 工厂接口的接口，新增加了getBeansOfType、getBeanDefinitionNames()方法，在 Spring 源码中还有其他扩展方法。
+- HierarchicalBeanFactory，在 Spring 源码中它提供了可以获取父类 BeanFactory 方法，属于是一种扩展工厂的层次子接口。Sub-interface implemented by bean factories that can be part of a hierarchy.
+- AutowireCapableBeanFactory，是一个自动化处理Bean工厂配置的接口，目前案例工程中还没有做相应的实现，后续逐步完善。
+- ConfigurableBeanFactory，可获取 BeanPostProcessor、BeanClassLoader等的一个配置化接口。
+- ConfigurableListableBeanFactory，提供分析和修改Bean以及预先实例化的操作接口，不过目前只有一个 getBeanDefinition 方法。
 
 ### 3.2、资源加载接口
 
