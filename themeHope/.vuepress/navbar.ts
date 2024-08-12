@@ -128,7 +128,7 @@ export default navbar([
   {
     text: "面试篇",
     icon: "gaishu",
-    link: "/interview/"
+    link: "/interview/k8s/"
   },
   {
     text: "知识星球",

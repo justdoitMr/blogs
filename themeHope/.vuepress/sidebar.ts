@@ -19,10 +19,14 @@ export const sidebarConfig = sidebar({
     "/KnowledgePlanet/": [
         "README.md"
     ],
-    // 面试
-    "/interview/": [
-        "README.md",
-        "java.md"
+    "/interview/k8s": [
+        "act_one_k8sBasic.md",
+        "act_six_k8s基础.md",
+        "act-two-分布式锁.md",
+        "act_three-Redis和Mysql双写一致性问题.md",
+        "act_four_分布式基础.md",
+        "act_five_分布式事务.md",
+
     ],
     // 业务
     "/business/": [
@@ -224,7 +228,8 @@ export const sidebarConfig = sidebar({
                       text: "1、Docker",
                       collapsible: true,
                       children: [
-                          "README.md",
+                          "act_one_docker_one.md",
+                          "act_two_docker_two.md"
                       ],
                   },
                   // 第三章 第二节
@@ -264,8 +269,24 @@ export const sidebarConfig = sidebar({
                   },
               ]
       },
-  ]
+  ],
+    // "/interview": [
+    //     {
+    //         text: "一、K8S",
+    //         collapsible: true,
+    //         prefix: "k8s/",
+    //         children:
+    //             [
+    //                 "act_one_k8sBasic.md",
+    //                 "act-two-分布式锁.md"
+    //             ]
+    //     },
+    // ]
 });
+
+
+
+
 
 
 
