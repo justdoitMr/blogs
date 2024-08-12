@@ -238,7 +238,8 @@ export const sidebarConfig = sidebar({
                       text: "2、K8S",
                       collapsible: true,
                       children: [
-                          "README.md",
+                          "act_one_k8s中负载均衡原理.md.md",
+                          "act_none_pod异常状态排查.md"
                       ],
                   }
               ]
