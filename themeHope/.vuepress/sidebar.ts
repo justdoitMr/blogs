@@ -5,19 +5,15 @@ export const sidebarConfig = sidebar({
     //   ------------------------------------------------导航文档导入 start-----------------------------------------------------
     //  导读专题
     "/introduction/": [
-        "readme.md"
     ],
     // 算法专题
     "/algorithm/algor/": [
-        "README.md",
         "basicDataStructure.md"
     ],
     "/algorithm/dataStructure/": [
-        "README.md"
     ],
     // 知识星球
     "/KnowledgePlanet/": [
-        "README.md"
     ],
     "/interview/k8s": [
         "act_one_k8s基础面经一.md",
@@ -31,7 +27,6 @@ export const sidebarConfig = sidebar({
     ],
     // 业务
     "/business/": [
-        "README.md",
     ],
     "/frameDesignAndSourceCode/springSourceCode/" :[
         "act_one-springIntroduction.md",
@@ -85,12 +80,10 @@ export const sidebarConfig = sidebar({
     ],
     // 业务
     "/excellentBook/business/":[
-        "README.md",
         "act_one_finance.md"
     ],
     // 项目经验
     "/excellentBook/project/":[
-        "README.md",
         "act_one-K8SDeployApplicatinn.md"
     ],
 
@@ -143,7 +136,6 @@ export const sidebarConfig = sidebar({
                       collapsible: true,
                       children: [
                           // 里面写每一节
-                          "README.md",
                       ],
                   }
               ]
@@ -202,7 +194,6 @@ export const sidebarConfig = sidebar({
                       text: "1、Flink",
                       collapsible: true,
                       children: [
-                          "README.md",
                       ],
                   },
                   // 第三章 第二节
@@ -211,7 +202,6 @@ export const sidebarConfig = sidebar({
                       text: "2、spark",
                       collapsible: true,
                       children: [
-                          "README.md",
                       ],
                   }
               ]
