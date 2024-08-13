@@ -20,8 +20,9 @@ export const sidebarConfig = sidebar({
         "README.md"
     ],
     "/interview/k8s": [
-        "act_one_k8sBasic.md",
-        "act_six_k8s基础.md",
+        "act_one_k8s基础面经一.md",
+        "act_six_k8s基础面经二.md",
+        "act_seven_k8s基础面经三.md",
         "act-two-分布式锁.md",
         "act_three-Redis和Mysql双写一致性问题.md",
         "act_four_分布式基础.md",
@@ -278,7 +279,7 @@ export const sidebarConfig = sidebar({
     //         prefix: "k8s/",
     //         children:
     //             [
-    //                 "act_one_k8sBasic.md",
+    //                 "act_one_k8s基础面经一.md",
     //                 "act-two-分布式锁.md"
     //             ]
     //     },
