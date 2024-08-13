@@ -230,7 +230,8 @@ export const sidebarConfig = sidebar({
                       collapsible: true,
                       children: [
                           "act_one_k8s中负载均衡原理.md.md",
-                          "act_none_pod异常状态排查.md"
+                          "act_none_pod异常状态排查.md",
+                          "act_two_k8s基础学习.md"
                       ],
                   }
               ]
