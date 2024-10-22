@@ -15,7 +15,7 @@ export default hopeTheme({
   // 网站图标 是网站左上角的那个小图标
   logo: "https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/log.jpg",
   roundAvatar: true,
-  repo: "https://github.com/justdoitMr/blogs/",
+  repo: "https://github.com/justdoitMr/",
   docsDir: "themeHope",
 
   // 以前的默认仓库分支名，方便提交 pr 和 issue
@@ -51,7 +51,7 @@ export default hopeTheme({
 
   // 博客相关
   blog: {
-    description: "路漫漫其修远兮,吾将上下而求索",
+    description: "大家好，我是bugcode,金融开发领域从业者，目前从事新一代交易系统开发工作，熟悉java后端，大数据，docker,k8s等技术栈。",
     // 个人介绍地址
     intro: "/intro.html",
     sidebarDisplay: "mobile",
