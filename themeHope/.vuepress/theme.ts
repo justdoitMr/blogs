@@ -8,7 +8,7 @@ export default hopeTheme({
   // 全局默认作者
   author: {
     name: "Mr.bugcode",
-    url: "intro.md",
+    url: "home.md",
   },
 
 
