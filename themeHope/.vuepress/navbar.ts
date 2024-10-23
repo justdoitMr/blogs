@@ -74,11 +74,6 @@ export default navbar([
       },
     ],
   },
-  // {
-  //   text: "架构专题",
-  //   icon: "gaishu",
-  //   link: "/engineeringArchitectureDesign/"
-  // },
   {
     text: "架构专题",
     icon: "pen-to-square",
@@ -128,7 +123,35 @@ export default navbar([
   {
     text: "面试篇",
     icon: "gaishu",
-    link: "/interview/k8s/"
+    children: [
+      {
+        text: "技术面经",
+        link: "/interview/TechnicalInterview/",
+        icon: "pen-to-square",
+      },
+      {
+        text: "场景题",
+        icon: "pen-to-square",
+        link: "/interview/Scenequestion/",
+      },
+    ],
+  },
+  {
+    text: "源码",
+    // collapsible: true,
+    icon: "pen-to-square",
+    children: [
+      {
+        text: "Spring源码实现",
+        link: "/interview/TechnicalInterview/",
+        icon: "pen-to-square",
+      },
+      {
+        text: "Mybatis框架实现",
+        link: "/interview/Scenequestion/",
+        icon: "pen-to-square"
+      },
+    ],
   },
   {
     text: "知识星球",

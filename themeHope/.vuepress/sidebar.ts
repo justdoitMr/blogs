@@ -15,7 +15,7 @@ export const sidebarConfig = sidebar({
     // 知识星球
     "/KnowledgePlanet/": [
     ],
-    "/interview/k8s": [
+    "/interview/TechnicalInterview/": [
         "act_one_k8s基础面经一.md",
         "act_six_k8s基础面经二.md",
         "act_seven_k8s基础面经三.md",
@@ -23,7 +23,10 @@ export const sidebarConfig = sidebar({
         "act_three-Redis和Mysql双写一致性问题.md",
         "act_four_分布式基础.md",
         "act_five_分布式事务.md",
-
+    ],
+    // 场景题目
+    "/interview/Scenequestion/":[
+        "actone-Microservice-architecture.md",
     ],
     // 业务
     "/business/": [
