@@ -33,6 +33,10 @@ export const sidebarConfig = sidebar({
     // 场景题目
     "/interview/Scenequestion/":[
         "actone_Microservice_architecture.md",
+        "act_two_interface_design.md",
+        "act_three_Slow_SQL.md",
+        "act_four_Frequent_calls.md",
+        "act_five_Duplicate_data.md"
     ],
     // 业务
     "/business/": [
