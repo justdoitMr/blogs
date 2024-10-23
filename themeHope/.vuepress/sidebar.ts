@@ -8,12 +8,18 @@ export const sidebarConfig = sidebar({
     ],
     // 算法专题
     "/algorithm/algor/": [
-        "basicDataStructure.md"
+        "basicAlgor.md"
     ],
     "/algorithm/dataStructure/": [
+        "basicDataStructure.md"
     ],
     // 知识星球
     "/KnowledgePlanet/": [
+        "act_one_aboutMyKnowledgePlanet.md"
+    ],
+    // B站
+    "/video/": [
+        "act_one_aboutMyvideo.md"
     ],
     "/interview/TechnicalInterview/": [
         "act_one_k8s基础面经一.md",
@@ -26,7 +32,7 @@ export const sidebarConfig = sidebar({
     ],
     // 场景题目
     "/interview/Scenequestion/":[
-        "actone-Microservice-architecture.md",
+        "actone_Microservice_architecture.md",
     ],
     // 业务
     "/business/": [

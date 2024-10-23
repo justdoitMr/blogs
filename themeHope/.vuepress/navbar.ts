@@ -8,6 +8,7 @@ export default navbar([
     icon: "book",
     link: "/introduction/introducted.md"
   },
+  //   算法专题导航
   {
     text: "算法",
     // collapsible: true,
@@ -26,7 +27,7 @@ export default navbar([
       },
     ],
   },
-  //   设计模式篇
+  //   设计模式导航
   {
     text: "设计模式",
     // collapsible: true,
@@ -55,7 +56,7 @@ export default navbar([
       },
     ],
   },
-  //   源码专题
+  //   源码专题导航
   {
     text: "源码",
     // collapsible: true,
@@ -74,6 +75,7 @@ export default navbar([
       },
     ],
   },
+  //   架构专题导航
   {
     text: "架构专题",
     icon: "pen-to-square",
@@ -86,6 +88,7 @@ export default navbar([
       },
     ],
   },
+  //   精选文章导航
   {
     text: "精选博文",
     icon: "pen-to-square",
@@ -115,11 +118,13 @@ export default navbar([
       { text: "业务场景设计", icon: "pen-to-square", link: "scence.md" },
     ],
   },
+  //   文章归档导航
   {
     text: "基础归档",
     icon: "gaishu",
     link: "/home.md"
   },
+  //   面试导航
   {
     text: "面试篇",
     icon: "gaishu",
@@ -136,33 +141,19 @@ export default navbar([
       },
     ],
   },
-  {
-    text: "源码",
-    // collapsible: true,
-    icon: "pen-to-square",
-    children: [
-      {
-        text: "Spring源码实现",
-        link: "/interview/TechnicalInterview/",
-        icon: "pen-to-square",
-      },
-      {
-        text: "Mybatis框架实现",
-        link: "/interview/Scenequestion/",
-        icon: "pen-to-square"
-      },
-    ],
-  },
+  // 知识星球导航
   {
     text: "知识星球",
     icon: "gaishu",
     link: "/KnowledgePlanet/"
   },
+  //   B站导航
   {
     text: "B站",
     icon: "gaishu",
-    link: "/KnowledgePlanet/"
+    link: "/video/"
   },
+  //   关于导航
   {
     text: "关于我",
     icon: "book",
