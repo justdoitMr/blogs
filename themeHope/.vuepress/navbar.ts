@@ -6,7 +6,7 @@ export default navbar([
   {
     text: "导读",
     icon: "book",
-    link: "/introduction/"
+    link: "/introduction/introducted.md"
   },
   {
     text: "算法",
