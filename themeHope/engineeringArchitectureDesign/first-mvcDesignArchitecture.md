@@ -1,6 +1,6 @@
 ---
 # 这是文章的标题
-title: 1、从MVC到DDD
+title: 一、从MVC到DDD
 # 你可以自定义封面图片
 #cover: /assets/images/cover1.jpg
 # 这是页面的图标
@@ -31,7 +31,7 @@ footer: Spring基础
 copyright: bugcode
 ---
 
-# 1、从MVC到DDD
+# 一、从MVC到DDD架构演进
 
 ## 1、MVC架构
 

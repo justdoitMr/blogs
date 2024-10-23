@@ -52,6 +52,10 @@ export const sidebarConfig = sidebar({
     // 架构专题/frameDesignAndSourceCode/
     "/engineeringArchitectureDesign/" :[
         "first-mvcDesignArchitecture.md",
+        "second-ddd-Concept-Theory.md",
+        "third-ddd-Engineering-Model.md",
+        "four-ddd-architecture-design.md",
+        "five-ddd-Architectural-Refactoring.md"
     ],
     // 设计模式篇
     "/designpattern/designPrinciple/" :[
@@ -299,7 +303,7 @@ export const sidebarConfig = sidebar({
 //             collapsible: true,
 //             children: [
 //                 "first-mvcDesignArchitecture.md",
-//                 "second-mvcDesignArchitecture.md"
+//                 "second-ddd-Concept-Theory.md"
 //             ],
 //         },
 //         // 第三章 第二节
