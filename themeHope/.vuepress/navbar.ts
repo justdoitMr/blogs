@@ -17,13 +17,12 @@ export default navbar([
       {
         text: "算法专题",
         link: "/algorithm/algor/",
-        // collapsible: true,
         icon: "pen-to-square",
       },
       {
         text: "数据结构专题",
         icon: "pen-to-square",
-        link: "/algorithm/dataStructure/"
+        link: "/algorithm/dataStructure/",
       },
     ],
   },
