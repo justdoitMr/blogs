@@ -279,7 +279,25 @@ export const sidebarConfig = sidebar({
                   },
               ]
       },
+      // 第六章
+      {
+          text: "六、工具篇",
+          collapsible: true,
+          children:
+              [
+                  // 第五章 第一节
+                  {
+                      prefix: "tools/",
+                      text: "1、Maven",
+                      collapsible: true,
+                      children: [
+                          "act-one-maven-basic.md"
+                      ],
+                  },
+              ]
+      },
   ],
+    // 第六章
     // "/interview": [
     //     {
     //         text: "一、K8S",
