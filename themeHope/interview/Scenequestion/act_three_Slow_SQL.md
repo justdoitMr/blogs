@@ -1,6 +1,6 @@
 ---
 # 这是文章的标题
-title: 
+title: 三、提问：如何定位慢sql?
 # 你可以自定义封面图片
 #cover: /assets/images/cover1.jpg
 # 这是页面的图标
