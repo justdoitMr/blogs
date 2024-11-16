@@ -38,6 +38,10 @@ export const sidebarConfig = sidebar({
         "act_four_Frequent_calls.md",
         "act_five_Duplicate_data.md"
     ],
+    // 综合面试题
+    "/interview/Questions/":[
+        "20241116-distributedAndMicroservices.md",
+    ],
     // 业务
     "/business/": [
     ],

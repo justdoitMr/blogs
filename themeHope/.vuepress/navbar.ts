@@ -129,7 +129,7 @@ export default navbar([
     icon: "gaishu",
     children: [
       {
-        text: "技术面经",
+        text: "技术博客",
         link: "/interview/TechnicalInterview/",
         icon: "pen-to-square",
       },
@@ -137,6 +137,11 @@ export default navbar([
         text: "场景题",
         icon: "pen-to-square",
         link: "/interview/Scenequestion/",
+      },
+      {
+        text: "综合面经",
+        icon: "pen-to-square",
+        link: "/interview/Questions/",
       },
     ],
   },
