@@ -29,6 +29,9 @@ export const sidebarConfig = sidebar({
         "act_three-Redis和Mysql双写一致性问题.md",
         "act_four_分布式基础.md",
         "act_five_分布式事务.md",
+        "20241116-distributedAndMicroservices.md",
+        "20241116-highConcurrency.md",
+        "20241113-performance.md"
     ],
     // 场景题目
     "/interview/Scenequestion/":[
@@ -40,9 +43,7 @@ export const sidebarConfig = sidebar({
     ],
     // 综合面试题
     "/interview/Questions/":[
-        "20241116-distributedAndMicroservices.md",
-        "20241116-highConcurrency.md",
-        "20241113-performance.md"
+       "20241116-Redis.md"
     ],
     // 业务
     "/business/": [
