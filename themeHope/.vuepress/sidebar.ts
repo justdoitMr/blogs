@@ -41,6 +41,7 @@ export const sidebarConfig = sidebar({
     // 综合面试题
     "/interview/Questions/":[
         "20241116-distributedAndMicroservices.md",
+        "20241116-highConcurrency.md"
     ],
     // 业务
     "/business/": [
