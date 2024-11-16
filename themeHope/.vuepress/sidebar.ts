@@ -73,7 +73,8 @@ export const sidebarConfig = sidebar({
         "second-ddd-Concept-Theory.md",
         "third-ddd-Engineering-Model.md",
         "four-ddd-architecture-design.md",
-        "five-ddd-Architectural-Refactoring.md"
+        "five-ddd-Architectural-Refactoring.md",
+        "20241116-DDDModeling.md"
     ],
     // 设计模式篇
     "/designpattern/designPrinciple/" :[
