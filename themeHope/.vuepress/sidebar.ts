@@ -44,7 +44,9 @@ export const sidebarConfig = sidebar({
     // 综合面试题
     "/interview/Questions/":[
        "20241116-Redis.md",
-        "20241116-Kafka.md"
+        "20241116-Kafka.md",
+        "20241117-Jvm(1).md",
+        "20241117-Jvm(2).md"
     ],
     // 业务
     "/business/": [
