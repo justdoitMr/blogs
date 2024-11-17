@@ -48,7 +48,9 @@ export const sidebarConfig = sidebar({
         "20241117-Jvm(1).md",
         "20241117-Jvm(2).md",
         "20241117-Mysql(1).md",
-        "20241117-Mysql(2).md"
+        "20241117-Mysql(2).md",
+        "20241117-Thread(1).md",
+        "20241117-Thread(2).md"
     ],
     // 业务
     "/business/": [
