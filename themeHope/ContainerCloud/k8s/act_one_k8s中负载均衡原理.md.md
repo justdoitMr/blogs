@@ -1,6 +1,6 @@
 ---
 # 这是文章的标题
-title: 1、K8s中负载均衡原理
+title: K8s中负载均衡原理
 # 你可以自定义封面图片
 #cover: /assets/images/cover1.jpg
 # 这是页面的图标
@@ -30,7 +30,6 @@ footer: 云原生
 # 你可以自定义版权信息
 copyright: bugcode
 ---
-
 # 1、K8s中负载均衡原理
 
 ## Kube-porxy组件
@@ -47,7 +46,7 @@ service是一组pod的服务抽象，相当于一组pod的LB，负责将请求�
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2024/jpeg/22919650/1711020982105-83288a83-9060-45fe-8e73-50c6c9b01a66.jpeg)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1711020982105-83288a83-9060-45fe-8e73-50c6c9b01a66.jpeg)
 
 使用deployment部署多个应用副本，每一个应用副本都有自己的labels，service资源通过labels标签的形式将多个pod聚合到一个组，然后对外提供服务。
 
@@ -55,7 +54,7 @@ Service在很多情况下只是一个概念，真正起作用的其实是kube-pr
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2024/jpeg/22919650/1711021477845-eb0da5a1-002c-46c8-a259-69dfb810afdb.jpeg)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1711021477845-eb0da5a1-002c-46c8-a259-69dfb810afdb.jpeg)
 
 - kube-proxy其实就是管理service的访问入口，包括集群内Pod到Service的访问和集群外访问service。
 - kube-proxy管理sevice的Endpoints，该service对外暴露一个Virtual IP，也成为Cluster IP, 集群内通过访问这个Cluster IP:Port就能访问到集群内对应的serivce下的Pod。
@@ -90,7 +89,7 @@ ClusterIp是k8s集群service默认的类型，自动分配一个仅Cluster内部
 
 ### Service工作原理
 
-![img](https://cdn.nlark.com/yuque/0/2024/png/22919650/1711073284923-0a107800-6a15-4841-959f-b00ab6e603a3.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1711073284923-0a107800-6a15-4841-959f-b00ab6e603a3.png)
 
 - 客户端访问节点pod时通过 iptables实现的负载均衡
 - iptables规则是通过 kube-proxy维护写入的
@@ -109,13 +108,13 @@ endpoint是k8s集群中的一个资源对象，存储在etcd中，用来记录�
 
 ### Service、endpoints、pod关系
 
-![img](https://cdn.nlark.com/yuque/0/2024/png/22919650/1711073597258-e9bfc31e-388c-49fc-aa3c-95c70694e559.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1711073597258-e9bfc31e-388c-49fc-aa3c-95c70694e559.png)
 
 简单理解为3层结构，service是对外暴漏的服务接口，pod是提供具体服务的载体，而中间层的endpoint则是连接service和pod之间的桥梁，通过endpoint资源，对service资源隐藏了底层动态变化的pod id地址。
 
 service负载转发规则:
 
-![img](https://cdn.nlark.com/yuque/0/2024/png/22919650/1711073878005-8c0e485a-4eaa-4bdc-bcc3-457563708475.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1711073878005-8c0e485a-4eaa-4bdc-bcc3-457563708475.png)
 
 访问Service的请求，不论是Cluster IP+TargetPort的方式；还是用Node节点IP+NodePort的方式，都被Node节点的Iptables规则重定向到Kube-proxy监听Service服务代理端口。kube-proxy接收到Service的访问请求后，根据负载策略，转发到后端的Pod。
 
@@ -123,7 +122,7 @@ service负载转发规则:
 
 ### Service资源清单
 
-```yaml
+```text
 apiVersion: v1
 kind: Service
 metadata:
@@ -202,27 +201,22 @@ containerPort是pod内部容器的端口，targetPort映射到containerPort。
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2024/webp/22919650/1711074003400-ba074d22-7f2d-40b4-8e95-56bb900713f6.webp)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1711074003400-ba074d22-7f2d-40b4-8e95-56bb900713f6.webp)
 
 ### k8S服务发现
-
-
-
-
-
 
 
 ### Service代理模式
 
 k8s群集中的每个节点都运行一个kube-proxy的组件，kube-proxy其实是一个代理层负责实现service。
 
-Kubernetes v1.2之前默认是userspace，v1.2之后默认是iptables模式，iptables模式性能和可靠性更好，但是iptables模式依赖健康检查，在没有健康检查的情况下如果一个pod不响应，iptables模式不会切换另一个pod上。
+Kubernetes v1.2之前默认是userspace,v1.2之后默认是iptables模式,iptables模式性能和可靠性更好,但是iptables模式依赖健康检查,在没有健康检查的情况下如果一个pod不响应,iptables模式不会切换另一个pod上。
 
 #### 1)userspace模式
 
 客户端访问ServiceIP(clusterIP)请求会先从用户空间到内核中的iptables，然后回到用户空间kube-proxy，kube-proxy负责代理工作。
 
-![img](https://cdn.nlark.com/yuque/0/2024/webp/22919650/1711074214813-5de2d2f4-6544-413e-b12b-b7616f93fbf8.webp)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1711074214813-5de2d2f4-6544-413e-b12b-b7616f93fbf8.webp)
 缺点：
 
 可见，userspace这种mode最大的问题是，service的请求会先从用户空间进入内核iptables，然后再回到用户空间，由kube-proxy完成后端Endpoints的选择和代理工作，这样流量从用户空间进出内核带来的性能损耗是不可接受的。这也是k8s v1.0及之前版本中对kube-proxy质疑最大的一点，因此社区就开始研究iptables mode。
@@ -239,7 +233,7 @@ userspace这种模式下，kube-proxy 持续监听 Service 以及 Endpoints 对�
 
 该模式完全利用内核iptables来实现service的代理和LB, 这是K8s在v1.2及之后版本默认模式工作原理如下:
 
-![img](https://cdn.nlark.com/yuque/0/2024/webp/22919650/1711074285055-ce18e919-bc55-405d-a895-9159b6f2e5db.webp)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1711074285055-ce18e919-bc55-405d-a895-9159b6f2e5db.webp)
 
 iptables mode因为使用iptable NAT来完成转发，也存在不可忽视的性能损耗。另外，如果集群中存在上万的Service/Endpoint，那么Node上的iptables rules将会非常庞大，性能还会再打折扣。这也导致目前大部分企业用k8s上生产时，都不会直接用kube-proxy作为服务代理，而是通过自己开发或者通过Ingress Controller来集成HAProxy, Nginx来代替kube-proxy。
 
@@ -247,7 +241,7 @@ iptables mode因为使用iptable NAT来完成转发，也存在不可忽视的�
 
 iptables 模式与 userspace 相同，kube-proxy 持续监听 Service 以及 Endpoints 对象的变化；但它并不在本地节点开启反向代理服务，而是把反向代理全部交给 iptables 来实现；即 iptables 直接将对 VIP 的请求转发给后端 Pod，通过 iptables 设置转发策略。其工作流程大体如下:
 
-![img](https://cdn.nlark.com/yuque/0/2024/webp/22919650/1711074306314-49a2af84-c04c-44ca-8974-980bce2b5b87.webp)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1711074306314-49a2af84-c04c-44ca-8974-980bce2b5b87.webp)
 
 【分析】 该模式相比 userspace 模式，克服了请求在用户态-内核态反复传递的问题，性能上有所提升，但使用 iptables NAT 来完成转发，存在不可忽视的性能损耗，而且在大规模场景下，iptables 规则的条目会十分巨大，性能上还要再打折扣。
 
@@ -255,50 +249,50 @@ iptables 模式与 userspace 相同，kube-proxy 持续监听 Service 以及 End
 
 在kubernetes 1.8以上的版本中，对于kube-proxy组件增加了除iptables模式和用户模式之外还支持ipvs模式。kube-proxy ipvs 是基于 NAT 实现的，通过ipvs的NAT模式，对访问k8s service的请求进行虚IP到POD IP的转发。当创建一个 service 后，kubernetes 会在每个节点上创建一个网卡，同时帮你将 Service IP(VIP) 绑定上，此时相当于每个 Node 都是一个 ds，而其他任何 Node 上的 Pod，甚至是宿主机服务(比如 kube-apiserver 的 6443)都可能成为 rs；
 
-![img](https://cdn.nlark.com/yuque/0/2024/webp/22919650/1711074370556-7b9560ef-0519-433c-bd3f-0931c658b101.webp)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1711074370556-7b9560ef-0519-433c-bd3f-0931c658b101.webp)
 
 详细工作流程：
 
 与iptables、userspace 模式一样，kube-proxy 依然监听Service以及Endpoints对象的变化, 不过它并不创建反向代理, 也不创建大量的 iptables 规则, 而是通过netlink 创建ipvs规则，并使用k8s Service与Endpoints信息，对所在节点的ipvs规则进行定期同步; netlink 与 iptables 底层都是基于 netfilter 钩子，但是 netlink 由于采用了 hash table 而且直接工作在内核态，在性能上比 iptables 更优。其工作流程大体如下:
 
-![img](https://cdn.nlark.com/yuque/0/2024/webp/22919650/1711074386175-857fe1cb-937e-45b0-9f2b-599e9107b37b.webp)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1711074386175-857fe1cb-937e-45b0-9f2b-599e9107b37b.webp)
 
 【分析】ipvs 是目前 kube-proxy 所支持的最新代理模式，相比使用 iptables，使用 ipvs 具有更高的性能。
 
 ### Service负载均衡策略
 
-1. ClusterIP (默认策略):
+ClusterIP (默认策略):
 
-- - Service会获取一个仅集群内部可访问的虚拟IP（ClusterIP），kube-proxy组件根据Service定义的SessionAffinity（如启用）和负载均衡策略将请求转发到后端Pod池。
+- Service会获取一个仅集群内部可访问的虚拟IP（ClusterIP），kube-proxy组件根据Service定义的SessionAffinity（如启用）和负载均衡策略将请求转发到后端Pod池。
 
-1. Round Robin:
+Round Robin:
 
-- - 默认的负载均衡策略是轮询（Round Robin），kube-proxy会按顺序将请求均匀地分配给后端Pod。
+- 默认的负载均衡策略是轮询（Round Robin），kube-proxy会按顺序将请求均匀地分配给后端Pod。
 
-1. Session Affinity (Client IP):
+Session Affinity (Client IP):
 
-- - 如您之前所述，可以通过设置sessionAffinity: ClientIP来实现基于客户端IP地址的会话保持。这意味着从同一个客户端IP发起的连续请求会被路由至同一后端Pod，直到会话超时或Pod不再可用。
+- 如您之前所述，可以通过设置sessionAffinity: ClientIP来实现基于客户端IP地址的会话保持。这意味着从同一个客户端IP发起的连续请求会被路由至同一后端Pod，直到会话超时或Pod不再可用。
 
-1. Session Affinity (cookie):
+Session Affinity (cookie):
 
-- - Kubernetes 1.8版本及更高版本支持基于cookie的会话亲和性，这允许通过HTTP cookie来维持客户端会话与后端Pod的连接。
+- Kubernetes 1.8版本及更高版本支持基于cookie的会话亲和性，这允许通过HTTP cookie来维持客户端会话与后端Pod的连接。
 
-1. Headless Service:
+Headless Service:
 
-- - 不提供ClusterIP的服务类型，它返回Pods的Endpoints列表而不做负载均衡，客户端可以直接与Pod通信。
+- 不提供ClusterIP的服务类型，它返回Pods的Endpoints列表而不做负载均衡，客户端可以直接与Pod通信。
 
-1. NodePort:
+NodePort:
 
-- - 在每个节点上开启特定端口，让外部能够直接通过这个端口访问Service，负载均衡由kube-proxy在同一节点上的Pod间执行或者由外部负载均衡器完成。
+- 在每个节点上开启特定端口，让外部能够直接通过这个端口访问Service，负载均衡由kube-proxy在同一节点上的Pod间执行或者由外部负载均衡器完成。
 
-1. LoadBalancer:
+LoadBalancer:
 
-- - 如果云提供商支持，可以创建一个外部负载均衡器资源，它将暴露服务到公网，并根据配置的负载均衡策略将流量分发到各个Pod。
+- 如果云提供商支持，可以创建一个外部负载均衡器资源，它将暴露服务到公网，并根据配置的负载均衡策略将流量分发到各个Pod。
 
-1. ExternalName:
+ExternalName:
 
-- - 这种类型的服务不直接指向集群中的Pod，而是解析为一个外部DNS名称。
+- 这种类型的服务不直接指向集群中的Pod，而是解析为一个外部DNS名称。
 
-1. IPVS (IP Virtual Server) 转发模式:
+IPVS (IP Virtual Server) 转发模式:
 
-- - 在kube-proxy中，可以配置使用IPVS作为代理模式以替换iptables，IPVS提供了更高效的负载均衡算法和更强的网络功能。
+- 在kube-proxy中，可以配置使用IPVS作为代理模式以替换iptables，IPVS提供了更高效的负载均衡算法和更强的网络功能。

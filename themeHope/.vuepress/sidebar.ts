@@ -3,6 +3,14 @@ import { sidebar } from "vuepress-theme-hope";
     //将其他文件下的内容导入此文件
 export const sidebarConfig = sidebar({
     //   ------------------------------------------------导航文档导入 start-----------------------------------------------------
+    // 项目
+    "/Project/DynamicThreadPool/" :[
+        "20241119-dynamicThreadPool-design.md",
+    ],
+    // 自定义starter
+    "/Project/Widget/" :[
+        "20241120-customizeWidget.md",
+    ],
     //  导读专题
     "/introduction/": [
     ],
@@ -52,7 +60,16 @@ export const sidebarConfig = sidebar({
         "20241117-Thread(1).md",
         "20241117-Thread(2).md",
         "20241117-Collection(1).md",
-        "20241117-Collection(2).md"
+        "20241117-Collection(2).md",
+        "20241118-SparkBasic.md",
+        "20241118-FlinkBasic.md"
+    ],
+    // 问题分析
+    "/interview/ProductionAnalysis/":[
+        "20241119-dataImbalance-bigdata.md",
+        "20241119-DevelopmentExperience-bigdata.md",
+        "20241119-SpringbootRefreshCacheMethod.md",
+        "20241119-kafkaProperties.md"
     ],
     // 业务
     "/business/": [
@@ -177,40 +194,59 @@ export const sidebarConfig = sidebar({
       // 第三章节：Spring
       {
           // 大章节目录
-          text: "三、Spring篇",
+          text: "三、后端框架篇",
           collapsible: true,
           children:
               [
                   // 第三章 第一节
                   {
-                      prefix: "SpringPrinciple/Spring/",
+                      prefix: "SpringFramework/Spring/",
                       text: "1、Spring",
                       collapsible: true,
                       children: [
-                          "act_one_SpringAopPrinciple.md",
-                          "act_two_SpringAnnotation.md",
-                          "act_three_SpringAopBasic.md",
-                          "act_four_SpringTransaction.md",
+                          "20241119-SpringAnnotation.md",
+                          "20241119-SpringAop.md",
+                          "20241119-SpringIOC.md",
+                          "20241119-SpringTransaction.md"
                       ],
                   },
                   // 第三章 第二节
                   {
-                      prefix: "SpringPrinciple/springmvc/",
-                      text: "2、SpringMvc",
+                      prefix: "SpringFramework/springmvc/",
+                      text: "2、SpringMVC",
                       collapsible: true,
                       children: [
-                          "act_one_springMvcCharacterOne.md",
+                          "20241119-SpringMvcBasic.md",
+                          "20241119-SpringMvcBasicUp.md",
+                          "20241119-SpringMvcDeclarationTransition.md",
+                          "20241119-SsmIntegration.md"
                       ],
                   },
                   // 第三章 第三节
                   {
-                      prefix: "SpringPrinciple/springboot/",
+                      prefix: "SpringFramework/springboot/",
                       text: "3、SpringBoot",
                       collapsible: true,
                       children: [
                           "act_one_springIntroduction.md",
                           "act_two_springboot_basic.md",
-                          "act_three_springboot_webDev.md"
+                          "act_three_springboot_webDev.md",
+                          "20241119-SpringBootDataAccess.md",
+                          "20241119-SpringBootTest.md",
+                          "20241119-SpringBootMetricMonitoring.md",
+                          "20241119-SpringBootPrinciple.md",
+                          "20241119-SpringBootAnnotationPrinciple.md",
+                          "20241119-SpringbootWEB.md",
+                          "20241119-SpringbootIntegrationkafka.md"
+                      ],
+                  },
+                  // 第三章 第四节 Mybatis
+                  {
+                      prefix: "SpringFramework/Mybatis/",
+                      text: "4、Mybatis",
+                      collapsible: true,
+                      children: [
+                          "20241119-MybatisBasic.md",
                       ],
                   },
               ]
@@ -228,16 +264,36 @@ export const sidebarConfig = sidebar({
                       text: "1、Flink",
                       collapsible: true,
                       children: [
+                          "20241119-FlinkGenerateStreamGraph.md",
+                          "20241119-FlinkGenerateJobGraph.md"
                       ],
                   },
                   // 第三章 第二节
                   {
                       prefix: "bigdata/spark",
-                      text: "2、spark",
+                      text: "2、Spark",
                       collapsible: true,
                       children: [
+                          "20241118-SparkPrincipleofOperation.md",
+                          "20241118-SparkWebUI.md",
+                          "20241118-SparkSqlMergeFile.md",
+                          "20241118-Sparkproblem.md",
+                          "20241118-SparkParmas.md",
+                          "20241118-SparkParameterList.md",
+                          "20241118-SparkError.md",
+                          "20241118-SparkAQESkewedJoin.md",
+                          "20241119-SparkSqlExecutionProcess.md",
                       ],
-                  }
+                  },
+                  // 第三章 Hbase
+                  {
+                      prefix: "bigdata/Hbase",
+                      text: "3、Hbase",
+                      collapsible: true,
+                      children: [
+                          "20241119-HbaseBasic.md"
+                      ],
+                  },
               ]
       },
       // 第四章节: 容器云
@@ -265,7 +321,9 @@ export const sidebarConfig = sidebar({
                       children: [
                           "act_one_k8s中负载均衡原理.md.md",
                           "act_none_pod异常状态排查.md",
-                          "act_two_k8s基础学习.md"
+                          "act_two_k8s基础学习.md",
+                          "20241119-k8s-ingressAndService.md",
+                          "20241119-k8sPermissions.md"
                       ],
                   }
               ]

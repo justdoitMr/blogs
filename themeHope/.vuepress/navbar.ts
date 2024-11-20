@@ -4,10 +4,27 @@ export default navbar([
   //   首页导航
   "/",
   {
-    text: "导读",
-    icon: "book",
-    link: "/introduction/introducted.md"
+    text: "项目",
+    // collapsible: true,
+    icon: "pen-to-square",
+    children: [
+      {
+        text: "动态线程池",
+        link: "/Project/DynamicThreadPool/",
+        icon: "pen-to-square",
+      },
+      {
+        text: "自定义组件",
+        link: "/Project/Widget/",
+        icon: "pen-to-square",
+      },
+    ],
   },
+  // {
+  //   text: "项目",
+  //   icon: "book",
+  //   link: "/introduction/introducted.md"
+  // },
   //   算法专题导航
   {
     text: "算法",
@@ -143,6 +160,11 @@ export default navbar([
         icon: "pen-to-square",
         link: "/interview/Questions/",
       },
+      {
+        text: "问题分析",
+        icon: "pen-to-square",
+        link: "/interview/ProductionAnalysis/",
+      },
     ],
   },
   // 知识星球导航
@@ -158,10 +180,15 @@ export default navbar([
     link: "/video/"
   },
   //   关于导航
+  // {
+  //   text: "项目",
+  //   icon: "book",
+  //   link: "/introduction/introducted.md"
+  // },
   {
     text: "关于我",
     icon: "book",
-    link: "/about/",
+    link: "/introduction/introducted.md",
   },
 ]);
 

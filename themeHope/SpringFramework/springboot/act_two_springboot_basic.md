@@ -1,6 +1,6 @@
 ---
 # 这是文章的标题
-title: 2、SpringBoot基础入门二
+title: SpringBoot基础入门二
 # 你可以自定义封面图片
 #cover: /assets/images/cover1.jpg
 # 这是页面的图标

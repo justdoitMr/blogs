@@ -1,38 +1,34 @@
 ---
 # 这是文章的标题
-title: 8、Aware感知容器接口
+title: Spring MVC声明式事务
 # 你可以自定义封面图片
 #cover: /assets/images/cover1.jpg
 # 这是页面的图标
 icon: file
 # 这是侧边栏的顺序
-order: 8
+order: 5
 # 设置作者
 author: bugcode
 # 设置写作时间
-date: 2020-01-01
+date: 2024-11-19
 # 一个页面可以有多个分类
 category:
-  - SPRING
-  - SPRINGBOOT
-  - JAVA
+  - SPRINGMVC
 # 一个页面可以有多个标签
 tag:
-  - 后端
-  - java
   - spring
+  - java
 # 此页面会在文章列表置顶
 sticky: false
 # 此页面会出现在星标文章中
 star: true
 # 你可以自定义页脚
-footer: Spring基础
+footer: 分布式
 # 你可以自定义版权信息
 copyright: bugcode
 ---
 
-
-# 4、Spring Transaction
+# **Spring MVC声明式事务**
 
 ## **4.1、JdbcTemplate**
 
@@ -336,7 +332,6 @@ Spring 框架对 JDBC 进行封装，使用 JdbcTemplate 方便实现对数据�
          bookService.buyBook(bookId, userId);
      }
  }
-
 ```
 
 创建接口BookService：
@@ -610,21 +605,21 @@ deadline was Fri Jun 04 16:25:39 CST 2022
 
 各个隔离级别解决并发问题的能力见下表：
 
-| 隔离级别         | 脏读 | 不可重复读 | 幻读 |
-| ---------------- | ---- | ---------- | ---- |
-| READ UNCOMMITTED | 有   | 有         | 有   |
-| READ COMMITTED   | 无   | 有         | 有   |
-| REPEATABLE READ  | 无   | 无         | 有   |
-| SERIALIZABLE     | 无   | 无         | 无   |
+| **隔离级别**     | **脏读** | **不可重复读** | **幻读** |
+| ---------------- | -------- | -------------- | -------- |
+| READ UNCOMMITTED | 有       | 有             | 有       |
+| READ COMMITTED   | 无       | 有             | 有       |
+| REPEATABLE READ  | 无       | 无             | 有       |
+| SERIALIZABLE     | 无       | 无             | 无       |
 
 各种数据库产品对事务隔离级别的支持程度：
 
-| 隔离级别         | Oracle  | MySQL   |
-| ---------------- | ------- | ------- |
-| READ UNCOMMITTED | ×       | √       |
-| READ COMMITTED   | √(默认) | √       |
-| REPEATABLE READ  | ×       | √(默认) |
-| SERIALIZABLE     | √       | √       |
+| **隔离级别**     | **Oracle** | **MySQL** |
+| ---------------- | ---------- | --------- |
+| READ UNCOMMITTED | ×          | √         |
+| READ COMMITTED   | √(默认)    | √         |
+| REPEATABLE READ  | ×          | √(默认)   |
+| SERIALIZABLE     | √          | √         |
 
 ### **②使用方式**
 
@@ -647,9 +642,9 @@ deadline was Fri Jun 04 16:25:39 CST 2022
 创建接口CheckoutService：
 
 ```
- public interface CheckoutService {
-   void checkout(Integer[] bookIds, Integer userId);
- }
+public interface CheckoutService {
+	void checkout(Integer[] bookIds, Integer userId);
+}
 ```
 
 创建实现类CheckoutServiceImpl：

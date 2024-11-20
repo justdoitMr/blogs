@@ -1,37 +1,132 @@
 ---
-# 这是文章的标题
+# 1. 这是文章的标题
 title: Java集合手册(基础)
-# 你可以自定义封面图片
-#cover: /assets/images/cover1.jpg
-# 这是页面的图标
+# 2. 你可以自定义封面图片
+# 3. cover: /assets/images/cover1.jpg
+# 4. 这是页面的图标
 icon: file
-# 这是侧边栏的顺序
+# 5. 这是侧边栏的顺序
 order: 6
-# 设置作者
+# 6. 设置作者
 author: bugcode
-# 设置写作时间
+# 7. 设置写作时间
 date: 2024-11-16
-# 一个页面可以有多个分类
+# 8. 一个页面可以有多个分类
 category:
   - 面试
   - JAVA
-# 一个页面可以有多个标签
+# 9. 一个页面可以有多个标签
 tag:
   - 面试
   - java
-# 此页面会在文章列表置顶
+# 10. 此页面会在文章列表置顶
 sticky: false
-# 此页面会出现在星标文章中
+# 11. 此页面会出现在星标文章中
 star: true
-# 你可以自定义页脚
+# 12. 你可以自定义页脚
 footer: 分布式
-# 你可以自定义版权信息
+# 13. 你可以自定义版权信息
 copyright: bugcode
 ---
 
-# Java集合手册(基础)
+<!-- TOC -->
 
-## 什么是Java的集合？使用集合有什么好处？
+- [14. Java集合手册(基础)](#14-java集合手册基础)
+  - [14.1. 什么是Java的集合？使用集合有什么好处？](#141-什么是java的集合使用集合有什么好处)
+    - [14.1.1. Java集合综述](#1411-java集合综述)
+  - [14.2. 常用的集合类以及它们的特点？](#142-常用的集合类以及它们的特点)
+    - [14.2.1. Java集合框架中的快速失败（fail—fast）机制](#1421-java集合框架中的快速失败failfast机制)
+      - [14.2.1.1. 那么在实际测试代码当中是如何表现的呢？](#14211-那么在实际测试代码当中是如何表现的呢)
+      - [14.2.1.2. 实现原理](#14212-实现原理)
+    - [14.2.2. 安全失败](#1422-安全失败)
+      - [14.2.2.1. **原理**](#14221-原理)
+      - [14.2.2.2. **优缺点**](#14222-优缺点)
+    - [14.2.3. fail-fast和fail-safe区别？](#1423-fail-fast和fail-safe区别)
+  - [14.3. List](#143-list)
+    - [14.3.1. ArrayList、LinkedList、Vector 各自的特点以及优缺点？](#1431-arraylistlinkedlistvector-各自的特点以及优缺点)
+    - [14.3.2. ArrayList 了解吗？](#1432-arraylist-了解吗)
+    - [14.3.3. ArrayList 的扩容机制？](#1433-arraylist-的扩容机制)
+    - [14.3.4. ArrayList为什么线程不安全还使用他呢？](#1434-arraylist为什么线程不安全还使用他呢)
+    - [14.3.5. ArrayList的底层实现是数组，添加数据的话，会有问题吗？](#1435-arraylist的底层实现是数组添加数据的话会有问题吗)
+    - [14.3.6. ArrayList在增删的时候是怎么做的么？主要说一下他为啥慢。](#1436-arraylist在增删的时候是怎么做的么主要说一下他为啥慢)
+    - [14.3.7. ArrayList插入删除一定慢么？](#1437-arraylist插入删除一定慢么)
+    - [14.3.8. 怎么在遍历 ArrayList 时移除一个元素？](#1438-怎么在遍历-arraylist-时移除一个元素)
+    - [14.3.9. ArrayList 和 Vector 的区别/异同？](#1439-arraylist-和-vector-的区别异同)
+    - [14.3.10. ArrayList 和 LinkedList 的区别/异同？](#14310-arraylist-和-linkedlist-的区别异同)
+    - [14.3.11. ArryList 是线程不安全的？为什么？](#14311-arrylist-是线程不安全的为什么)
+    - [14.3.12. 如何解决 ArrayList 线程不安全的问题？](#14312-如何解决-arraylist-线程不安全的问题)
+      - [14.3.12.1. **解决集合类不安全的方法 1 —— Vector**](#143121-解决集合类不安全的方法-1--vector)
+      - [14.3.12.2. **解决集合类不安全的方法 2 —— Collections**](#143122-解决集合类不安全的方法-2--collections)
+      - [14.3.12.3. **解决集合类不安全的方法 3 —— CopyOnWriteArrayList（写时复制）**](#143123-解决集合类不安全的方法-3--copyonwritearraylist写时复制)
+  - [14.4. CopyOnWriteArrayList](#144-copyonwritearraylist)
+    - [14.4.1. 读写分离](#1441-读写分离)
+    - [14.4.2. 优缺点](#1442-优缺点)
+  - [14.5. Map](#145-map)
+    - [14.5.1. HashMap的底层实现原理？](#1451-hashmap的底层实现原理)
+    - [14.5.2. 使用的hash算法？](#1452-使用的hash算法)
+    - [14.5.3. HashMap的扩容方式？负载因子是多少？为什是这么多？](#1453-hashmap的扩容方式负载因子是多少为什是这么多)
+    - [14.5.4. HashMap 容量的长度为什么总是2的幂次方？](#1454-hashmap-容量的长度为什么总是2的幂次方)
+    - [14.5.5. 扩容过程？](#1455-扩容过程)
+    - [14.5.6. 知道HashMap 扩容时候的死循环问题吗？](#1456-知道hashmap-扩容时候的死循环问题吗)
+    - [14.5.7. jdk1.7版hashmap在多线程环境下的死循环问题介绍一下？](#1457-jdk17版hashmap在多线程环境下的死循环问题介绍一下)
+    - [14.5.8. 如何解决 HashMap 线程不安全的问题？](#1458-如何解决-hashmap-线程不安全的问题)
+    - [14.5.9. put方法流程？](#1459-put方法流程)
+    - [14.5.10. 红黑树的特点？](#14510-红黑树的特点)
+    - [14.5.11. 为什么使用红黑树而不使用AVL树？](#14511-为什么使用红黑树而不使用avl树)
+    - [14.5.12. hashmap线程不安全的表现有哪些？](#14512-hashmap线程不安全的表现有哪些)
+    - [14.5.13. 在解决 hash 冲突的时候，为什么选择先用链表，再转红黑树?](#14513-在解决-hash-冲突的时候为什么选择先用链表再转红黑树)
+    - [14.5.14. HashMap默认加载因子是多少？为什么是 0.75？](#14514-hashmap默认加载因子是多少为什么是-075)
+    - [14.5.15. 一般用什么作为HashMap的key?](#14515-一般用什么作为hashmap的key)
+    - [14.5.16. HashMap为什么线程不安全？](#14516-hashmap为什么线程不安全)
+    - [14.5.17. HashMap和HashTable的区别？](#14517-hashmap和hashtable的区别)
+    - [14.5.18. LinkedHashMap底层原理？](#14518-linkedhashmap底层原理)
+    - [14.5.19. ConcurrentHashMap能完全替代Hashtable吗？](#14519-concurrenthashmap能完全替代hashtable吗)
+  - [14.6. Hashtable的特点介绍一下？](#146-hashtable的特点介绍一下)
+  - [14.7. 讲一下TreeMap？](#147-讲一下treemap)
+    - [14.7.1. HashMap 是 TreeMap 如何选用？](#1471-hashmap-是-treemap-如何选用)
+    - [14.7.2. 解决hash冲突的办法有哪些？HashMap用的哪种？](#1472-解决hash冲突的办法有哪些hashmap用的哪种)
+  - [14.8. Set](#148-set)
+  - [14.9. HashSet底层原理？](#149-hashset底层原理)
+    - [14.9.1. HashSet、LinkedHashSet 和 TreeSet 的区别？](#1491-hashsetlinkedhashset-和-treeset-的区别)
+    - [14.9.2. HashSet 和 HashMap 的区别？](#1492-hashset-和-hashmap-的区别)
+  - [14.10. HashMap(jdk1.8)](#1410-hashmapjdk18)
+    - [14.10.1. Hashmap特点](#14101-hashmap特点)
+    - [14.10.2. **解决hash冲突的办法有哪些?HashMap用的哪种？**](#14102-解决hash冲突的办法有哪些hashmap用的哪种)
+    - [14.10.3. **为什么要在数组长度大于64之后，链表才会进化为红黑树**](#14103-为什么要在数组长度大于64之后链表才会进化为红黑树)
+    - [14.10.4. **哈希表底层采用何种算法计算hash值？还有哪些算法可以计算出hash值？**](#14104-哈希表底层采用何种算法计算hash值还有哪些算法可以计算出hash值)
+    - [14.10.5. **当两个对象的hashCode相等时会怎样**](#14105-当两个对象的hashcode相等时会怎样)
+    - [14.10.6. **何时发生哈希碰撞和什么是哈希碰撞，如何解决哈希碰撞？**](#14106-何时发生哈希碰撞和什么是哈希碰撞如何解决哈希碰撞)
+    - [14.10.7. ==HashMap的put方法流程==](#14107-hashmap的put方法流程)
+    - [14.10.8. ==HashMap的扩容方式==](#14108-hashmap的扩容方式)
+    - [14.10.9. **一般用什么作为HashMap的key？**](#14109-一般用什么作为hashmap的key)
+    - [14.10.10. **为什么Map桶中节点个数超过8才转为红黑树？**](#141010-为什么map桶中节点个数超过8才转为红黑树)
+    - [14.10.11. **HashMap为什么线程不安全？**](#141011-hashmap为什么线程不安全)
+    - [14.10.12. get流程](#141012-get流程)
+  - [14.11. Hashtable](#1411-hashtable)
+  - [14.12. ConcurrentHashMap](#1412-concurrenthashmap)
+    - [14.12.1. jdk1.7实现](#14121-jdk17实现)
+    - [14.12.2. Jdk1.8实现](#14122-jdk18实现)
+    - [14.12.3. put()执行流程](#14123-put执行流程)
+    - [14.12.4. 扩容机制](#14124-扩容机制)
+      - [14.12.4.1. ConcurrentHashMap 和 Hashtable 的区别？](#141241-concurrenthashmap-和-hashtable-的区别)
+  - [14.13. 迭代器 （Iterator ）](#1413-迭代器-iterator-)
+    - [14.13.1. 什么是迭代器（Iterator ）？](#14131-什么是迭代器iterator-)
+    - [14.13.2. Iterator 和foreach 遍历集合的区别？](#14132-iterator-和foreach-遍历集合的区别)
+    - [14.13.3. Iterator 和 ListIterator 有什么区别？](#14133-iterator-和-listiterator-有什么区别)
+  - [14.14. 讲一下ArrayDeque？](#1414-讲一下arraydeque)
+  - [14.15. 哪些集合类是线程安全的？哪些不安全？](#1415-哪些集合类是线程安全的哪些不安全)
+  - [14.16. 并发容器](#1416-并发容器)
+    - [14.16.1. ConcurrentLinkedQueue](#14161-concurrentlinkedqueue)
+    - [14.16.2. 阻塞队列](#14162-阻塞队列)
+      - [14.16.2.1. JDK提供的阻塞队列](#141621-jdk提供的阻塞队列)
+  - [14.17. 不同集合容量与扩容系数？](#1417-不同集合容量与扩容系数)
+  - [14.18. java8的ConcurrentHashMap为何放弃分段锁？](#1418-java8的concurrenthashmap为何放弃分段锁)
+
+<!-- /TOC -->
+
+# 14. Java集合手册(基础)
+
+## 14.1. 什么是Java的集合？使用集合有什么好处？
 
 Java 的集合也称为容器，是用来**存放数据的容器**；不过注意，集合存放的只能是引用数据类型的数据，也就是一个个的对象（如果存入基本数据类型的数据，会自动装箱成包装类）。
 
@@ -42,7 +137,7 @@ Java 的集合也称为容器，是用来**存放数据的容器**；不过注�
 3.  使用集合之后，可以像操作基本数据类型那样来操作对象。
 4.  集合为我们提供了多种数据结构和操作的API，选用合适的集合，能够提程序性能和开发效率。
 
-### Java集合综述
+### 14.1.1. Java集合综述
 
 Java 集合，主要是由两大接口派生而来：一个是 Collection接口，主要用于存放单一元素；另一个是 Map 接口，主要用于存放键值对 。
 
@@ -73,7 +168,7 @@ map与List、Set接口不同，它是由一系列键值对组成的集合，提�
    -  HashMap是非线程安全的，HashTable是线程安全的;
    -  StringBuilder是非线程安全的，StringBuffer是线程安全的。
 
-## 常用的集合类以及它们的特点？
+## 14.2. 常用的集合类以及它们的特点？
 
 Java的集合类有两个父接口：Collection 接口和 Map 接口。
 
@@ -94,7 +189,7 @@ Map接口的主要实现类：HashMap、Hashtable、TreeMap 等。
 
 ![1644383711619](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202202/09/131512-158738.png)
 
-### Java集合框架中的快速失败（fail—fast）机制
+### 14.2.1. Java集合框架中的快速失败（fail—fast）机制
 
 fail-fast机制，即快速失败机制，是java集合框架中的一种**错误检测机制**。
 
@@ -104,7 +199,7 @@ fail-fast机制，即快速失败机制，是java集合框架中的一种**错�
 
 在 `java.util` 包下的集合类都采用的是快速失败机制，不能在多线程下发生并发修改（迭代过程中被修改）。
 
-#### 那么在实际测试代码当中是如何表现的呢？
+#### 14.2.1.1. 那么在实际测试代码当中是如何表现的呢？
 
 ------
 
@@ -116,7 +211,7 @@ fail-fast机制，即快速失败机制，是java集合框架中的一种**错�
 >
 > 而迭代器在遍历时直接访问集合中的内容，并且在遍历过程中使用一个 modCount 变量。集合在被遍历期间如果内容发生变化，就会改变modCount的值。当迭代器使用hashNext()/next()遍历下一个元素之前，都会检测modCount变量是否为expectedModCount值，是的话就返回遍历；否则抛出异常，终止遍历。
 
-#### 实现原理
+#### 14.2.1.2. 实现原理
 
 原理：迭代器在遍历时直接访问集合中的内容，并且在遍历过程中使用一个 modCount 变量。集合在被遍历期间如果内容发生变化，就会**改变modCount的值**。每当迭代器使用hashNext()/next()遍历下一个元素之前，都会检测modCount变量是否为expectedmodCount值，是的话就返回遍历；否则抛出异常，终止遍历。
 
@@ -139,22 +234,22 @@ fail-fast机制，即快速失败机制，是java集合框架中的一种**错�
 1.  在遍历过程中，所有涉及到改变modCount值得地方全部加上synchronized。
 2.  使用 JUC 中的线程安全类来替代，比如使用 CopyOnWriteArrayList 来替代 ArrayList ，使用ConcurrentHashMap 来替代 HashMap 。
 
-### 安全失败
+### 14.2.2. 安全失败
 
 采用安全失败机制的集合容器，使用迭代器进行遍历时**不是直接在集合内容上访问**的，而是将原有集合内容进行**拷贝**，在拷贝的集合上进行遍历。
 
-#### **原理**
+#### 14.2.2.1. **原理**
 
 迭代器在遍历时访问的是**拷贝的集合**，所以在遍历过程中对原集合所作的修改并不能被迭代器检测到，所以不会触发 ConcurrentModificationException 异常。
 
-#### **优缺点**
+#### 14.2.2.2. **优缺点**
 
 - 由于对集合进行了拷贝，避免了 ConcurrentModificationException 异常，但拷贝时产生大量的无效对象，开销大。
 - 无法保证读取到的数据是原集合中最新的数据，即迭代器进行遍历的是拷贝的集合，在遍历期间原集合发生的修改，迭代器是检测不到的。
 
 >   **Ps：java.util.concurrent包下的容器都是安全失败，可以在多线程下并发使用，并发修改。**
 
-###  fail-fast和fail-safe区别？
+### 14.2.3. fail-fast和fail-safe区别？
 
 -  并发修改：
    -  当一个或多个线程正在遍历一个集合Collection，此时另一个线程修改了这个集合的内容（添加，删除或者修改）。
@@ -174,13 +269,13 @@ fail-fast机制，即快速失败机制，是java集合框架中的一种**错�
       -  需要复制集合，产生大量的无效对象，开销大
       -  无法保证读取的数据是目前原始数据结构中的数据。
 
-## List
+## 14.3. List
 
-###  ArrayList、LinkedList、Vector 各自的特点以及优缺点？
+### 14.3.1. ArrayList、LinkedList、Vector 各自的特点以及优缺点？
 
 ![1644383788472](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202202/09/131633-987378.png)
 
-### ArrayList 了解吗？
+### 14.3.2. ArrayList 了解吗？
 
 `ArrayList` 的底层是动态数组，它的容量能动态增长。在添加大量元素前，应用可以使用`ensureCapacity`操作增加 `ArrayList` 实例的容量。ArrayList 继承了 AbstractList ，并实现了 List 接口。
 
@@ -188,7 +283,7 @@ fail-fast机制，即快速失败机制，是java集合框架中的一种**错�
 
 指定长度，生成长度数组，每次扩容会变成原来的1.5倍，然后新建一个数组进行元素复制。
 
-### ArrayList 的扩容机制？
+### 14.3.3. ArrayList 的扩容机制？
 
 -  先计算新数组的大小
    -  一般为原数组大小的1.5倍
@@ -248,18 +343,18 @@ private void grow(int minCapacity) {
     }
 ~~~
 
-### ArrayList为什么线程不安全还使用他呢？
+### 14.3.4. ArrayList为什么线程不安全还使用他呢？
 
 -  因为ArrayList在正常使用的场景中，都是用来做查询的，不会涉及太频繁的增删，如果涉及频繁的增删的话，可以采用LinkedList，如果还需要线程安全的话，可以使用vector。
 
-### ArrayList的底层实现是数组，添加数据的话，会有问题吗？
+### 14.3.5. ArrayList的底层实现是数组，添加数据的话，会有问题吗？
 
 -  ArrayList可以通过构造函数指定底层数组的大小
 -  无参构造器赋值底层数组为一个默认的空数组，只有真正添加数据时，才分配默认10的初始容量。
 -  ArrayList通过扩容的方式来实现长度动态增长。
 -  比如如果一个10的数组装满了，再新增的时候，会重新定义一个长度为10+10/2的数组，然后把原数组的数据原封不动的复制到新数组中，这个时候再把指向原数组的地址换到新数组。
 
-### ArrayList在增删的时候是怎么做的么？主要说一下他为啥慢。
+### 14.3.6. ArrayList在增删的时候是怎么做的么？主要说一下他为啥慢。
 
 -  首先，在新增方面，ArrayList有指定index新增，也有直接新增的
 -  在新增之前，会先校验数组的长度是否足够，不足的话会进行扩容。
@@ -268,12 +363,12 @@ private void grow(int minCapacity) {
 -  其次，在删除方面，ArrayList所采用的方法与新增相似，都是采用数组copy的方法
 -  比如说，要删除5位置的元素，那ArrayList就将5+1到数组末尾的元素复制到5位置处，5位置处的元素被覆盖了，看起来就像是被删除了。由此可见，删除方法效率同样很低。
 
-### ArrayList插入删除一定慢么？
+### 14.3.7. ArrayList插入删除一定慢么？
 
 -  这取决于插入和删除的位置距离数组的末端有多远。
 -  ArrayList作为堆栈来用还是比较合适的，push和pop操作完全不涉及数据移动操作。
 
-### 怎么在遍历 ArrayList 时移除一个元素？
+### 14.3.8. 怎么在遍历 ArrayList 时移除一个元素？
 
 foreach删除会导致快速失败问题，可以使用迭代器的 remove() 方法。
 
@@ -286,7 +381,7 @@ while(itr.hasNext()) {
 }
 ~~~
 
-### ArrayList 和 Vector 的区别/异同？
+### 14.3.9. ArrayList 和 Vector 的区别/异同？
 
 Vector类 是List接口的古老实现类(JDK1.0就有了)，ArrayList类 是List接口的主要的常用的实现类(JDK1.2新增的)。
 
@@ -296,7 +391,7 @@ Vector类 的方法全都是同步的，两个线程可以安全的访问一个V
 
 Vector扩容方式默认是 当前容量的1倍；ArrayList扩容是 当前容量×1.5+1 。
 
-### ArrayList 和 LinkedList 的区别/异同？
+### 14.3.10. ArrayList 和 LinkedList 的区别/异同？
 
 （其实大部分的区别就是数据结构的区别，一个是数组，一个是双向[链表]()）。
 
@@ -307,7 +402,7 @@ Vector扩容方式默认是 当前容量的1倍；ArrayList扩容是 当前容�
 5.  ArrayList 需要扩容，扩容是 当前容量×1.5+1 ； LinkedList 无需扩容。
 6.  ArrayList 和 LinkedList 都不是同步的，都是不保证线程安全。
 
-### ArryList 是线程不安全的？为什么？
+### 14.3.11. ArryList 是线程不安全的？为什么？
 
 ArrayList 是线程不安全的，因为ArrayList里的方法没有加锁，也没有使用其他保证线程安全的措施；当多个线程来对 ArrayList 进行操作时，就会出现并发修改异常。
 
@@ -321,7 +416,7 @@ ArrayList 是线程不安全的，因为ArrayList里的方法没有加锁，也�
 
 ArrayList 的 add() 只是先检查了容量大小，然后就直接插入数据了，并没有做任何保证线程安全的操作，如此一来，多个线程同时来调用这个方法，就会出现线程安全的问题。
 
-### 如何解决 ArrayList 线程不安全的问题？
+### 14.3.12. 如何解决 ArrayList 线程不安全的问题？
 
 解决 ArrayList 线程安全的办法有3种：
 
@@ -329,7 +424,7 @@ ArrayList 的 add() 只是先检查了容量大小，然后就直接插入数据
 2.  **Collections 工具类转换。**
 3.  **JUC 中的 CopyOnWriteArrayList。**
 
-#### **解决集合类不安全的方法 1 —— Vector**
+#### 14.3.12.1. **解决集合类不安全的方法 1 —— Vector**
 
 Vector 是 List 接口的古老实现类，ArrayList 是 List 接口后面新增的实现类。除了线程安全问题与扩容方式不同，Vector 几乎与 ArrayList 一样。
 
@@ -337,7 +432,7 @@ Vector 是 List 接口的古老实现类，ArrayList 是 List 接口后面新增
 
 > （顺便说一下，其实 Vector 很多其他方法也加了锁，比如读方法，相当于读的时候，同一时刻也只能有一个线程能读，效率很低。）
 
-#### **解决集合类不安全的方法 2 —— Collections**
+#### 14.3.12.2. **解决集合类不安全的方法 2 —— Collections**
 
 Collections 是 Collection 的工具类，其中就提供了一个 synchronizedList() 方法，可以将线程不安全的 ArrayList 转换成线程安全的。
 
@@ -345,7 +440,7 @@ Collections 是 Collection 的工具类，其中就提供了一个 synchronizedL
 
 原理是在 arrayList 的 add() 的外面套了一层 synchronized 锁！并且 Collections 工具类也支持将 HashMap, HashSet 之类的转换成线程安全的。
 
-#### **解决集合类不安全的方法 3 —— CopyOnWriteArrayList（写时复制）**
+#### 14.3.12.3. **解决集合类不安全的方法 3 —— CopyOnWriteArrayList（写时复制）**
 
 CopyOnWriteArrayList 是 java.util.concurrent 包里的类，是个线程安全的类。
 
@@ -371,15 +466,15 @@ CopyOnWriteArrayList 是 java.util.concurrent 包里的类，是个线程安全�
 >
 > 其中的 setArray 方法中的 array 是用 volatile 修饰的，可以保证可见性：
 
-## CopyOnWriteArrayList
+## 14.4. CopyOnWriteArrayList
 
-### 读写分离
+### 14.4.1. 读写分离
 
 写操作在一个复制的数组上进行，读操作还是在原始数组中进行，读写分离，互不影响。
 
 写操作需要加锁，防止并发写入时导致写入数据丢失。写操作结束之后需要把原始数组指向新的复制数组。
 
-### 优缺点
+### 14.4.2. 优缺点
 
 **优点**：CopyOnWriteArrayList在写操作的同时允许读操作，大大提高了读操作的性能，因此很适合读多写少的应用场景。
 
@@ -387,9 +482,9 @@ CopyOnWriteArrayList 是 java.util.concurrent 包里的类，是个线程安全�
 
 数据不一致：读操作不能读取实时性的数据，因为部分写操作的数据还未同步到读数组中。
 
-## Map
+## 14.5. Map
 
-### HashMap的底层实现原理？
+### 14.5.1. HashMap的底层实现原理？
 
 **Java7**：
 
@@ -462,7 +557,7 @@ HashMap 使用数组+[链表]()+[红黑树]()（JDK1.8增加了[红黑树]()部�
 
 6. jdk8还有一点不同的是，当数组的某一索引位置上的 以[链表](https://www.nowcoder.com/jump/super-jump/word?word=%E9%93%BE%E8%A1%A8)形式存储的数据 大于 8 个，且当前数组长度大于64时，此索引位置上所有数据改为[红黑树](https://www.nowcoder.com/jump/super-jump/word?word=%E7%BA%A2%E9%BB%91%E6%A0%91)存储，这样可以减少搜索查找的时间。
 
-### 使用的hash算法？
+### 14.5.2. 使用的hash算法？
 
 Hash算法：取key的hashCode值、高位运算、取模运算。
 
@@ -474,7 +569,7 @@ return h&(length-1);  //第三步 取模运算
 
 在JDK1.8的实现中，优化了高位运算的[算法]()，通过hashCode()的高16位异或低16位实现的：这么做可以在数组比较小的时候，也能保证考虑到高低位都参与到Hash的计算中，可以减少冲突，同时不会有太大的开销。
 
-### HashMap的扩容方式？负载因子是多少？为什是这么多？
+### 14.5.3. HashMap的扩容方式？负载因子是多少？为什是这么多？
 
 -  扩容后的容量为扩容前的两倍
 -  负载因子0.75
@@ -482,7 +577,7 @@ return h&(length-1);  //第三步 取模运算
 -  如果负载因子较小，假设为0.5，那么HashMap的冲突较少，查询效率高，但是空间利用率低，1m的数据需要用2m的空间来存储。
 -  0.75就是综合考虑了空间利用率和查询时间的结果。
 
-### HashMap 容量的长度为什么总是2的幂次方？
+### 14.5.4. HashMap 容量的长度为什么总是2的幂次方？
 
 为了让HashMap存取高效，要尽量减少碰撞，就是要尽量把数据分配均匀。
 
@@ -499,7 +594,7 @@ Hash值大概有40亿的映射空间，只要哈希函数映射得比较均匀�
 
 当使用2的幂的数字作为长度时，Length-1的值是所有二进制位全为1，这种情况下，index的结果等同于HashCode后几位的值。
 
-### 扩容过程？
+### 14.5.5. 扩容过程？
 
 1.8扩容机制：当元素个数大于threshold时，会进行扩容，使用2倍容量的数组代替原有数组。采用尾插入的方式将原数组元素拷贝到新数组。1.8扩容之后[链表]()元素相对位置没有变化，而1.7扩容之后[链表]()元素会倒置。
 
@@ -509,7 +604,7 @@ Hash值大概有40亿的映射空间，只要哈希函数映射得比较均匀�
 
 这样可以省去重新计算hash值的时间，而且由于新增的1bit是0还是1可以认为是随机的，因此resize的过程会均匀的把之前的冲突的节点分散到新的bucket。
 
-### 知道HashMap 扩容时候的死循环问题吗？
+### 14.5.6. 知道HashMap 扩容时候的死循环问题吗？
 
 HashMap 1.7 插入数据时，使用的是头插法，并发下扩容时的Rehash，会出现死循环问题；
 
@@ -517,7 +612,7 @@ HashMap 1.7 插入数据时，使用的是头插法，并发下扩容时的Rehas
 
 （如果还要具体一点的话，可以说一说rehash的流程，建议找篇文章看看，或者后面有时间我再写一篇。）
 
-###  jdk1.7版hashmap在多线程环境下的死循环问题介绍一下？
+### 14.5.7. jdk1.7版hashmap在多线程环境下的死循环问题介绍一下？
 
 Java7在多线程操作HashMap时可能引起死循环，原因是扩容转移后前后[链表]()顺序倒置，在转移过程中修改了原来[链表]()中节点的引用关系。
 
@@ -525,7 +620,7 @@ Java8在同样的前提下并不会引起死循环，原因是扩容转移后前
 
 [jdk1.7版hashmap在多线程环境下的死循环问题](https://blog.csdn.net/qq_33788242/article/details/89706962)
 
-### 如何解决 HashMap 线程不安全的问题？
+### 14.5.8. 如何解决 HashMap 线程不安全的问题？
 
 解决 HashMap 线程安全的办法同样也有3种：
 
@@ -553,7 +648,7 @@ Java8在同样的前提下并不会引起死循环，原因是扩容转移后前
 
 ![1644385531383](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202202/09/134532-525715.png)
 
-### put方法流程？
+### 14.5.9. put方法流程？
 
 1. 如果table没有初始化就先进行初始化过程
 2. 使用hash[算法]()计算key的索引
@@ -564,7 +659,7 @@ Java8在同样的前提下并不会引起死循环，原因是扩容转移后前
 
 ![1644387440516](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202202/09/141721-443235.png)
 
-### 红黑树的特点？
+### 14.5.10. 红黑树的特点？
 
 - 每个节点或者是黑色，或者是红色。
 - 根节点是黑色。
@@ -572,13 +667,13 @@ Java8在同样的前提下并不会引起死循环，原因是扩容转移后前
 - 如果一个节点是红色的，则它的子节点必须是黑色的。
 - 从一个节点到该节点的子孙节点的所有路径上包含相同数目的黑节点。
 
-### 为什么使用红黑树而不使用AVL树？
+### 14.5.11. 为什么使用红黑树而不使用AVL树？
 
 ConcurrentHashMap 在put的时候会加锁，使用[红黑树]()插入速度更快，可以减少等待锁释放的时间。[红黑树]()是对AVL树的优化，只要求部分平衡，用非严格的平衡来换取增删节点时候旋转次数的降低，提高了插入和删除的性能。
 
 > avl适合查询的结构，红黑树适合插入删除的场景。
 
-### hashmap线程不安全的表现有哪些？
+### 14.5.12. hashmap线程不安全的表现有哪些？
 
 -  put操作
    -  两个线程，在插入K-V键值对的时候都计算到了同一个桶位置，一个线程先插入，后面一个线程后插入，后面线程的键值对会覆盖掉前面的键值对
@@ -588,11 +683,11 @@ ConcurrentHashMap 在put的时候会加锁，使用[红黑树]()插入速度更�
 -  删除操作
    -  有可能把别人刚更新的节点给删除了
 
-### 在解决 hash 冲突的时候，为什么选择先用[链表]()，再转[红黑树]()?
+### 14.5.13. 在解决 hash 冲突的时候，为什么选择先用[链表]()，再转[红黑树]()?
 
 因为[红黑树]()需要进行左旋，右旋，变色这些操作来保持平衡，而单[链表]()不需要。当元素小于 8 个的时候，[链表]()结构可以保证查询性能。当元素大于 8 个的时候， [红黑树]()搜索时间复杂度是 O(logn)，而[链表]()是 O(n)，此时需要[红黑树]()来加快查询速度，但是插入和删除节点的效率变慢了。如果一开始就用[红黑树]()结构，元素太少，插入和删除节点的效率又比较慢，浪费性能。
 
-### HashMap默认加载因子是多少？为什么是 0.75？
+### 14.5.14. HashMap默认加载因子是多少？为什么是 0.75？
 
 先看下HashMap的默认构造函数：
 
@@ -608,7 +703,7 @@ Node[] table的初始化长度length为16，默认的loadFactor是0.75，0.75是
 - 如果内存空间很多而又对时间效率要求很高，可以降低负载因子Load factor的值 。
 - 如果内存空间紧张而对时间效率要求不高，可以增加负载因子loadFactor的值，这个值可以大于1。
 
-### 一般用什么作为HashMap的key?
+### 14.5.15. 一般用什么作为HashMap的key?
 
 一般用Integer、String 这种不可变类当 HashMap 当 key。String类比较常用。
 
@@ -616,12 +711,12 @@ Node[] table的初始化长度length为16，默认的loadFactor是0.75，0.75是
 - 获取对象的时候要用到 equals() 和 hashCode() 方法，而Integer、String这些类都已经重写了 hashCode() 以及 equals() 方法，不需要自己去重写这两个方法。
 - 如果使用自定义对象去作为key，那么一定需要重写equals()方法和hashCode()方法。
 
-### HashMap为什么线程不安全？
+### 14.5.16. HashMap为什么线程不安全？
 
 - 多线程下扩容死循环。JDK1.7中的 HashMap 使用头插法插入元素，在多线程的环境下，扩容的时候有可能导致**环形链表**的出现，形成死循环。
 - 在JDK1.8中，在多线程环境下，会发生**数据覆盖**的情况。
 
-### HashMap和HashTable的区别？
+### 14.5.17. HashMap和HashTable的区别？
 
 HashMap和Hashtable都实现了Map接口。
 
@@ -630,7 +725,7 @@ HashMap和Hashtable都实现了Map接口。
 3. Hashtable很多方法是同步方法，在单线程环境下它比HashMap要慢。
 4. 哈希值的使用不同，HashTable直接使用对象的hashCode。而HashMap重新计算hash值。
 
-### LinkedHashMap底层原理？
+### 14.5.18. LinkedHashMap底层原理？
 
 HashMap是无序的，迭代HashMap所得到元素的顺序并不是它们最初放到HashMap的顺序，即不能保持它们的插入顺序。
 
@@ -638,7 +733,7 @@ LinkedHashMap继承于HashMap，是HashMap和LinkedList的融合体，具备两�
 
 ![1644387997654](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202202/09/142638-189844.png)
 
-### ConcurrentHashMap能完全替代Hashtable吗？
+### 14.5.19. ConcurrentHashMap能完全替代Hashtable吗？
 
 不能。
 
@@ -667,7 +762,7 @@ LinkedHashMap继承于HashMap，是HashMap和LinkedList的融合体，具备两�
 
 而ConcurrentHashMap 为了提升效率，一致性自然会变弱。
 
-## Hashtable的特点介绍一下？
+## 14.6. Hashtable的特点介绍一下？
 
 -  Hashtable相比于hashmap，它是线程安全的，但是他的效率低下。
 -  原因是他对数据操作时会对整个方法进行上锁
@@ -687,7 +782,7 @@ LinkedHashMap继承于HashMap，是HashMap和LinkedList的融合体，具备两�
          -  hashtable的failfast是用synchronized实现的
       -  所以，当一个线程在遍历HashMap 时，如果有其它线程改变了HashMap 的结构，将抛出ConcurrentModificationException 异常，而Hashtable 不会
 
-## 讲一下TreeMap？
+## 14.7. 讲一下TreeMap？
 
 TreeMap是一个能比较元素大小的Map集合，会对传入的key进行了大小[排序](https://www.nowcoder.com/jump/super-jump/word?word=%E6%8E%92%E5%BA%8F)。可以使用元素的自然顺序，也可以使用集合中自定义的比较器来进行[排序](https://www.nowcoder.com/jump/super-jump/word?word=%E6%8E%92%E5%BA%8F)。
 
@@ -707,13 +802,13 @@ TreeMap 的继承结构：
 1. TreeMap是有序的key-value集合，通过[红黑树]()实现。根据键的自然顺序进行[排序]()或根据提供的Comparator进行[排序]()。
 2. TreeMap继承了AbstractMap，实现了NavigableMap接口，支持一系列的导航方法，给定具体搜索目标，可以返回最接近的匹配项。如floorEntry()、ceilingEntry()分别返回小于等于、大于等于给定键关联的Map.Entry()对象，不存在则返回null。lowerKey()、floorKey、ceilingKey、higherKey()只返回关联的key。
 
-### HashMap 是 TreeMap 如何选用？
+### 14.7.1. HashMap 是 TreeMap 如何选用？
 
 在需要大量插入、删除和查找元素这种操作的，选择HashMap，因为HashMap 底层使用数据+[链表]()+[红黑树]()实现，对于插入、删除、查找的性能都不错，但是HashMap的结果是没有[排序]()的。
 
 在需要对集合[排序]()的时候，选择 TreeMap ，TreeMap 基于[红黑树]()实现，TreeMap 的映射根据键的自然顺序进行[排序]()，或者根据创建映射时提供的 Comparator 进行[排序]()，具体取决于使用的构造方法。
 
-### 解决hash冲突的办法有哪些？HashMap用的哪种？
+### 14.7.2. 解决hash冲突的办法有哪些？HashMap用的哪种？
 
 解决Hash冲突方法有:开放定址法、再哈希法、链地址法。HashMap中采用的是 链地址法 。
 
@@ -740,9 +835,9 @@ TreeMap 的继承结构：
 - 再哈希法提供多个不同的hash函数，当`R1=H1(key1)`发生冲突时，再计算`R2=H2(key1)`，直到没有冲突为止。 这样做虽然不易产生堆集，但增加了计算的时间。
 - 链地址法将哈希值相同的元素构成一个同义词的单[链表](),并将单[链表]()的头指针存放在[哈希表]()的第i个单元中，查找、插入和删除主要在同义词[链表]()中进行。[链表]()法适用于经常进行插入和删除的情况。
 
-## Set
+## 14.8. Set
 
-## HashSet底层原理？
+## 14.9. HashSet底层原理？
 
 HashSet 基于 HashMap 实现。放入HashSet中的元素实际上由HashMap的key来保存，而HashMap的value则存储了一个静态的Object对象。
 
@@ -757,7 +852,7 @@ public class HashSet<E>
 }
 ~~~
 
-### HashSet、LinkedHashSet 和 TreeSet 的区别？
+### 14.9.1. HashSet、LinkedHashSet 和 TreeSet 的区别？
 
 `HashSet` 是 `Set` 接口的主要实现类 ，`HashSet` 的底层是 `HashMap`，线程不安全的，可以存储 null 值；
 
@@ -765,7 +860,7 @@ public class HashSet<E>
 
 `TreeSet` 底层使用[红黑树]()，能够按照添加元素的顺序进行遍历，[排序]()的方式可以自定义。
 
-### HashSet 和 HashMap 的区别？
+### 14.9.2. HashSet 和 HashMap 的区别？
 
 HashMap是实现了Map接口，存储的是键值对；HashSet 是实现了Set接口，只存储对象。
 
@@ -780,9 +875,9 @@ HashSet 的底层其实是基于 HashMap 实现的，大部分方法都是直接
 
 > HashSet中大部分调用的是HashMap中的方法，一小部分是自己实现的方法。
 
-## HashMap(jdk1.8)
+## 14.10. HashMap(jdk1.8)
 
-### Hashmap特点
+### 14.10.1. Hashmap特点
 
 - hashmap存取是无序的
 - 键和值位置都可以是null，但是键位置只能是一个null
@@ -790,7 +885,7 @@ HashSet 的底层其实是基于 HashMap 实现的，大部分方法都是直接
 - jdk1.8前数据结构是：链表+数组jdk1.8之后是：数组+链表+红黑树
 - 阈值（边界值）>8并且数组长度大于64，才将链表转换成红黑树，变成红黑树的目的是提高搜索速度，高效查询
 
-### **解决hash冲突的办法有哪些?HashMap用的哪种？**
+### 14.10.2. **解决hash冲突的办法有哪些?HashMap用的哪种？**
 
 - 开放地址发
    - 线性探测法
@@ -801,13 +896,13 @@ HashSet 的底层其实是基于 HashMap 实现的，大部分方法都是直接
 
 > 开放定址法只能使用同一种hash函数进行再次hash，再哈希法可以调用多种不同的hash函数进行再次hash
 
-### **为什么要在数组长度大于64之后，链表才会进化为红黑树**
+### 14.10.3. **为什么要在数组长度大于64之后，链表才会进化为红黑树**
 
 在数组比较小时如果出现红黑树结构，反而会降低效率，而红黑树需要进行左旋右旋，变色，这些操作来保持平衡，同时数组长度小于64时，搜索时间相对要快些，总之是为了加快搜索速度，提高性能
 
 JDK1.8以前HashMap的实现是数组+链表，即使哈希函数取得再好，也很难达到元素百分百均匀分布。当HashMap中有大量的元素都存放在同一个桶中时，这个桶下有一条长长的链表，此时HashMap就相当于单链表，假如单链表有n个元素，遍历的时间复杂度就从`O（1）`退化成`O（n）`，完全失去了它的优势，为了解决此种情况，JDK1.8中引入了红黑树（查找的时间复杂度为`O（logn）`）来优化这种问题
 
-### **哈希表底层采用何种算法计算hash值？还有哪些算法可以计算出hash值？**
+### 14.10.4. **哈希表底层采用何种算法计算hash值？还有哪些算法可以计算出hash值？**
 
 hashCode方法是Object中的方法，所有的类都可以对其进行使用，首先底层通过调用hashCode方法生成初始hash值h1，然后将h1无符号右移16位得到h2，之后将h1与h2进行按位异或（`^`）运算得到最终hash值h3，之后将h3与(`length-1`)进行按位与（`&`）运算得到hash表索引
 
@@ -817,15 +912,15 @@ hashCode方法是Object中的方法，所有的类都可以对其进行使用，
 - 取余数
 - 伪随机数法
 
-### **当两个对象的hashCode相等时会怎样**
+### 14.10.5. **当两个对象的hashCode相等时会怎样**
 
 hashCode相等产生hash碰撞，hashCode相等会调用equals方法比较内容是否相等，内容如果相等则会进行覆盖，内容如果不等则会连接到链表后方，链表长度超过8且数组长度超过64，会转变成红黑树节点。
 
-### **何时发生哈希碰撞和什么是哈希碰撞，如何解决哈希碰撞？**
+### 14.10.6. **何时发生哈希碰撞和什么是哈希碰撞，如何解决哈希碰撞？**
 
 只要两个元素的key计算的hash码值相同就会发生hash碰撞，jdk8之前使用链表解决哈希碰撞，jdk8之后使用链表+红黑树解决哈希碰撞
 
-### ==HashMap的put方法流程==
+### 14.10.7. ==HashMap的put方法流程==
 
 以jdk8为例，简要流程如下：
 
@@ -840,7 +935,7 @@ hashCode相等产生hash碰撞，hashCode相等会调用equals方法比较内容
 
 ![1644380207165](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202202/09/121648-309480.png)
 
-### ==HashMap的扩容方式==
+### 14.10.8. ==HashMap的扩容方式==
 
 HashMap在容量超过负载因子所定义的容量之后，就会扩容。java里的数组是无法自己扩容的，将HashMap的大小扩大为原来数组的**两倍**
 
@@ -979,14 +1074,14 @@ HashMap在容量超过负载因子所定义的容量之后，就会扩容。java
 
 > 这样的扩容方式不仅节省了重新计算hash的时间，而且保证了当前桶中的元素总数一定小于等于原来桶中的元素数量，避免了更严重的hash冲突，均匀的把之前冲突的节点分散到新的桶中去
 
-### **一般用什么作为HashMap的key？**
+### 14.10.9. **一般用什么作为HashMap的key？**
 
 一般用Integer、String这种不可变类当HashMap当key
 
 - 因为String是不可变的，当创建字符串时，它的hashcode被缓存下来，不需要再次计算，相对于其他对象更快
 - 因为获取对象的时候要用到`equals()`和`hashCode()`方法，那么键对象正确的重写这两个方法是非常重要的，这些类很规范的重写了`hashCode()`以及`equals()`方法
 
-### **为什么Map桶中节点个数超过8才转为红黑树？**
+### 14.10.10. **为什么Map桶中节点个数超过8才转为红黑树？**
 
 8作为阈值作为HashMap的成员变量，在源码的注释中并没有说明阈值为什么是8。
 
@@ -1000,13 +1095,13 @@ HashMap在容量超过负载因子所定义的容量之后，就会扩容。java
 - 从平均查找长度来看，红黑树的平均查找长度是logn，如果长度为8，则`logn=3`，而链表的平均查找长度为`n/4`，长度为8时，`n/2=4`，所以阈值8能大大提高搜索速度
 - 当长度为6时红黑树退化为链表是因为logn=log6约等于2.6，而`n/2=6/2=3`，两者相差不大，而红黑树节点占用更多的内存空间，所以此时转换最为友好。
 
-### **HashMap为什么线程不安全？**
+### 14.10.11. **HashMap为什么线程不安全？**
 
 - 多线程下扩容死循环。JDK1.7中的HashMap使用头插法插入元素，在多线程的环境下，扩容的时候有可能导致环形链表的出现，形成死循环。因此JDK1.8使用尾插法插入元素，在扩容时会保持链表元素原本的顺序，不会出现环形链表的问题
 - 多线程的put可能导致元素的丢失。多线程同时执行put操作，如果计算出来的索引位置是相同的，那会造成前一个key被后一个key覆盖，从而导致元素的丢失。此问题在JDK1.7和JDK1.8中都存在
 - put和get并发时，可能导致get为null。线程1执行put时，因为元素个数超出threshold而导致rehash，线程2此时执行get，有可能导致这个问题，此问题在JDK1.7和JDK1.8中都存在
 
-### get流程
+### 14.10.12. get流程
 
 1.hashcode值经过一个扰动函数（高八位和低八位进行异或，加大低位的随机性，减小碰撞概率），然后进行取模，取得下标
 
@@ -1055,7 +1150,7 @@ Put流程
 >
 >5、从任一节点到其每个叶子的所有简单路径都包含相同数目的黑色节点。
 
-## Hashtable
+## 14.11. Hashtable
 
 Hashtable使用synchronized来进行同步
 
@@ -1073,9 +1168,9 @@ Hashtable使用synchronized来进行同步
 >
 > 2.3 Hashmap初始容量为16，每次扩容2倍；Hashtable初始容量为11，每次扩容变成2n+1。Hashmap会将给定容量扩容成2的幂次方
 
-## ConcurrentHashMap
+## 14.12. ConcurrentHashMap
 
-### jdk1.7实现
+### 14.12.1. jdk1.7实现
 
 一个ConcurrentHashMap里包含一个Segment类数组，Segment类实现ReentrantLock，包括一个HashEntry数组和一个count变量表示HashEntry对象的个数；
 
@@ -1096,7 +1191,7 @@ size操作:
 -  第一种方案他会使用不加锁的模式去尝试多次计算ConcurrentHashMap的size，最多三次，比较前后两次计算的结果，结果一致就认为当前没有元素加入，计算的结果是准确的
 -  第二种方案是如果第一种方案不符合，他就会给每个Segment加上锁，然后计算ConcurrentHashMap的size返回
 
-### Jdk1.8实现
+### 14.12.2. Jdk1.8实现
 
 ConcurrentHashMap取消了Segment分段锁，采用CAS和synchronized  来保证并发安全。数据结构跟HashMap1.8的结构类似，数组+[链表]()/红黑[二叉树]()；
 
@@ -1127,7 +1222,7 @@ put操作时如果没有hash冲突则用CAS插入元素，否则用synchronized�
 
 -  JDK1.8版本的ConcurrentHashMap的数据结构已经接近HashMap，相对而言，ConcurrentHashMap只是增加了同步的操作来控制并发，从JDK1.7版本的ReentrantLock+Segment+HashEntry，到JDK1.8版本中synchronized+CAS+HashEntry+[红黑树]()
 
-### put()执行流程
+### 14.12.3. put()执行流程
 
 在put的时候需要锁住Segment，保证并发安全。调用get的时候不加锁，因为node数组成员val和指针next是用volatile修饰的，更改后的值会立刻刷新到主存中，保证了可见性，node数组table也用volatile修饰，保证在运行过程对其他线程具有可见性。
 
@@ -1150,18 +1245,18 @@ put 操作流程：
 6. [链表]()的数量大于阈值8，就会转换成[红黑树]()的结构或者进行扩容（table长度小于64）
 7. 添加成功后会检查是否需要扩容
 
-### 扩容机制
+### 14.12.4. 扩容机制
 
 数组扩容transfer方法中会设置一个步长，表示一个线程处理的数组长度，最小值是16。在一个步长范围内只有一个线程会对其进行复制移动操作。
 
-#### ConcurrentHashMap 和 Hashtable 的区别？
+#### 14.12.4.1. ConcurrentHashMap 和 Hashtable 的区别？
 
 1. Hashtable通过使用synchronized修饰方法的方式来实现多线程同步，因此，Hashtable的同步会锁住整个数组。在高并发的情况下，性能会非常差。ConcurrentHashMap采用了更细粒度的锁来提高在并发情况下的效率。注：Synchronized容器（同步容器）也是通过synchronized关键字来实现线程安全，在使用的时候会对所有的数据加锁。
 2. Hashtable默认的大小为11，当达到阈值后，每次按照下面的公式对容量进行扩充：newCapacity = oldCapacity * 2 + 1。ConcurrentHashMap默认大小是16，扩容时容量扩大为原来的2倍。
 
-## 迭代器 （Iterator ）
+## 14.13. 迭代器 （Iterator ）
 
-### 什么是迭代器（Iterator ）？
+### 14.13.1. 什么是迭代器（Iterator ）？
 
 首先要知道：迭代器是一种模式，它可以使得对于序列类型的数据结构的遍历行为与被遍历的对象分离，也就是可以使我们无需关心该序列的底层结构是什么样子的。只要拿到这个对象,使用迭代器就可以遍历这个对象的内部。
 
@@ -1174,7 +1269,7 @@ Java 为我们提供了一个迭代器的接口就是 Iterator 。
 3. 使用remove()：将迭代器新返回的元素删除。
 4. Java 采用了迭代器来为各种容器提供了公共的操作接口。这样使得对容器的遍历操作与其具体的底层实现相隔离，达到解耦的效果。
 
-###  Iterator 和foreach 遍历集合的区别？
+### 14.13.2. Iterator 和foreach 遍历集合的区别？
 
 Iterator 和 foreach 都可以遍历集合；
 
@@ -1184,7 +1279,7 @@ foreach 不可以在遍历的过程中删除元素，不然会出现 **并发修
 
 ![1644386018921](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202202/09/135339-88643.png)
 
-### Iterator 和 ListIterator 有什么区别？
+### 14.13.3. Iterator 和 ListIterator 有什么区别？
 
 ListIterator 是 Iterator的增强版。
 
@@ -1194,7 +1289,7 @@ ListIterator 是 Iterator的增强版。
 - ListIterator可以实现对象的修改，set()方法可以实现。Iierator仅能遍历，不能修改。
 - ListIterator只能用于遍历List及其子类，Iterator可用来遍历所有集合。
 
-## 讲一下ArrayDeque？
+## 14.14. 讲一下ArrayDeque？
 
 ArrayDeque实现了双端队列，内部使用循环数组实现，默认大小为16。它的特点有：
 
@@ -1206,7 +1301,7 @@ ArrayDeque和LinkedList都实现了Deque接口，如果只需要从两端进行�
 
 ArrayDeque和LinkedList都是线程不安全的，可以使用Collections工具类中synchronizedXxx()转换成线程同步。
 
-## 哪些集合类是线程安全的？哪些不安全？
+## 14.15. 哪些集合类是线程安全的？哪些不安全？
 
 线性安全的集合类：
 
@@ -1224,7 +1319,7 @@ ArrayDeque和LinkedList都是线程不安全的，可以使用Collections工具�
 - TreeSet
 - TreeMap
 
-## 并发容器
+## 14.16. 并发容器
 
 JDK 提供的这些容器大部分在 `java.util.concurrent` 包中。
 
@@ -1234,7 +1329,7 @@ JDK 提供的这些容器大部分在 `java.util.concurrent` 包中。
 - **BlockingQueue:** 阻塞队列接口，JDK 内部通过[链表]()、数组等方式实现了这个接口。非常适合用于作为数据共享的通道。
 - **ConcurrentSkipListMap:** 跳表的实现。使用跳表的数据结构进行快速查找。
 
-### ConcurrentLinkedQueue
+### 14.16.1. ConcurrentLinkedQueue
 
 非阻塞队列。高效的并发队列，使用[链表]()实现。可以看做一个线程安全的 LinkedList，通过 CAS 操作实现。
 
@@ -1250,7 +1345,7 @@ JDK 提供的这些容器大部分在 `java.util.concurrent` 包中。
 
 对于非阻塞队列，一般情况下建议使用offer、poll和peek三个方法，不建议使用add和remove方法。因为使用offer、poll和peek三个方法可以通过返回值判断操作成功与否，而使用add和remove方法却不能达到这样的效果。
 
-### 阻塞队列
+### 14.16.2. 阻塞队列
 
 阻塞队列是java.util.concurrent包下重要的数据结构，BlockingQueue提供了线程安全的队列访问方式：当阻塞队列进行插入数据时，如果队列已满，线程将会阻塞等待直到队列非满；从阻塞队列取数据时，如果队列已空，线程将会阻塞等待直到队列非空。并发包下很多高级同步类的实现都是基于BlockingQueue实现的。BlockingQueue 适合用于作为数据共享的通道。
 
@@ -1263,7 +1358,7 @@ JDK 提供的这些容器大部分在 `java.util.concurrent` 包中。
 
 ![1644389429770](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202202/09/145030-536538.png)
 
-#### JDK提供的阻塞队列
+#### 14.16.2.1. JDK提供的阻塞队列
 
 JDK 7 提供了7个阻塞队列，如下
 
@@ -1305,7 +1400,7 @@ transfer方法：如果当前有消费者正在等待接收元素（take或者�
 
 tryTransfer方法：用来试探生产者传入的元素能否直接传给消费者。如果没有消费者在等待，则返回false。和上述方法的区别是该方法无论消费者是否接收，方法立即返回。而transfer方法是必须等到消费者消费了才返回。
 
-## 不同集合容量与扩容系数？
+## 14.17. 不同集合容量与扩容系数？
 
 -  ArrayList
    -  1.7：容量10，饿汉式，扩容1.5倍+1
@@ -1321,7 +1416,7 @@ tryTransfer方法：用来试探生产者传入的元素能否直接传给消费
 -  ConcurrentHashMap
    -  初始容量16，负载因子0.75，扩容2倍
 
-## java8的ConcurrentHashMap为何放弃分段锁？
+## 14.18. java8的ConcurrentHashMap为何放弃分段锁？
 
 -  在JDK1.7中，通过控制Segment的个数来控制并发级别（Segment的个数在ConcurrentHashMap创建后是不可以改变的）
 -  随着元素的增多，每个Segment包含的元素越多，锁的粒度会越来越大，竞争会逐渐激烈

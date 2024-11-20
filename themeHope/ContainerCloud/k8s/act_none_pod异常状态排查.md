@@ -1,6 +1,6 @@
 ---
 # 这是文章的标题
-title: 2、Pod异常状态排错
+title: Pod异常状态排错
 # 你可以自定义封面图片
 #cover: /assets/images/cover1.jpg
 # 这是页面的图标

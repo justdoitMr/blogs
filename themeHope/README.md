@@ -6,7 +6,8 @@ title: 主页
 heroImage: https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/log.jpg
 heroText: bugcode 架构之路
 heroFullScreen: false
-tagline: 思考，分享，沉淀
+tagline: 
+  - 思考, 分享, 沉淀, 路漫漫其修远兮,吾将上下而求索
 projects:
   - icon: project
     name: Spring源码设计实现
