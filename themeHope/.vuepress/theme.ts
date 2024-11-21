@@ -3,7 +3,7 @@ import navbar from "./navbar";
 import {sidebarConfig} from "./sidebar";
 
 export default hopeTheme({
-  hostname: "https://www.bugcode.online",
+  hostname: "https://www.codinglab.online",
 
   // 全局默认作者
   author: {

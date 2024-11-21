@@ -8,7 +8,7 @@ import theme from "./theme.js";
 export default defineUserConfig({
   base: "/",
   lang: "zh-CN",
-  title: "bugcode 的架构之路",
+  title: "穿山甲技术",
   description: "bugcode 架构之路",
   dest: "themeHope/.vuepress/dist",
   // @vuepress/plugin-pwa:  ⚠ The plugin will register service worker to handle assets, so we recommend you to set "shouldPrefetch: false" in VuePress config file. 报错

@@ -6,20 +6,80 @@ export const sidebarConfig = sidebar({
     // 项目
     "/Project/DynamicThreadPool/" :[
         "20241119-dynamicThreadPool-design.md",
+        "20241129-dynamicThreadPoolRelease.md",
     ],
     // 自定义starter
     "/Project/Widget/" :[
         "20241120-customizeWidget.md",
     ],
-    //  导读专题
-    "/introduction/": [
-    ],
     // 算法专题
-    "/algorithm/algor/": [
-        "basicAlgor.md"
+    "/algorithm/": [
+        {
+            text: "双指针",
+            collapsible: true,
+            prefix: "twoPoint/",
+            children:
+            [
+            "20241121-twoPoint.md"
+            ]
+        },
+        {
+            text: "滑动窗口",
+            collapsible: true,
+            prefix: "slidingWindow/",
+            children:
+            [
+           
+            ]
+        },
+        {
+            text: "动态规划",
+            collapsible: true,
+            prefix: "DynamicProgramming/",
+            children:
+            [
+           
+            ]
+        },
+        {
+            text: "回溯算法",
+            collapsible: true,
+            prefix: "backtracking/",
+            children:
+            [
+            
+            ]
+        },
+        {
+            text: "贪心算法",
+            collapsible: true,
+            prefix: "GreedyAlgorithm/",
+            children:
+            [
+         
+            ]
+        },
+        {
+            text: "Hot 100",
+            collapsible: true,
+            prefix: "hotting/",
+            children:
+            [
+         
+            ]
+        },
     ],
-    "/algorithm/dataStructure/": [
-        "basicDataStructure.md"
+// 数据结构专题
+    "/dataStructure/": [
+        {
+            text: "数据结构",
+            collapsible: true,
+            // prefix: "twoPoint/",
+            children:
+            [
+            "basicDataStructure.md"
+            ]
+        },
     ],
     // 知识星球
     "/KnowledgePlanet/": [
