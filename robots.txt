@@ -2,4 +2,4 @@
 User-agent:*
 Disallow:
 
-Sitemap: https://www.bugcode.online/sitemap.xml
+Sitemap: https://www.codinglab.online/sitemap.xml
