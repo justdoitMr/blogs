@@ -107,7 +107,8 @@ export const sidebarConfig = sidebar({
         "act_two_interface_design.md",
         "act_three_Slow_SQL.md",
         "act_four_Frequent_calls.md",
-        "act_five_Duplicate_data.md"
+        "act_five_Duplicate_data.md",
+        "20241122-memoryAnalyze.md"
     ],
     // 综合面试题
     "/interview/Questions/":[
