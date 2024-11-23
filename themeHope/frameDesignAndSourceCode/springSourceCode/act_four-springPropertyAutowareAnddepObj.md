@@ -1,6 +1,6 @@
 ---
 # 这是文章的标题
-title: 4、属性注入和依赖对象
+title: 4、属性注入和依赖对象填充
 # 你可以自定义封面图片
 #cover: /assets/images/cover1.jpg
 # 这是页面的图标
@@ -31,9 +31,24 @@ footer: Spring基础
 copyright: bugcode
 ---
 
+<!-- TOC -->
 
+- [4、属性注入和依赖对象填充](#4属性注入和依赖对象填充)
+  - [1、目标](#1目标)
+  - [2、设计](#2设计)
+  - [3、实现](#3实现)
+    - [3.1、核心类实现](#31核心类实现)
+    - [3.2、定义属性](#32定义属性)
+    - [3.3、BeanDefinition定义补全](#33beandefinition定义补全)
+    - [3.4、Bean属性的填充](#34bean属性的填充)
+  - [4、测试](#4测试)
+    - [4.1、测试用例](#41测试用例)
+    - [4.2、测试结果](#42测试结果)
+  - [5、总结](#5总结)
 
-# 4、属性注入和依赖对象
+<!-- /TOC -->
+
+# 4、属性注入和依赖对象填充
 
 ## 1、目标
 
@@ -45,9 +60,9 @@ copyright: bugcode
 
 在写代码之前，我们首先考虑一个问题，到目前为止，我们的spring容器都帮助我们做了哪些工作？
 
-1. 首先spring容器本身帮助我们管理了bean对象，即我们创建的bean对象被放在容器中
-2. 其二，spring容器帮助我们注册了bean的定义信息到容器中
-3. 三，spring容器帮助我们实例化对象，然后将实例化的对象放到了容器中供应用程序使用。
+1. 首先spring容器本身帮助我们管理了bean对象，即我们创建的bean对象被放在容器中;
+2. 其二，spring容器帮助我们注册了bean的定义信息到容器中;
+3. 三，spring容器帮助我们实例化对象，然后将实例化的对象放到了容器中供应用程序使用;
 
 所以看到这里，我们应该大致已经明白bean对象的属性赋值应该在什么阶段，赋值前bean对象肯定会被创建好，因此我们就在创建好bean对象后，对属性进行赋值操作。
 
@@ -58,7 +73,7 @@ copyright: bugcode
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202408020953338.png" alt="step03-design-实例化bean带参数-对象属性填充.drawio.png" style="zoom:80%;" />
 
-回到上面来年各个问题中，对象属性的填充，应该在对象实例化完毕后，因此应该在调用对象的构造函数完后再去调用属性初始化方法，因此将两部分设计为不同的功能，bean对象的创建，bean对象属性的填充。而属性值具体从哪里获取，因为在整个程序设计中，bean的所有定义信息都被封装在BeanDefinitioin中，因此，以后所有与bean定义相关的内容都被放到这个类里面。
+回到上面来年各个问题中，对象属性的填充，应该在对象实例化完毕后，**因此应该在调用对象的构造函数完后再去调用属性初始化方法**[对象实例化完成后，值都是各种类型的默认值]，因此将两部分设计为不同的功能，bean对象的创建，bean对象属性的填充。而属性值具体从哪里获取，因为在整个程序设计中，bean的所有定义信息都被封装在BeanDefinitioin中，因此，以后所有与bean定义相关的内容都被放到这个类里面。
 
 另外是填充属性信息还包括了 Bean 的对象类型，也就是需要再定义一个 BeanReference，里面其实就是一个简单的 Bean 名称，在具体的实例化操作时进行递归创建和填充，与 Spring 源码实现一样。*Spring 源码中 BeanReference 是一个接口*
 
@@ -99,7 +114,7 @@ public class PropertyValue {
 }
 ```
 
-因为需要给bean里面的属性赋值，所以首先要完成的步骤是阿静bean的属性信息也一起注入到bean的定义中，在实例化bean之后在对属性赋值。
+因为需要给bean里面的属性赋值，所以首先要完成的步骤是将bean的属性信息也一起注入到bean的定义中，在实例化bean之后在对属性赋值。
 
 ```java
 /**
@@ -149,20 +164,58 @@ public class BeanDefinition {
 ```
 
 - 在 Bean 注册的过程中是需要传递 Bean 的信息，在几个前面章节的测试中都有所体现 new BeanDefinition(UserService.class, propertyValues);
-- 所以为了把属性一定交给 Bean 定义，所以这里填充了 PropertyValues 属性，同时把两个构造函数做了一些简单的优化，避免后面 for 循环时还得判断属性填充是否为空。
+- 所以为了把属性一定交给 Bean 定义，这里填充了 PropertyValues 属性，同时把两个构造函数做了一些简单的优化，避免后面 for 循环时还得判断属性填充是否为空。
 
 ### 3.4、Bean属性的填充
 
 ```java
+/**
+ * 继承抽象的工厂类，实现自己的方法，公共的方法由抽象类实现
+ * 体现了类实现过程中的各司其职，你只需要关心属于你的内容，不是你的内容，不要参与
+ */
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
     private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
+    /**
+     * 不带属性的Bean对象
+     * @author yourname
+     * @date 20:03 2024/11/23 
+     * @param beanName
+     * @param beanDefinition 
+     * @return java.lang.Object
+     **/
+    @Override
+    protected Object createBean(String beanName, BeanDefinition beanDefinition) throws BeansException {
+        Object bean;
+        try {
+//            无参构造对象
+            bean = beanDefinition.getBeanClass().newInstance();
+            // 给 Bean 填充属性
+            applyPropertyValues(beanName, bean, beanDefinition);
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new BeansException("Instantiation of bean failed", e);
+        }
+
+        addSingleton(beanName, bean);
+        return bean;
+    }
+
+    /**
+     * 带属性信息的Bean对象
+     * @author yourname
+     * @date 20:03 2024/11/23 
+     * @param beanName
+     * @param beanDefinition
+     * @param args 
+     * @return java.lang.Object
+     **/
     @Override
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
         Object bean;
         try {
+            /*创建bean对象实例 也就是调用对象的构造方法创建对象*/
             bean = createBeanInstance(beanDefinition,beanName,args);
-            // 在bean实例化完成之后，实例化之后bean的属性都是默认值，给 Bean 填充属性
+            // 在bean实例化完成之后【调用构造防范】，实例化之后bean的属性都是默认值，给 Bean 填充属性
             applyPropertyValues(beanName, bean, beanDefinition);
         } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed", e);
@@ -219,10 +272,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             throw new BeansException("Error setting property values：" + beanName);
         }
     }
+
+    public InstantiationStrategy getInstantiationStrategy() {
+        return instantiationStrategy;
+    }
+
+    public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
+        this.instantiationStrategy = instantiationStrategy;
+    }
 }
 ```
 
-抽象类中重点关注createBean()方法，在这个方法中首先进行bean对象的创建，然后调用applyPropertyValues()方法对bean中的属性进行填充，填充过程中对基本数据类型直接进行属性值的设置，如果遇到引用类型，会递归调用getBean()方法完成引用类型的注入，然后再赋值操作。需要注意的是这里并没有解决循环引用问题。
+抽象类中重点关注createBean()方法，在这个方法中首先进行bean对象的创建【调用bean对象的构造方法创建对象，此时对象中属性都是默认值】，然后调用applyPropertyValues()方法对bean中的属性进行填充，填充过程中对基本数据类型直接进行属性值的设置，如果遇到引用类型，会递归调用getBean()方法完成引用类型的注入，然后再赋值操作。需要注意的是这里并没有解决循环引用问题。
 
 这里体现了一点，方法级别的单一职责原则，一个方法只负责一个职责。
 
@@ -230,30 +291,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 2. createBeanInstance()负责实例化一个bean对象
 3. applyPropertyValues()方法负责给对象填充属性值。
 
-```java
- @Test
-    public void testBeanDefine(){
-        // 1.初始化 BeanFactory
-        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+createBean();此方法内部调用的方法链路过长，因此在平时的项目开发中，不要使一个方法中调用的链路过长；
 
-        // 2.注册 bean
-        beanFactory.registerBeanDefinition("peopleDao",new BeanDefinition(PeopleDao.class));
-
-        // 3. peopleService 设置属性[id、userDao]
-        PropertyValues propertyValues = new PropertyValues();
-        propertyValues.addPropertyValue(new PropertyValue("id", "10001"));
-        propertyValues.addPropertyValue(new PropertyValue("peopleDao",new BeanReference("peopleDao")));
-
-        // 4. peopleService 注入bean
-        BeanDefinition beanDefinition = new BeanDefinition(PeopleService.class, propertyValues);
-        beanFactory.registerBeanDefinition("peopleService", beanDefinition);
-
-        // 5. UserService 获取bean
-        PeopleService peopleService = (PeopleService) beanFactory.getBean("peopleService");
-        peopleService.queryUserInfo();
-
-    }
-```
 
 ## 4、测试
 
@@ -295,42 +334,15 @@ public class PeopleService {
 
 Dao对象主要负责数据库操作，在这里我们模拟查询数据库数据，然后再Service里面注入Dao对象使用其查询出来的数据。
 
-
-
-```java
- @Test
-    public void testBeanDefine(){
-        // 1.初始化 BeanFactory
-        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
-
-        // 2.注册 bean
-        beanFactory.registerBeanDefinition("peopleDao",new BeanDefinition(PeopleDao.class));
-
-        // 3. peopleService 设置属性[id、userDao]
-        PropertyValues propertyValues = new PropertyValues();
-        propertyValues.addPropertyValue(new PropertyValue("id", "10001"));
-        propertyValues.addPropertyValue(new PropertyValue("peopleDao",new BeanReference("peopleDao")));
-
-        // 4. peopleService 注入bean
-        BeanDefinition beanDefinition = new BeanDefinition(PeopleService.class, propertyValues);
-        beanFactory.registerBeanDefinition("peopleService", beanDefinition);
-
-        // 5. UserService 获取bean
-        PeopleService peopleService = (PeopleService) beanFactory.getBean("peopleService");
-        peopleService.queryUserInfo();
-
-    }
-```
-
 ### 4.2、测试结果
 
 ```java
- @Test
+   @Test
     public void testBeanDefine(){
-        // 1.初始化 BeanFactory
+        // 1.初始化 BeanFactory，获取Bean对象的接口
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 
-        // 2.注册 bean
+        // 2.注册 bean 将Bean的class信息注册到容器中
         beanFactory.registerBeanDefinition("peopleDao",new BeanDefinition(PeopleDao.class));
 
         // 3. peopleService 设置属性[id、userDao]
@@ -345,46 +357,8 @@ Dao对象主要负责数据库操作，在这里我们模拟查询数据库数�
         // 5. UserService 获取bean
         PeopleService peopleService = (PeopleService) beanFactory.getBean("peopleService");
         peopleService.queryUserInfo();
-
     }
 ```
-
-**测试结果**：
-
-```java
-查询用户信息：工程师
-
-Process finished with exit code 0
-```
-
-测试代码的编写中，首先实例化BeanFactory对象，注册Bean对象(Service和Dao)，设置属性对象，获取bean对象执行方法，目前都是需要手写代码帮助spring完成生命周期中的一些工作，在下章节中，将会实现自动读取xml文件实现注册功能。
-
-```java
- @Test
-    public void testBeanDefine(){
-        // 1.初始化 BeanFactory
-        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
-
-        // 2.注册 bean
-        beanFactory.registerBeanDefinition("peopleDao",new BeanDefinition(PeopleDao.class));
-
-        // 3. peopleService 设置属性[id、userDao]
-        PropertyValues propertyValues = new PropertyValues();
-        propertyValues.addPropertyValue(new PropertyValue("id", "10001"));
-        propertyValues.addPropertyValue(new PropertyValue("peopleDao",new BeanReference("peopleDao")));
-
-        // 4. peopleService 注入bean
-        BeanDefinition beanDefinition = new BeanDefinition(PeopleService.class, propertyValues);
-        beanFactory.registerBeanDefinition("peopleService", beanDefinition);
-
-        // 5. UserService 获取bean
-        PeopleService peopleService = (PeopleService) beanFactory.getBean("peopleService");
-        peopleService.queryUserInfo();
-
-    }
-```
-
-
 
 **测试结果**：
 

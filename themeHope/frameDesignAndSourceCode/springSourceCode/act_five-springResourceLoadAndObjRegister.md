@@ -31,7 +31,26 @@ footer: Spring基础
 copyright: bugcode
 ---
 
-# 第五章、资源加载器解析文件注册对象
+<!-- TOC -->
+
+- [第五章、资源加载器解析文件并注册对象](#第五章资源加载器解析文件并注册对象)
+  - [1、目标](#1目标)
+  - [2、设计](#2设计)
+  - [3、实现](#3实现)
+    - [3.1、核心类图](#31核心类图)
+    - [3.2、资源加载接口](#32资源加载接口)
+    - [3.3、包装资源加载器类](#33包装资源加载器类)
+    - [3.4、Bean定义读取接口](#34bean定义读取接口)
+    - [3.5、Bean定义读取抽象类实现](#35bean定义读取抽象类实现)
+    - [3.6、解析XML资源文件注册Bean](#36解析xml资源文件注册bean)
+  - [4、测试](#4测试)
+    - [4.1、测试用例](#41测试用例)
+    - [4.2、测试结果](#42测试结果)
+  - [5、总结](#5总结)
+
+<!-- /TOC -->
+
+# 第五章、资源加载器解析文件并注册对象
 
 ## 1、目标
 
@@ -61,9 +80,11 @@ copyright: bugcode
 
 要想将bean对象的定义放在xml文件中然后让spring自动去读取xml文件然后实现bean的注册和初始化，需要实现两大模块功能，**资源文件加载器，xml资源处理器**。
 
-资源加载实现的主要接口是Resources和ResourceLoader两个接口，资源主要通过实现Resources的getInputStream实现资源文件的读取操作，其中包括了classpath下的文件，系统文件以及远程配置文件三种。
+资源加载实现的主要接口是Resources和ResourceLoader两个接口，资源主要通过实现Resources的getInputStream实现资源文件的读取操作，其中包括了**classpath下的文件，系统文件以及远程配置文件**三种。
 
-接口：BeanDefinitionReader、抽象类：AbstractBeanDefinitionReader、实现类：XmlBeanDefinitionReader，这三部分内容主要是合理清晰的处理了资源读取后的注册 Bean 容器操作。*接口管定义，抽象类处理非接口功能外的注册Bean组件填充，最终实现类即可只关心具体的业务实现*
+接口：BeanDefinitionReader、抽象类：AbstractBeanDefinitionReader、实现类：XmlBeanDefinitionReader，这三部分内容主要是合理清晰的处理了资源读取后的注册 Bean 容器操作。
+
+接口负责定义，抽象类处理非接口功能外的注册Bean组件填充，最终实现类即可只关心具体的业务实现
 
 **接口扩展**
 
@@ -77,6 +98,11 @@ copyright: bugcode
 ### 3.2、资源加载接口
 
 ```java
+/**
+ * @Description 获取xml资源的总接口，有多个不同的资源加载，都实现此类即可
+ * @Author bugcode.online
+ * @Date 2024/5/16 19:39
+ */
 public interface Resource {
 
     /**
@@ -93,6 +119,11 @@ Resource接口，只负责外部xml资源加载工作，定义获取bean定义�
 **classpath加载资源文件**
 
 ```java
+/**
+ * @Description
+ * @Author bugcode.online
+ * @Date 2024/5/16 19:40
+ */
 public class ClassPathResource implements Resource {
 
     private final String path;
@@ -109,8 +140,13 @@ public class ClassPathResource implements Resource {
 //        获取类加载器
         this.classLoader = (classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader());
     }
-
-
+    
+    /**
+     * 实现接口定义的资源加载方法
+     * @author yourname
+     * @date 20:19 2024/11/23  
+     * @return java.io.InputStream
+     **/
     @Override
     public InputStream getInputStream() throws IOException {
         InputStream is = classLoader.getResourceAsStream(path);
@@ -230,12 +266,29 @@ public class DefaultResourceLoader implements ResourceLoader {
 ### 3.4、Bean定义读取接口
 
 ```java
+/**
+ * @Description 定义读取Bean定义的接口 基于xml文件流解析读取
+ * @Author bugcode.online
+ * @Date 2024/5/16 19:59
+ */
 public interface BeanDefinitionReader {
 
     BeanDefinitionRegistry getRegistry();
 
+    /**
+     * 获取资源加载器
+     * @author yourname
+     * @date 20:22 2024/11/23  
+     * @return bugcode.online.springframework.core.io.ResourceLoader
+     **/
     ResourceLoader getResourceLoader();
 
+    /**
+     * 架子啊Bean的定义
+     * @author yourname
+     * @date 20:21 2024/11/23 
+     * @param resource 
+     **/
     void loadBeanDefinitions(Resource resource) throws BeansException;
 
     void loadBeanDefinitions(Resource... resources) throws BeansException;
@@ -247,11 +300,11 @@ public interface BeanDefinitionReader {
 - 这是一个 *Simple interface for bean definition readers.* 其实里面无非定义了几个方法，包括：getRegistry()、getResourceLoader()，以及三个加载Bean定义的方法。
 - 这里需要注意 getRegistry()、getResourceLoader()，都是用于提供给后面三个方法的工具，加载和注册，这两个方法的实现会包装到抽象类中，以免污染具体的接口实现方法
 
-BeanDefinitionReader:顶级资源加载，类注册接口
+- BeanDefinitionReader:顶级资源加载，类注册接口
 
-AbstractBeanDefinitionReader：抽象类实现顶级接口，定义业务逻辑的调用过程
+- AbstractBeanDefinitionReader：抽象类实现顶级接口，定义业务逻辑的调用过程
 
-XmlBeanDefinitionReader：提供给用户的最底层接口，可以根据配置文件进行注册。
+- XmlBeanDefinitionReader：提供给用户的最底层接口，可以根据配置文件进行注册。
 
 ### 3.5、Bean定义读取抽象类实现
 
@@ -283,7 +336,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 }
 ```
 
-抽象类把 BeanDefinitionReader 接口的前两个方法全部实现完了，并提供了构造函数，让外部的调用使用方，把Bean定义注入类，传递进来，注意两点：
+抽象类把 BeanDefinitionReader 接口的前两个方法全部实现完了，并提供了构造函数，让外部的调用使用方，把Bean定义注入类，传递进来；
 
 这样在接口 BeanDefinitionReader 的具体实现类中，就可以把解析后的 XML 文件中的 Bean 信息，注册到 Spring 容器去了。*以前我们是通过单元测试使用，调用 BeanDefinitionRegistry 完成Bean的注册，现在可以放到 XMl 中操作了*
 
@@ -425,18 +478,6 @@ public class PeopleService {
 }
 ```
 
-```java
-public class PeopleService {
-    private String id;
-
-    private PeopleDao peopleDao;
-
-    public void queryUserInfo() {
-        System.out.println("查询用户信息：" + peopleDao.queryUserName(id));
-    }
-}
-```
-
 **xml文件定义**
 
 ```java
@@ -458,12 +499,47 @@ public class PeopleService {
 ### 4.2、测试结果
 
 ```java
- @Test
+public class TestBeanDefine {
+
+    private DefaultResourceLoader resourceLoader;
+
+    @Before
+    public void init(){
+        resourceLoader = new DefaultResourceLoader();
+
+
+    }
+
+    @Test
+    public void test_classpath() throws IOException {
+        Resource resource = resourceLoader.getResource("classpath:important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_file() throws IOException {
+        Resource resource = resourceLoader.getResource("src/test/resources/important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_url() throws IOException {
+        Resource resource = resourceLoader.getResource("https://github.com/fuzhengwei/small-spring/important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
     public void test_xml() {
         // 1.初始化 BeanFactory
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 
-        // 2. 读取配置文件&注册Bean
+        // 2. 读取配置文件&注册Bean 这一步自动读取xml文件，将文件中定义的bean对象加载到容器中
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
         reader.loadBeanDefinitions("classpath:spring.xml");
 
@@ -471,6 +547,7 @@ public class PeopleService {
         PeopleService peopleService = (PeopleService)beanFactory.getBean("peopleService", PeopleService.class);
         peopleService.queryUserInfo();
     }
+}
 ```
 
 测试结果：
@@ -483,6 +560,6 @@ Process finished with exit code 0
 
 ## 5、总结
 
-第五章注意设计点，读取不同xml配置文件接口和实现类的设计,采用策略模式设计。
+1. 第五章注意设计点，读取不同xml配置文件接口和实现类的设计,采用策略模式设计，因为可以从不同的位置读取资源文件，有多种途径，因此可以借助策略模式实现；
 
-BeanDefinitionReader加载资源并且注册对象的设计，如何将自动去取xml配置串流到对象注册的过程中。
+2. BeanDefinitionReader加载资源并且注册对象的设计，如何将自动去取xml配置串流到对象注册的过程中。

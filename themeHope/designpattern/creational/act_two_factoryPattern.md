@@ -151,10 +151,9 @@ class GreekPizza extends Pizza{
 
 1. 优点是比较好理解，简单易操作。
 2. 缺点是违反了设计模式的 **ocp** 原则，即对扩展开放，对修改关闭。即当我们给类增加新功能的时候，尽量不修改代码，或者尽可能少修改代码.
-3. 比如我们这时要新增加一个**Pizza**的种类(Pepper披萨)，我们需要做如下修改.
-
-- - 新增加披萨类继承于Pizza类，实现具体pizza的制作
-- 而对于OrderPizza类，我们也需要进行修改，增加新增种类披萨的预定操作，如果有多个预定披萨的类，那么我们就要进行多处的修改，所以没有遵从ocp原则。
+3. 比如我们这时要新增加一个**Pizza**的种类(Pepper披萨)，我们需要做如下修改. 
+   1. 新增加披萨类继承于Pizza类，实现具体pizza的制作 
+   2. 而对于OrderPizza类，我们也需要进行修改，增加新增种类披萨的预定操作，如果有多个预定披萨的类，那么我们就要进行多处的修改，所以没有遵从ocp原则。
 
 ![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202407131231410.png)
 
@@ -171,7 +170,7 @@ class GreekPizza extends Pizza{
 
 在软件开发中，当我们会用到大量的创建某种、某类或者某批对象时，就会使用到工厂模式.
 
-![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202407131231061.png)
+![简单工厂模式](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202407131231061.png)
 
 
 
@@ -184,13 +183,13 @@ class GreekPizza extends Pizza{
 **使用步骤：**
 
 - **创建**抽象产品类，用于定义具体产品的公共接口；
-- **创建**具体产品类（继承抽象产品类） & 定义生产的具体产品；
-- **创建**工厂类**，通过创建静态方法根据传入不同参数从而创建不同具体产品类的实例；**
-- 外界通过调用工厂类的静态方法，传入不同参数从而创建不同具体产品类的实例
+- **创建**具体产品类（继承抽象产品类） & 定义生产的具体产品;
+- **创建**工厂类，通过创建静态方法根据传入不同参数从而创建不同具体产品类的实例;
+- 外界通过调用工厂类的静态方法，传入不同参数从而创建不同具体产品类的实例;
 
 简单工厂模式的设计方案: 定义一个可以实例化 Pizaa 对象的类SimpleFactory（工厂类，负责创建具体的产品），封装创建对象的代码。由SimpleFectory来维护我们需要创建的披萨种类，并且实例化。
 
-![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202407131213914.png)
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202407131213914.png)
 
 **代码实现**
 
@@ -307,7 +306,7 @@ class GreekPizza extends Pizza{
 
 **工厂方法应用案例图解**
 
-![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202407131231127.png)
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202407131231127.png)
 
 **代码实现**
 
@@ -454,7 +453,7 @@ class LDCheesePizza extends Pizza{
 
 ### 1.5.1、抽象工厂类图
 
-![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202407131231497.png)
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202407131231497.png)
 
 **抽象工厂模式包含以下几个核心角色：**
 
@@ -467,7 +466,7 @@ class LDCheesePizza extends Pizza{
 
 ### 1.5.2、抽象工厂实现披萨创建
 
-![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202407131228611.png)AbsFactor:抽象的工厂类，定义createPizza()创建披萨的方法。BJFactory和LDFactory是具体的工厂，实现createPizza()方法创建具体的产品。
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202407131228611.png)AbsFactor:抽象的工厂类，定义createPizza()创建披萨的方法。BJFactory和LDFactory是具体的工厂，实现createPizza()方法创建具体的产品。
 
 **代码说明**
 
@@ -617,24 +616,18 @@ class LDCheesePizza1 extends Pizza1{
 }
 ```
 
-
-
 # 小结
 
 - 简单工厂模式(静态工厂模式)
+  - 虽然某种程度上不符合设计原则，但实际使用最多!
 
-- - 虽然某种程度上不符合设计原则，但实际使用最多!
+- 工厂方法模式 
+  - 不修改已有类的前提下，通过增加新的工厂类实现扩展。
 
-- 工厂方法模式
-
-- - 不修改已有类的前提下，通过增加新的工厂类实现扩展。
-
-- 抽象工厂模式
-
-- - 不可以增加产品，可以增加产品族!
+- 抽象工厂模式 
+  - 不可以增加产品，可以增加产品族!
 
 应用场景:
-
 - JDK中Calendar的getlInstance方法
 - JDBC中的Connection对象的获取
 - Spring中IOC容器创建管理bean对象反射中Class对象的newInstance方法

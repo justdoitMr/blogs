@@ -32,7 +32,24 @@ copyright: bugcode
 ---
 
 
+<!-- TOC -->
 
+- [3、实现构造函数实例化策略](#3实现构造函数实例化策略)
+  - [1、目标](#1目标)
+  - [2、设计](#2设计)
+  - [3、实现](#3实现)
+    - [3.1、核心类关系](#31核心类关系)
+    - [3.2、新增getBean()方法](#32新增getbean方法)
+    - [3.3、实例化策略接口](#33实例化策略接口)
+    - [3.4、JDK实例化](#34jdk实例化)
+    - [3.5、Cglib实例化](#35cglib实例化)
+    - [3.6、创建策略调用](#36创建策略调用)
+  - [4、测试](#4测试)
+    - [4.1、测试用例](#41测试用例)
+    - [4.2、测试结果](#42测试结果)
+  - [5、总结](#5总结)
+
+<!-- /TOC -->
 
 # 3、实现构造函数实例化策略
 
@@ -54,6 +71,7 @@ copyright: bugcode
 所以整体实现分为两部分：
 
 1. 何时将参数传递给实例化方法
+   
 2. 实例化方法获取到参数后如何根据参数创建对象
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202408020938567.png" alt="img" style="zoom: 67%;" />
@@ -67,9 +85,11 @@ copyright: bugcode
 
 <img src="https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202408020940328.png" alt="img" style="zoom:80%;" />
 
-在获取bean对象的时候，传出初始化参数，所以给BeanFactory#getBean方法添加参数信息。
+在获取bean对象的时候，传输初始化参数，所以给BeanFactory#getBean方法添加参数信息。
 
-另外因为实例化有参数的对象有两种方法，jdk和cglib，因此定义一个策略接口InstantiationStrategy，然后由两种不同的实例化方法实现此接口实现有参数对象的创建工作。AbstractAutowireCapableBeanFactory此类中持有实例化策略接口对象，调用不同的方法进行实例化。
+另外因为实例化有参数的对象有两种方法，jdk和cglib，因此定义一个策略接口**InstantiationStrategy**，然后由两种不同的实例化方法实现此接口实现有参数对象的创建工作。
+
+AbstractAutowireCapableBeanFactory此类中持有实例化策略接口对象，调用不同的方法进行实例化。
 
 > 策略设计模式
 
@@ -82,7 +102,6 @@ copyright: bugcode
  * 接口功能
  *  1.提供actor从容器中获取bean对象的功能
  */
-
 public interface BeanFactory {
 
     /**
@@ -103,8 +122,7 @@ public interface BeanFactory {
     Object getBean(String name, Object... args) throws BeansException;
 }
 ```
-
-这样在getBean()对象的时候，如果bean对象为空，就可以将传入的参数传递给构造函数构建bean然后放到容器中。
+这样在getBean()对象的时候，如果bean对象为空，就可以将传入的参数传递给构造函数构建有属性的bean然后放到容器中。
 
 ### 3.3、实例化策略接口
 
@@ -121,11 +139,11 @@ public interface InstantiationStrategy {
 }
 ```
 
-实例化接口中的方法instantiate有一个args参数，在对象实例化的时候使用参数实例化。
+实例化接口中的方法instantiate有一个args参数(对象的属性)，在对象实例化的时候使用参数实例化。
 
-有两个对象实例化类分别实现接口中的方法完成对象实例化。
+- 有两个对象实例化类分别实现接口中的方法完成对象实例化。
 
-在实例化接口 instantiate 方法中添加必要的入参信息，包括：beanDefinition、 beanName、ctor、args
+- 在实例化接口 instantiate 方法中添加必要的入参信息，包括：beanDefinition、 beanName、ctor、args
 
 其中 Constructor 你可能会有一点陌生，它是 java.lang.reflect 包下的 Constructor 类，里面包含了一些必要的类信息，有这个参数的目的就是为了拿到符合入参信息相对应的构造函数。
 
@@ -133,7 +151,7 @@ public interface InstantiationStrategy {
 
 ```java
 /**
- * jdk实例化
+ * jdk实例化Bean对象
  */
 public class SimpleInstantiationStrategy implements InstantiationStrategy {
 
@@ -148,8 +166,10 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
      */
     @Override
     public Object instantiate(BeanDefinition beanDefinition, String beanName, Constructor ctor, Object[] args) throws BeansException {
+        /*获取Bean对象的定义*/
         Class clazz = beanDefinition.getBeanClass();
         try {
+            /*判断是否有构造函数*/
             if (null != ctor) {
 //                有参构造
                 return clazz.getDeclaredConstructor(ctor.getParameterTypes()).newInstance(args);
@@ -161,10 +181,8 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
             throw new BeansException("Failed to instantiate [" + clazz.getName() + "]", e);
         }
     }
-
 }
 ```
-
 JDK实例化首先获取bean的定义Class信息，class信息是spring注册bean定义的时候注册到容器中的，然后判断传进来的构造函数是否为空，如果为空，就执行有参构造函数的实例化，否则执行无参构造函数实例化。
 
 这里我们重点关注有构造函数的实例化，实例化方式为 clazz.getDeclaredConstructor(ctor.getParameterTypes()).newInstance(args);，把入参信息传递给 newInstance 进行实例化。
@@ -172,6 +190,13 @@ JDK实例化首先获取bean的定义Class信息，class信息是spring注册bea
 ### 3.5、Cglib实例化
 
 ```java
+/**
+ * Cglib方式创建Bean对象
+ * @author yourname
+ * @date 18:23 2024/11/23 
+ * @param null 
+ * @return null
+ **/
 public class CglibSubclassingInstantiationStrategy implements InstantiationStrategy {
 
     /**
@@ -210,6 +235,8 @@ public class CglibSubclassingInstantiationStrategy implements InstantiationStrat
  * 体现了类实现过程中的各司其职，你只需要关心属于你的内容，不是你的内容，不要参与
  */
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
+
+    /* 默认适用cglib进行实例化*/
     private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
     /**
@@ -224,6 +251,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
         Object bean;
         try {
+            /*调用创建Bean对象的方法*/
             bean = createBeanInstance(beanDefinition,beanName,args);
         } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed", e);
@@ -234,7 +262,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     /**
-     * 具体的实例化实现
+     * 具体的创建Bean对象的方法
      * @param beanDefinition
      * @param beanName
      * @param args
@@ -242,7 +270,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
      */
     protected Object createBeanInstance(BeanDefinition beanDefinition, String beanName, Object[] args) {
         Constructor constructorToUse = null;
+        /*获取Bean对象的定义*/
         Class<?> beanClass = beanDefinition.getBeanClass();
+        /*获取Bean的构造函数*/
         Constructor<?>[] declaredConstructors = beanClass.getDeclaredConstructors();
         for (Constructor ctor : declaredConstructors) {
             if (null != args && ctor.getParameterTypes().length == args.length) {
@@ -250,9 +280,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 break;
             }
         }
+        /*实例化Bean对象*/
         return getInstantiationStrategy().instantiate(beanDefinition, beanName, constructorToUse, args);
     }
 
+    /**
+     * 返回实例化策略
+     * @author yourname
+     * @date 18:25 2024/11/23  
+     * @return bugcode.online.springframework.beans.factory.support.InstantiationStrategy
+     **/
     public InstantiationStrategy getInstantiationStrategy() {
         return instantiationStrategy;
     }
@@ -262,12 +299,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 }
 ```
+1. 策略调用首先在AbstractAutowireCapableBeanFactory抽象类中创建InstantiationStrategy对象，默认选择的是Cglib实现类。
 
-策略调用首先在AbstractAutowireCapableBeanFactory抽象类中创建InstantiationStrategy对象，默认选择的是Cglib实现类。
-
-接下来抽取 createBeanInstance 方法，在这个方法中需要注意 Constructor 代表了你有多少个构造函数，通过 beanClass.getDeclaredConstructors() 方式可以获取到你所有的构造函数，是一个集合。
-
-接下来就需要循环比对出构造函数集合与入参信息 args 的匹配情况，这里我们对比的方式比较简单，只是一个数量对比，而实际 Spring 源码中还需要比对入参类型，否则相同数量不同入参类型的情况，就会抛异常了。
+2. 接下来抽取 createBeanInstance 方法，在这个方法中需要注意 Constructor 代表了你有多少个构造函数，通过 beanClass.getDeclaredConstructors() 方式可以获取到你所有的构造函数，是一个集合。
+3. 接下来就需要循环比对出构造函数集合与入参信息 args 的匹配情况，这里我们对比的方式比较简单，只是一个数量对比，而实际 Spring 源码中还需要比对入参类型，否则相同数量不同入参类型的情况，就会抛异常了。
 
 ## 4、测试
 
@@ -331,9 +366,9 @@ Process finished with exit code 0
 
 本章使用设计模式：
 
-模板模式：BeanFactory容器的设计使用模板模式，root接口定义功能，AbstractBeanFactory定义调用过程 实现公共的逻辑方法。
+**模板模式**：BeanFactory容器的设计使用模板模式，接口定义功能，AbstractBeanFactory定义调用过程 实现公共的逻辑方法,[模板模式参考](https://codinglab.online/designpattern/Behavior/act_one_templatePattern.html);
 
-策略模式：在程序中如果一个动作有多种方法完成，那么就可以使用策略模式，在顶级接口中定义这个动作，然后由不同的子类去完成实现具体的动作，最后使用接口做多态调用。
+**策略模式**：在程序中如果一个动作有多种方法完成，那么就可以使用策略模式，在顶级接口中定义这个动作，然后由不同的子类去完成实现具体的动作，最后使用接口做多态调用，[策略模式参考](https://codinglab.online/designpattern/Behavior/act_two_strategyPattern.html#_4-3%E3%80%81%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E9%AA%A8%E6%9E%B6);
 
 设计原则：
 
@@ -341,6 +376,8 @@ Process finished with exit code 0
 2. 继承接口的抽象类，应该只实现子类的一些公共的方法，不属于公共的方法应该让子类自己去实现，另外抽象类中还可以定义抽象方法，抽象方法让具体的子类去实现。
 3. 想让某一个类拥有某一个接口功能，直接实现某一个接口即可，类可以继承抽象类然后实现一个接口，那么这个类就继承了抽象类所有的方法，并且还拥有接口的方法。
 4. 接口，抽象类，类之间的关系，多用设计模式，简单工厂，抽象工厂，模板，策略，builder等。
+
+**到目前为止，我们实现的spring功能：**
 
 实现一个容器：定义map结构
 
