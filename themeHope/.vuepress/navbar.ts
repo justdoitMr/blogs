@@ -9,22 +9,17 @@ export default navbar([
     icon: "pen-to-square",
     children: [
       {
-        text: "动态线程池",
-        link: "/Project/DynamicThreadPool/",
+        text: "项目开发",
+        link: "/Project/",
         icon: "pen-to-square",
       },
       {
-        text: "自定义组件",
-        link: "/Project/Widget/",
+        text: "组件开发",
+        link: "/Widget/",
         icon: "pen-to-square",
       },
     ],
   },
-  // {
-  //   text: "项目",
-  //   icon: "book",
-  //   link: "/introduction/introducted.md"
-  // },
   //   算法专题导航
   {
     text: "算法",
@@ -33,7 +28,7 @@ export default navbar([
     children: [
       {
         text: "算法专题",
-        link: "/algorithm/algor/",
+        link: "/algorithm/",
         icon: "pen-to-square",
       },
       {
@@ -94,13 +89,18 @@ export default navbar([
   //   架构专题导航
   {
     text: "架构专题",
+    // collapsible: true,
     icon: "pen-to-square",
     children: [
       {
-        text: "MVC和DDD",
-        link: "/engineeringArchitectureDesign/",
-        // collapsible: true,
+        text: "软件架构",
+        link: "/ArchitectureDesign/",
         icon: "pen-to-square",
+      },
+      {
+        text: "数据架构",
+        icon: "pen-to-square",
+        link: "/Implementation/",
       },
     ],
   },

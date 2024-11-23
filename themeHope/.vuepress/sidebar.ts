@@ -3,16 +3,77 @@ import { sidebar } from "vuepress-theme-hope";
     //将其他文件下的内容导入此文件
 export const sidebarConfig = sidebar({
     //   ------------------------------------------------导航文档导入 start-----------------------------------------------------
-    // 项目
-    "/Project/DynamicThreadPool/" :[
-        "20241119-dynamicThreadPool-design.md",
-        "20241129-dynamicThreadPoolRelease.md",
+    // // 项目
+    // "/Project/DynamicThreadPool/" :[
+    //     "20241119-dynamicThreadPool-design.md",
+    //     "20241129-dynamicThreadPoolRelease.md",
+    // ],
+    // 自定义starter 组件开发，可以添加多个折叠组件项目
+    "/Widget/" :[
+        {
+            text: "组件开发步骤",
+            collapsible: true,
+            prefix: "devWidget/",
+            children:
+                [
+                    "20241120-customizeWidget.md",
+                ]
+        },
     ],
-    // 自定义starter
-    "/Project/Widget/" :[
-        "20241120-customizeWidget.md",
+    // 项目开发 可以添加多个折叠项目
+    "/Project/": [
+        {
+            text: "动态线程池",
+            collapsible: true,
+            prefix: "DynamicThreadPool/",
+            children:
+                [
+                    "20241119-dynamicThreadPool-design.md",
+                    "20241129-dynamicThreadPoolRelease.md"
+                ]
+        },
     ],
-    // 算法专题
+
+    // 架构专题
+    "/ArchitectureDesign/": [
+        {
+            text: "DDD架构思想",
+            collapsible: true,
+            prefix: "DDD/",
+            children:
+                [
+                    "first-mvcDesignArchitecture.md",
+                    "second-ddd-Concept-Theory.md",
+                    "third-ddd-Engineering-Model.md",
+                    "four-ddd-architecture-design.md",
+                    "five-ddd-Architectural-Refactoring.md",
+                    "20241116-DDDModeling.md"
+                ]
+        },
+        {
+            text: "数据架构",
+            collapsible: true,
+            prefix: "DataArchitecture/",
+            children:
+                [
+                    "20241123-dataArchitecture.md"
+                ]
+        },
+    ],
+
+    // 软件架构落地实现
+    "/Implementation/": [
+        {
+            text: "数据仓库架构",
+            collapsible: true,
+            prefix: "dataArvhitectureImple/",
+            children:
+                [
+                   "20241123-Implementation.md"
+                ]
+        },
+    ],
+    // 算法专题 可以添加多个算法分类
     "/algorithm/": [
         {
             text: "双指针",
@@ -158,12 +219,7 @@ export const sidebarConfig = sidebar({
     ],
     // 架构专题/frameDesignAndSourceCode/
     "/engineeringArchitectureDesign/" :[
-        "first-mvcDesignArchitecture.md",
-        "second-ddd-Concept-Theory.md",
-        "third-ddd-Engineering-Model.md",
-        "four-ddd-architecture-design.md",
-        "five-ddd-Architectural-Refactoring.md",
-        "20241116-DDDModeling.md"
+
     ],
     // 设计模式篇
     "/designpattern/designPrinciple/" :[
