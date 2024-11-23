@@ -15,9 +15,9 @@ projects:
     link: /frameDesignAndSourceCode/springSourceCode/
 
   - icon: link
-    name: 架构设计
-    desc: MVC DDD 软件结构设计
-    link: /engineeringArchitectureDesign/
+    name: 算法设计
+    desc: 算法与数据结构
+    link: /algorithm/
 
   - icon: book
     name: 项目经验
@@ -30,24 +30,24 @@ projects:
     link: /excellentBook/business/
 
   - icon: friend
-    name: 业务场景设计
-    desc: 业务场景设计题
-    link: 
+    name: 项目开发
+    desc: 项目与组件开发
+    link: /Project/
     
-  - icon: https://theme-hope-assets.vuejs.press/logo.svg
-    name: 归档文章
-    desc: 基础归档
-    link: 
+  - icon: friend
+    name: 生产问题分析
+    desc: 生产问题分析
+    link: /interview/ProductionAnalysis/
     
-  - icon: https://theme-hope-assets.vuejs.press/logo.svg
-    name: 面试题
-    desc: 后端，大数据，云面试宝典
-    link: 
+  - icon: link
+    name: 架构设计
+    desc: 软件架构 数据架构设计
+    link: /ArchitectureDesign/
     
-  - icon: https://theme-hope-assets.vuejs.press/logo.svg
-    name: 其他
-    desc: 其他内容
-    link: 
+  - icon: link
+    name: 综合面试
+    desc: 综合面试内容
+    link: /interview/Questions/
 
 #footer: 备案中ing
 ---

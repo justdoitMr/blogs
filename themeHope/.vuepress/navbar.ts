@@ -4,7 +4,7 @@ export default navbar([
   //   首页导航
   "/",
   {
-    text: "项目",
+    text: "项目开发",
     // collapsible: true,
     icon: "pen-to-square",
     children: [
@@ -22,7 +22,7 @@ export default navbar([
   },
   //   算法专题导航
   {
-    text: "算法",
+    text: "算法与数据结构",
     // collapsible: true,
     icon: "pen-to-square",
     children: [
@@ -69,7 +69,7 @@ export default navbar([
   },
   //   源码专题导航
   {
-    text: "源码",
+    text: "源码分析",
     // collapsible: true,
     icon: "pen-to-square",
     children: [
@@ -115,7 +115,9 @@ export default navbar([
         icon: "pen-to-square",
         prefix: "/excellentBook/business/",
         children: [
-          { text: "金融业务", icon: "pen-to-square", link: "/excellentBook/business/" },
+          { text: "金融业务",
+            icon: "pen-to-square",
+            link: "/excellentBook/business/" },
         ],
       },
       {
@@ -130,8 +132,15 @@ export default navbar([
           },
         ],
       },
-      { text: "通用数据设计", icon: "pen-to-square", link: "" },
-      { text: "业务场景设计", icon: "pen-to-square", link: "scence.md" },
+      {
+        text: "通用数据设计",
+        icon: "pen-to-square",
+        link: ""
+      },
+      { text: "业务场景设计",
+        icon: "pen-to-square",
+        link: "scence.md"
+      },
     ],
   },
   //   文章归档导航
@@ -179,12 +188,6 @@ export default navbar([
     icon: "gaishu",
     link: "/video/"
   },
-  //   关于导航
-  // {
-  //   text: "项目",
-  //   icon: "book",
-  //   link: "/introduction/introducted.md"
-  // },
   {
     text: "关于我",
     icon: "book",

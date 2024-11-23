@@ -3,11 +3,6 @@ import { sidebar } from "vuepress-theme-hope";
     //将其他文件下的内容导入此文件
 export const sidebarConfig = sidebar({
     //   ------------------------------------------------导航文档导入 start-----------------------------------------------------
-    // // 项目
-    // "/Project/DynamicThreadPool/" :[
-    //     "20241119-dynamicThreadPool-design.md",
-    //     "20241129-dynamicThreadPoolRelease.md",
-    // ],
     // 自定义starter 组件开发，可以添加多个折叠组件项目
     "/Widget/" :[
         {

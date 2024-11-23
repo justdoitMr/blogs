@@ -2,7 +2,7 @@
 # 这是文章的标题
 title: 线上进程内存动态查看
 # 你可以自定义封面图片
-#cover: /assets/images/cover1.jpg
+#cover: /assets/images/cover2.jpg
 # 这是页面的图标
 icon: file
 # 这是侧边栏的顺序
@@ -13,7 +13,7 @@ author: bugcode
 date: 2024-11-22
 # 一个页面可以有多个分类
 category:
-  - 面试
+  - JAVA
 # 一个页面可以有多个标签
 tag:
   - 面试
@@ -38,6 +38,9 @@ copyright: bugcode
 - jmap:打印出某个java进程（使用pid）内存内的所有'对象'的情况（如：产生那些对象，及其数量）。
 
 ## JPS
+
+
+
 
 Java版的ps命令，查看java进程及其相关的信息，如果你想找到一个java进程的pid，那可以用jps命令替代linux中的ps命令了，简单而方便。
 
