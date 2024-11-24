@@ -48,7 +48,6 @@ public void test_proxy_class() {
     String result = userService.queryUserInfo();
     System.out.println("测试结果：" + result);
 }
-
 ```
 
 
@@ -59,6 +58,9 @@ public void test_proxy_class() {
 * **就像你在使用 Spring 的 AOP 一样，只处理一些需要被拦截的方法。在拦截方法后，执行你对方法的扩展操作。**
 * **那么我们就需要先来实现一个可以代理方法的 Proxy，其实代理方法主要是使用到方法拦截器类处理方法的调用 **MethodInterceptor#invoke**，而不是直接使用 invoke 方法中的入参 Method method 进行 **method.invoke(targetObj, args)** 这块是整个使用时的差异。**
 * **除了以上的核心功能实现，还需要使用到 org.aspectj.weaver.tools.PointcutParser 处理拦截表达式 "execution(\* cn.bugstack.springframework.test.bean.IUserService.\*(..))"，有了方法代理和处理拦截，我们就可以完成设计出一个 AOP 的雏形了**
+
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/proxy.png)
 
 
 

@@ -31,11 +31,33 @@ footer: Spring基础
 copyright: bugcode
 ---
 
+<!-- TOC -->
+
+- [7、Bean对象的初始化和销毁方法](#7bean对象的初始化和销毁方法)
+  - [1、目标](#1目标)
+  - [2、设计](#2设计)
+  - [3、实现](#3实现)
+    - [3.1、核心类图实现](#31核心类图实现)
+    - [3.2、定义初始化和销毁方法接口](#32定义初始化和销毁方法接口)
+    - [3.3、Bean定义增加初始化和销毁属性](#33bean定义增加初始化和销毁属性)
+    - [3.4、执行Bean对象初始化和销毁](#34执行bean对象初始化和销毁)
+    - [3.5、定义销毁方法适配器(接口和配置)](#35定义销毁方法适配器接口和配置)
+    - [3.6、虚拟机关闭钩子注册调用销毁方法](#36虚拟机关闭钩子注册调用销毁方法)
+  - [4、测试](#4测试)
+    - [4.1、测试用例](#41测试用例)
+    - [4.2、单元测试](#42单元测试)
+  - [5、小结](#5小结)
+
+<!-- /TOC -->
+
+
 # 7、Bean对象的初始化和销毁方法
 
 ## 1、目标
 
-上一章中，我们对Bean对象声明周期中扩展了两个点，一个是当Bean定义加载完成后，提供了BeanFactoryPostProcessor接口修改Bean定义的接口，另一个是BeanPostProcessor接口，提供在初始化Bean的前后对Bean对象进行修改的前置和后置处理器。
+上一章中，我们对Bean对象声明周期中扩展了两个点:
+- 一个是当Bean定义加载完成后，提供了BeanFactoryPostProcessor接口修改Bean定义的接口
+- 另一个是BeanPostProcessor接口，提供在初始化Bean的前后对Bean对象进行修改的前置和后置处理器。
 
 思考一下这两个bean的扩展都是在Bean对象的实例化前和实例化后，那如果我们想在Bean对象的初始化过程中，对Bean对象进行一些扩展怎么办，比如想做资源的加载， 链接注册中心暴露RPC接口以及在Web程序关闭时执行链接断开，内存销毁等操作。*如果说没有Spring我们也可以通过构造函数、静态方法以及手动调用的方式实现，但这样的处理方式终究不如把诸如此类的操作都交给 Spring 容器来管理更加合适。*
 
@@ -43,22 +65,23 @@ copyright: bugcode
 
 ## 2、设计
 
-在使用spring框架的过程中，我们只需要再xml配置文件中做简单的配置或者在代码中使用注解，或者是实现一些预留的接口，spring就可以帮我们将配置中定义的bean对象加载到容器中并且执行自定义实现的接口方法，其实对于这种Bean容器初始化过程中额外添加的处理操作，在spring内部无非就是预先执行了一个定义好的接口方法或者反射调用类中xml配置的方法而已，程序中只需要按照接口的定义实现，spring容器在处理的过程中会自己进行调用而已。
+在使用spring框架的过程中，我们只需要再**xml配置文件**中做简单的配置或者在代码中**使用注解**，或者是实现一些**预留的接口**，spring就可以帮我们将配置中定义的bean对象加载到容器中并且执行自定义实现的接口方法，其实对于这种Bean容器初始化过程中额外添加的处理操作，在spring内部无非就是预先执行了一个定义好的接口方法或者反射调用类中xml配置的方法而已，程序中只需要按照接口的定义实现，spring容器在处理的过程中会自己进行调用而已。
 
 在spring框架的实现中，用户可以通过在xml配置文件中指定初始化和销毁的方法，或者使用注解指定这两个方法，因此本章中，我们先实现在xml配置文件中指定初始化和销毁方法，然后让spring自动帮我们将这两个方法串联在初始化过程中。
 
-![step03-design-实例化bean带参数-spring应用上下文-实现初始化和销毁方法.drawio.png](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202408021037313.png)
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202408021037313.png)
 
-- 在 spring.xml 配置中添加 init-method、destroy-method 两个注解，在配置文件加载的过程中，把注解配置一并定义到 BeanDefinition 的属性当中。这样在 initializeBean 初始化操作的工程中，就可以通过反射的方式来调用配置在 Bean 定义属性当中的方法信息了。另外如果是接口实现的方式，那么直接可以通过 Bean 对象调用对应接口定义的方法即可，((InitializingBean) bean).afterPropertiesSet()，两种方式达到的效果是一样的。
-- 除了在初始化做的操作外，destroy-method 和 DisposableBean 接口的定义，都会在 Bean 对象初始化完成阶段，执行注册销毁方法的信息到 DefaultSingletonBeanRegistry 类中的 disposableBeans 属性里，这是为了后续统一进行操作。*这里还有一段适配器的使用，因为反射调用和接口直接调用，是两种方式。所以需要使用适配器进行包装，下文代码讲解中参考 DisposableBeanAdapter 的具体实现* -关于销毁方法需要在虚拟机执行关闭之前进行操作，所以这里需要用到一个注册钩子的操作，如：Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("close！")));*这段代码你可以执行测试*，另外你可以使用手动调用 ApplicationContext.close 方法关闭容器。
+- 在 spring.xml 配置中添加 init-method、destroy-method 两个注解，在配置文件加载的过程中，把注解配置一并定义到 BeanDefinition 的属性当中。这样在 initializeBean 初始化操作的过程中，就可以通过反射的方式来调用配置在 Bean 定义属性当中的方法信息了。另外如果是接口实现的方式，那么直接可以通过 Bean 对象调用对应接口定义的方法即可，((InitializingBean) bean).afterPropertiesSet()，两种方式达到的效果是一样的。
+  
+- 除了初始化做的操作外，destroy-method 和 DisposableBean 接口的定义，都会在 Bean 对象初始化完成阶段，执行注册销毁方法的信息到 DefaultSingletonBeanRegistry 类中的 disposableBeans 属性里，这是为了后续统一进行操作。*这里还有一段适配器的使用，因为反射调用和接口直接调用，是两种方式。所以需要使用适配器进行包装，下文代码讲解中参考 DisposableBeanAdapter 的具体实现* -关于销毁方法需要在虚拟机执行关闭之前进行操作，所以这里需要用到一个注册钩子的操作，如：Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("close！")));*这段代码你可以执行测试*，另外你可以使用手动调用 ApplicationContext.close 方法关闭容器。
 
 ## 3、实现
 
 ### 3.1、核心类图实现
 
-![spring-application-addInitAndDestroy.drawio.png](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202408021039145.png)
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202408021039145.png)
 
-- 因为我们一共实现了两种方式的初始化和销毁方法，xml配置和定义接口，所以这里既有 InitializingBean、DisposableBean 也有需要 XmlBeanDefinitionReader 加载 spring.xml 配置信息到 BeanDefinition 中，都是设计的顶层接口，负责bean对象的初始化和销毁，这里也可以看出，类的功能高度单一。
+- 因为我们一共实现了两种方式的初始化和销毁方法，**xml配置和定义接口**，所以这里既有 InitializingBean、DisposableBean 也有需要 XmlBeanDefinitionReader 加载 spring.xml 配置信息到 BeanDefinition 中，都是设计的顶层接口，负责bean对象的初始化和销毁，这里也可以看出，类的功能高度单一。
 - 另外接口 ConfigurableBeanFactory 定义了 destroySingletons 销毁方法，并由 AbstractBeanFactory 继承的父类 DefaultSingletonBeanRegistry 实现 ConfigurableBeanFactory 接口定义的 destroySingletons 方法。*这种方式的设计可能数程序员是没有用过的，都是用的谁实现接口谁完成实现类，而不是把实现接口的操作又交给继承的父类处理。所以这块还是蛮有意思的，是一种不错的隔离分层服务的设计方式*
 - 最后就是关于向虚拟机注册钩子，保证在虚拟机关闭之前，执行销毁操作。Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("close！")));
 - DisposableBean接口实现了一个适配器，*因为反射调用和接口直接调用，是两种方式。所以需要使用适配器进行包装，销毁方法的调用，一种是接口引用调用，另一种是反射调用。初始化只有接口调用。*
@@ -68,6 +91,11 @@ copyright: bugcode
 **初始化接口**
 
 ```java
+/**
+ * @Description 定义Bean对象初始化前的初始化接口
+ * @Author bugcode.online
+ * @Date 2024/5/17 14:29
+ */
 public interface InitializingBean {
     /**
      * Bean 处理了属性填充后调用
@@ -89,7 +117,7 @@ public interface DisposableBean {
 }
 ```
 
-初始化和销毁接口非常简单，定义了执行初始化和销毁动作执行的方法，用户只需要实现这两个接口，spring聚会自动感知到方法然后自动在初始化和销毁的时候调用这两个方法，比如在初始化的时候做接口暴漏、数据库数据读取、配置文件加载等等 。
+初始化和销毁接口非常简单，**定义了执行初始化和销毁动作执行的方法**，用户只需要实现这两个接口，spring就会自动感知到方法然后自动在初始化和销毁的时候调用这两个方法，比如在初始化的时候做接口暴漏、数据库数据读取、配置文件加载等等 。
 
 ### 3.3、Bean定义增加初始化和销毁属性
 
@@ -98,16 +126,47 @@ public interface DisposableBean {
 因为用户配置初始化和销毁方法一般是在xml文件中，所以需要再解析xml配置文件的时候识别到用户配置的方法关键字，所以就需要再BeanDefinition中将初始化和销毁方法作为属性添加进来，在解析的时候将方法注册到BeanDefinition中。
 
 ```java
+@Data
+@SuppressWarnings({"rawtypes"})
 public class BeanDefinition {
 
 //    定义类信息
     private Class beanClass;
 
+//    定义Bean对象的属性集合信息
     private PropertyValues propertyValues;
-
+    
+    /*定义初始化方法的名称 保存方法名字*/
     private String initMethodName;
 
+    /*定义销毁方法的名称 保存方法名字*/
     private String destroyMethodName;
+
+    public BeanDefinition(Class beanClass) {
+        this.beanClass = beanClass;
+        this.propertyValues = new PropertyValues();
+    }
+
+    public BeanDefinition(Class beanClass, PropertyValues propertyValues) {
+        this.beanClass = beanClass;
+        this.propertyValues = propertyValues != null?propertyValues:null;
+    }
+
+    public Class getBeanClass() {
+        return beanClass;
+    }
+
+    public void setBeanClass(Class beanClass) {
+        this.beanClass = beanClass;
+    }
+
+    public PropertyValues getPropertyValues() {
+        return propertyValues;
+    }
+
+    public void setPropertyValues(PropertyValues propertyValues) {
+        this.propertyValues = propertyValues;
+    }
 }
 ```
 
@@ -182,13 +241,25 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 }
 ```
 
-在读取和解析xml配置中，新增读取初始化和销毁的方法标签，让后将名字存储在BeanDefinition对象中。
+在读取和解析xml配置中，新增读取初始化和销毁的方法标签，让后将名字存储在BeanDefinition对象中,如下代码块:
+```java
+beanDefinition.setInitMethodName(initMethod);
+beanDefinition.setDestroyMethodName(destroyMethodName);
+```
 
 ### 3.4、执行Bean对象初始化和销毁
 
 思考一个问题，什么时候开始执行Bean对象的初始化和销毁动作？换句话说，我们应该在哪一个类中嵌入Bean的初始化和销毁方法。
 
-参考核心抽象类AbstractAutowireCapableBeanFactory#createBean()方法，在这个方法中完成了Bean对象的创建，设置属性值，前置和后置处理器的执行等步骤，所以如果想要那个做Bean对象的初始化动作，那么就需要再Bean被创建并且设置属性后执行，所以初始化动作的最佳嵌入点就是createBean()方法。
+参考核心抽象类AbstractAutowireCapableBeanFactory#createBean()方法，在这个方法中完成了**Bean对象的创建，设置属性值，前置和后置处理器的执行**等步骤，所以如果想要那个做Bean对象的初始化动作，那么就需要再Bean被创建并且设置属性后执行，所以初始化动作的最佳嵌入点就是createBean()方法。
+
+>
+> 执行顺序：
+> 1. Bean对象的实例化
+> 2. Bean对象属性设置
+> 3. Bean对象前置处理器调用
+> 4. Bean对象init初始化方法调用
+> 5. Bean对象后置处理器调用
 
 ```java
 /**
@@ -255,7 +326,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
         Object bean;
         try {
+            /*调用Bean的构造函数实例化对象*/
             bean = createBeanInstance(beanDefinition,beanName,args);
+
             // 给 Bean 填充属性
             applyPropertyValues(beanName, bean, beanDefinition);
 
@@ -268,6 +341,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
         // 注册实现了 DisposableBean 接口的 Bean 对象
         registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
+
         addSingleton(beanName, bean);
         return bean;
     }
@@ -336,6 +410,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
      * @return
      */
     private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+
         // 1. 执行 BeanPostProcessor Before 处理
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
 
@@ -417,7 +492,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 首先全局看一下Bean对象的生命周期：
 
-Bean对象的创建-》Bean属性填充-》执行前置处理器--》初始化方法--》执行后置处理器，在初始化方法里面，分别在初始化动作的前后执行bean的前置和后置处理器。
+Bean对象的创建 -> Bean属性填充 -> 执行前置处理器 -> 初始化方法 -> 执行后置处理器，在初始化方法里面，分别在初始化动作的前后执行bean的前置和后置处理器。
 
 抽象类AbstractAutowireCapableBeanFactory中完成了具体的Bean对象创建，所以我们要在执行后置处理器前增加执行初始化方法：initializeBean()
 
@@ -520,7 +595,7 @@ public class DisposableBeanAdapter implements DisposableBean {
 }
 ```
 
-- 可能你会想这里怎么有一个适配器的类呢，因为销毁方法有两种甚至多种方式，目前有实现接口 DisposableBean、配置信息 destroy-method，两种方式。而这两种方式的销毁动作是由 AbstractApplicationContext 在注册虚拟机钩子后看，虚拟机关闭前执行的操作动作。
+- 可能你会想这里怎么有一个适配器的类呢，**因为销毁方法有两种甚至多种方式，目前有实现接口 DisposableBean、配置信息 destroy-method，两种方式**。而这两种方式的销毁动作是由 AbstractApplicationContext 在注册虚拟机钩子后看，虚拟机关闭前执行的操作动作。
 - 那么在销毁执行时不太希望还得关注都销毁那些类型的方法，它的使用上更希望是有一个统一的接口进行销毁，所以这里就新增了适配类，做统一处理。
 
 ### 3.6、虚拟机关闭钩子注册调用销毁方法
@@ -590,13 +665,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
 梳理一下这一块的逻辑：
 
-在ConfigurableBeanFactory接口中定义destroySingletons，销毁单例对象的方法。
-
-在DefaultSingletonBeanRegistry类中实现销毁单例对象的方法。
-
-在ConfigurableApplicationContext接口中定义钩子函数和手动关闭的方法。
-
-在AbstractApplicationContext中实现具体的钩子函数调用和关闭方法，在close方法中调用destroySingletons方法实现关闭注销。
+1. 在ConfigurableBeanFactory接口中定义destroySingletons，销毁单例对象的方法。
+2. 在DefaultSingletonBeanRegistry类中实现销毁单例对象的方法。
+3. 在ConfigurableApplicationContext接口中定义钩子函数和手动关闭的方法。
+4. 在AbstractApplicationContext中实现具体的钩子函数调用和关闭方法，在close方法中调用destroySingletons方法实现关闭注销。
 
 
 
@@ -637,8 +709,6 @@ public class PeopleDao {
     }
 }
 ```
-
-Service实现
 
 Service实现
 
@@ -723,9 +793,8 @@ Process finished with exit code 0
 
 本章使用设计模式：
 
-执行销毁方法的时候，使用适配器模式，分析为什么要使用适配器模式。
-
-因为调用销毁方法的时候，有两种方法调用，接口引用和反射方式调用。
+1. 执行销毁方法的时候，使用适配器模式，分析为什么要使用适配器模式。
+2. 因为调用销毁方法的时候，有两种方法调用，接口引用和反射方式调用。
 
 
 
@@ -733,6 +802,14 @@ Process finished with exit code 0
 
 
 
-总结一下Bean对象的生命周期：
+最后，来一起总结一下Bean对象的生命周期：
 
-加载--》注册--》修改bean定义---》实例化Bean--->填充属性---》执行前置处理器---》执行初始化方法---》执行后置处理器---》执行销毁方法。
+1. 加载BeanDefinition
+2. 注册BeanDefinition到容器内
+3. 修改bean定义
+4. 实例化Bean
+5. 填充属性
+6. 执行前置处理器
+7. 执行初始化方法
+8. 执行后置处理器
+9. 执行销毁方法。
