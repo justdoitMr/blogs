@@ -73,20 +73,27 @@ jstat命令是使用频率比较高的命令，主要用来查看JVM运行时的
 
 其中LVMID是进程id，interval是打印间隔时间（毫秒），count是打印次数（默认一直打印）
 
+option：参数选项
+-t：可以在打印的列加上Timestamp列，用于显示系统运行的时间
+-h：可以在周期性数据输出的时候，指定输出多少行以后输出一次表头
+vmid：Virtual Machine ID（ 进程的 pid）
+interval：执行每次的间隔时间，单位为毫秒
+count：用于指定输出多少次记录，缺省则会一直打印
+
 option参数解释：
 
-- -class class loader的行为统计
-- -compiler HotSpt JIT编译器行为统计
-- -gc 垃圾回收堆的行为统计
-- -gccapacity 各个垃圾回收代容量(young,old,perm)和他们相应的空间统计
-- -gcutil 垃圾回收统计概述
+- -class:class loader的行为统计
+- -compiler:HotSpt JIT编译器行为统计
+- -gc:垃圾回收堆的行为统计
+- -gccapacity:各个垃圾回收代容量(young,old,perm)和他们相应的空间统计
+- -gcutil:垃圾回收统计概述
 - -gccause 垃圾收集统计概述（同-gcutil），附加最近两次垃圾回收事件的原因
-- -gcnew 新生代行为统计
-- -gcnewcapacity 新生代与其相应的内存空间的统计
-- -gcold 年老代和永生代行为统计
-- -gcoldcapacity 年老代行为统计
-- -gcpermcapacity 永生代行为统计
-- -printcompilation HotSpot编译方法统计
+- -gcnew:新生代行为统计
+- -gcnewcapacity:新生代与其相应的内存空间的统计
+- -gcold:年老代和永生代行为统计
+- -gcoldcapacity:年老代行为统计
+- -gcpermcapacity:永生代行为统计
+- -printcompilation:HotSpot编译方法统计
 
 ### 案例
 
@@ -98,9 +105,16 @@ option参数解释：
 //首先进入到jdk安装目录的bin目录下
 jstat -class 进程号
     
+jstat -class 5052
 Loaded  Bytes  Unloaded  Bytes     Time
- 21627 40737.3        0     0.0      17.63
+  7846 14968.0        0     0.0       3.11
 ```
+
+- Loaded:加载类的数量
+- Bytes：加载类的size，单位为Byte
+- Unloaded：卸载类的数目
+- Bytes：卸载类的size，单位为Byte
+- Time：加载与卸载类花费的时间
 
 #### 查看jvm编译类个数
 
@@ -109,9 +123,17 @@ Loaded  Bytes  Unloaded  Bytes     Time
 ```java
 jstat -complier 进程号
 
+jstat -compiler 5052
 Compiled Failed Invalid   Time   FailedType FailedMethod
-   10344      3       0    45.47          1 org/springframework/beans/GenericTypeAwarePropertyDescriptor <init>
+    5415      1       0     9.98          1 java/net/URLClassLoader$1 run
 ```
+
+- Compiled：编译任务执行数量
+- Failed：编译任务执行失败数量
+- Invalid：编译任务执行失效数量
+- Time：编译任务消耗时间
+- FailedType：最后一个编译失败任务的类型
+- FailedMethod：最后一个编译失败任务所在的类及方法
 
 #### 查看gc信息以及次数
 
@@ -120,11 +142,29 @@ Compiled Failed Invalid   Time   FailedType FailedMethod
 ```java
 jstat -gc 进程号
    
-jstat -gc 2128
+jstat -gc 5052
  S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT
-512.0  1024.0 384.0   0.0   133120.0 74622.8   163840.0   71196.1   119792.0 117433.6 14896.0 14580.7    116    0.763   4      0.332    1.095
-
+7680.0 7680.0  0.0    0.0   206848.0 110596.4  67584.0    10392.8   35496.0 33196.7 4608.0 4210.7      6    0.072   2      0.068    0.139
 ```
+
+- S0C：年轻代中第一个survivor（幸存区）的容量 （字节）
+- S1C：年轻代中第二个survivor（幸存区）的容量 (字节)
+- S0U：年轻代中第一个survivor（幸存区）目前已使用空间 (字节)
+- S1U：年轻代中第二个survivor（幸存区）目前已使用空间 (字节)
+- EC：年轻代中Eden（伊甸园）的容量 (字节)
+- EU：年轻代中Eden（伊甸园）目前已使用空间 (字节)
+- OC：Old代的容量 (字节)
+- OU：Old代目前已使用空间 (字节)
+- MC：metaspace(元空间)的容量 (字节)
+- MU：metaspace(元空间)目前已使用空间 (字节)
+- CCSC：当前压缩类空间的容量 (字节)
+- CCSU：当前压缩类空间目前已使用空间 (字节)
+- YGC：从应用程序启动到采样时年轻代中gc次数
+- YGCT：从应用程序启动到采样时年轻代中gc所用时间(s)
+- FGC：从应用程序启动到采样时old代(全gc)gc次数
+- FGCT：从应用程序启动到采样时old代(全gc)gc所用时间(s)
+- GCT：从应用程序启动到采样时gc用的总时间(s)
+
 
 #### 查看不同堆区域内存使用大小
 
@@ -132,12 +172,132 @@ jstat -gc 2128
 
 ```java
 jstat -gccapacity 进程号
+
+jstat -gccapacity 5052
  NGCMN    NGCMX     NGC     S0C   S1C       EC      OGCMN      OGCMX       OGC         OC       MCMN     MCMX      MC     CCSMN    CCSMX     CCSC    YGC    FGC
- 43520.0 689152.0 235008.0  512.0  512.0 121856.0    87552.0  1379328.0   163840.0   163840.0      0.0 1155072.0 119792.0      0.0 1048576.0  14896.0    227     4
+ 40960.0 649216.0 224256.0 7680.0 7680.0 206848.0    81920.0  1298432.0    67584.0    67584.0      0.0 1081344.0  35496.0      0.0 1048576.0   4608.0      6     2
+
+
+ jstat -gccapacity -h5 5052 1000 #-h5：每5行显示一次表头 1000：每1秒钟显示一次，单位为毫秒
 
 ```
 
-#### 常用字段解释
+- NGCMN：年轻代(young)中初始化(最小)的大小(字节)
+- NGCMX：年轻代(young)的最大容量 (字节)
+- NGC：年轻代(young)中当前的容量 (字节)
+- S0C：年轻代中第一个survivor（幸存区）的容量 (字节)
+- S1C：年轻代中第二个survivor（幸存区）的容量 (字节)
+- EC：年轻代中Eden（伊甸园）的容量 (字节)
+- OGCMN：old代中初始化(最小)的大小 (字节)
+- OGCMX：old代的最大容量(字节)
+- OGC：old代当前新生成的容量 (字节)
+- OC：Old代的容量 (字节)
+- MCMN：metaspace(元空间)中初始化(最小)的大小 (字节)
+- MCMX：metaspace(元空间)的最大容量 (字节)
+- MC：metaspace(元空间)当前新生成的容量 (字节)
+- CCSMN：最小压缩类空间大小
+- CCSMX：最大压缩类空间大小
+- CCSC：当前压缩类空间大小
+- YGC：从应用程序启动到采样时年轻代中gc次数
+- FGC：从应用程序启动到采样时old代(全gc)gc次数
+
+#### 元数据空间统计
+
+```java
+jstat -gcmetacapacity 5052
+   MCMN       MCMX        MC       CCSMN      CCSMX       CCSC     YGC   FGC    FGCT     GCT
+   0.0  1081344.0    35496.0        0.0  1048576.0     4608.0     6     2    0.068    0.139
+```
+
+- MCMN：最小元数据容量
+- MCMX：最大元数据容量
+- MC：当前元数据空间大小
+- CCSMN：最小压缩类空间大小
+- CCSMX：最大压缩类空间大小
+- CCSC：当前压缩类空间大小
+- YGC：从应用程序启动到采样时年轻代中gc次数
+- FGC：从应用程序启动到采样时old代(全gc)gc次数
+- FGCT：从应用程序启动到采样时old代(全gc)gc所用时间(s)
+- GCT：从应用程序启动到采样时gc用的总时间(s)
+
+#### 新生代垃圾回收统计
+
+```java
+jstat -gcnew 5052
+ S0C    S1C    S0U    S1U   TT MTT  DSS      EC       EU     YGC     YGCT
+7680.0 7680.0    0.0    0.0  5  15 7680.0 206848.0 149606.4      6    0.072
+```
+
+- S0C：年轻代中第一个survivor（幸存区）的容量 (字节)
+- S1C：年轻代中第二个survivor（幸存区）的容量 (字节)
+- S0U：年轻代中第一个survivor（幸存区）目前已使用空间 (字节)
+- S1U：年轻代中第二个survivor（幸存区）目前已使用空间 (字节)
+- TT：持有次数限制
+- MTT：最大持有次数限制
+- DSS：期望的幸存区大小
+- EC：年轻代中Eden（伊甸园）的容量 (字节)
+- EU：年轻代中Eden（伊甸园）目前已使用空间 (字节)
+- YGC：从应用程序启动到采样时年轻代中gc次数
+- YGCT：从应用程序启动到采样时年轻代中gc所用时间(s)
+
+
+#### 新生代内存统计
+
+```java
+jstat -gcnewcapacity 5052
+NGCMN      NGCMX       NGC      S0CMX     S0C     S1CMX     S1C       ECMX        EC      YGC   FGC
+40960.0   649216.0   224256.0 216064.0   7680.0 216064.0   7680.0   648192.0   206848.0     6     2
+```
+
+- NGCMN：年轻代(young)中初始化(最小)的大小(字节)
+- NGCMX：年轻代(young)的最大容量 (字节)
+- NGC：年轻代(young)中当前的容量 (字节)
+- S0CMX：年轻代中第一个survivor（幸存区）的最大容量 (字节)
+- S0C：年轻代中第一个survivor（幸存区）的容量 (字节)
+- S1CMX：年轻代中第二个survivor（幸存区）的最大容量 (字节)
+- S1C：年轻代中第二个survivor（幸存区）的容量 (字节)
+- ECMX：年轻代中Eden（伊甸园）的最大容量 (字节)
+- EC：年轻代中Eden（伊甸园）的容量 (字节)
+- YGC：从应用程序启动到采样时年轻代中gc次数
+- GC：从应用程序启动到采样时old代(全gc)gc次数
+
+#### 老年代垃圾回收统计
+
+```java
+jstat -gcold 5052
+MC       MU      CCSC     CCSU       OC          OU       YGC    FGC    FGCT     GCT
+35496.0  33196.7   4608.0   4210.7     67584.0     10392.8      6     2    0.068    0.139
+```
+
+- MC：metaspace(元空间)的容量 (字节)
+- MU：metaspace(元空间)目前已使用空间 (字节)
+- CCSC：压缩类空间大小
+- CCSU：压缩类空间使用大小
+- OC：Old代的容量 (字节)
+- OU：Old代目前已使用空间 (字节)
+- YGC：从应用程序启动到采样时年轻代中gc次数
+- FGC：从应用程序启动到采样时old代(全gc)gc次数
+- FGCT：从应用程序启动到采样时old代(全gc)gc所用时间(s)
+- GCT：从应用程序启动到采样时gc用的总时间(s)
+
+#### 老年代内存统计
+
+```java
+jstat -gcoldcapacity 5052
+OGCMN       OGCMX        OGC         OC       YGC   FGC    FGCT     GCT
+81920.0   1298432.0     67584.0     67584.0     6     2    0.068    0.139
+```
+
+- OGCMN：old代中初始化(最小)的大小 (字节)
+- OGCMX：old代的最大容量(字节)
+- OGC：old代当前新生成的容量 (字节)
+- OC：Old代的容量 (字节)
+- YGC：从应用程序启动到采样时年轻代中gc次数
+- FGC：从应用程序启动到采样时old代(全gc)gc次数
+- FGCT：从应用程序启动到采样时old代(全gc)gc所用时间(s)
+- GCT：从应用程序启动到采样时gc用的总时间(s)
+
+#### 垃圾回收统计
 
 ```java
 jstat -gcutil 12888 1000 3
@@ -159,17 +319,18 @@ S0     S1     E      O      M     CCS    YGC     YGCT    FGC    FGCT     GCT
 
 字段解释:
 
-- S0 survivor0使用百分比
-- S1 survivor1使用百分比
-- E Eden区使用百分比
-- O 老年代使用百分比
-- M 元数据区使用百分比
-- CCS 压缩使用百分比
-- YGC 年轻代垃圾回收次数
-- YGCT 年轻代垃圾回收消耗时间
-- FGC 老年代垃圾回收次数
-- FGCT 老年代垃圾回收消耗时间
-- GCT 垃圾回收消耗总时间
+- S0：年轻代中第一个survivor（幸存区）已使用的占当前容量百分比
+- S1：年轻代中第二个survivor（幸存区）已使用的占当前容量百分比
+- E：年轻代中Eden（伊甸园）已使用的占当前容量百分比
+- O：old代已使用的占当前容量百分比
+- M：元数据区已使用的占当前容量百分比
+- CCS：压缩类空间已使用的占当前容量百分比
+- YGC ：从应用程序启动到采样时年轻代中gc次数
+- YGCT ：从应用程序启动到采样时年轻代中gc所用时间(s)
+- FGC ：从应用程序启动到采样时old代(全gc)gc次数
+- FGCT ：从应用程序启动到采样时old代(全gc)gc所用时间(s)
+- GCT：从应用程序启动到采样时gc用的总时间(s)
+
 
 #### 垃圾回收堆行为统计
 
@@ -210,6 +371,18 @@ S0C        S1C        S0U  S1U     EC           EU           OC             OU  
 - FGC 老年代垃圾回收次数
 - FGCT 老年代垃圾回收消耗时间
 - GCT 垃圾回收消耗总时间
+
+
+#### -gccause
+
+```java
+jstat -gccause 5052
+S0     S1     E      O      M     CCS    YGC     YGCT    FGC    FGCT     GCT    LGCC                 GCC
+0.00   0.00  87.76  15.38  93.52  91.38      6    0.072     2    0.068    0.139 Metadata GC Threshold No GC
+```
+
+- LGCC：最后一次GC原因
+- GCC：当前GC原因（No GC 为当前没有执行GC）
 
 ## jinfo
 
@@ -444,6 +617,10 @@ jstack是用来查看JVM线程快照的命令，线程快照是当前JVM线程�
 **命令格式**
 
 ```java
+jstack [option] <pid> // 打印某个进程的堆栈信息
+
+option选项：
+
 jstack [-l] <pid> (连接运行中的进程)
 jstack -F [-m] [-l] <pid> (连接挂起的进程)
 jstack [-m] [-l] <executable> <core> (连接core文件)
@@ -453,12 +630,58 @@ jstack [-m] [-l] [server_id@]<remote server IP or hostname> (连接远程debug�
 option参数解释：
 
 ```text
-- -F 当使用jstack <pid>无响应时，强制输出线程堆栈。
-- -m  同时输出java和本地堆栈(混合模式)
-- -l  额外显示锁信息
+-F 当使用jstack <pid>无响应时，强制输出线程堆栈。
+-m  同时输出java和本地堆栈(混合模式)
+-l  除堆栈外，显示关于锁的附加信息，在发生死锁时可以用jstack -l pid来观察锁持有情况
 ```
 
-#### 查看线程堆栈信息
+### 线程状态分析
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241125125506.png)
+
+Java语言定义了6种线程池状态：
+
+- New：创建后尚未启动的线程处于这种状态，不会出现在Dump中。
+- RUNNABLE：包括Running和Ready。线程开启start（）方法，会进入该状态，在虚拟机内执行的。
+- Waiting：无限的等待另一个线程的特定操作。
+- Timed Waiting：有时限的等待另一个线程的特定操作。
+- 阻塞（Blocked）：在程序等待进入同步区域的时候，线程将进入这种状态，在等待监视器锁。
+- 结束（Terminated）：已终止线程的线程状态，线程已经结束执行。
+
+Dump文件的线程状态一般其实就以下3种：
+
+- RUNNABLE，线程处于执行中
+- BLOCKED，线程被阻塞
+- WAITING，线程正在等待
+
+
+### Monitor监视锁
+
+因为Java程序一般都是多线程运行的，Java多线程跟监视锁环环相扣，所以我们分析线程状态时，也需要回顾一下Monitor监视锁知识。
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241125125923.png)
+
+
+- 线程想要获取monitor,首先会进入Entry Set队列，它是Waiting Thread，线程状态是Waiting for monitor entry。
+- 当某个线程成功获取对象的monitor后,进入Owner区域，它就是Active Thread。
+- 如果线程调用了wait()方法，则会进入Wait Set队列，它会释放monitor锁，它也是Waiting Thread，线程状态in Object.wait()
+- 如果其他线程调用 notify() / notifyAll() ，会唤醒Wait Set中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。
+
+
+Dump 文件分析关注重点:
+
+- runnable，线程处于执行中
+- deadlock，死锁（重点关注）
+- blocked，线程被阻塞 （重点关注）
+- Parked，停止
+- locked，对象加锁
+- waiting，线程正在等待
+- waiting to lock 等待上锁
+- Object.wait()，对象等待中
+- waiting for monitor entry 等待获取监视器（重点关注）
+- Waiting on condition，等待资源（重点关注），最常见的情况是线程在等待网络的读写
+
+### 查看线程堆栈信息
 
 此命令用来查看进程下jvm的运行状态：
 
@@ -466,3 +689,129 @@ option参数解释：
 jstack 进程号
 ```
 
+
+### jstack分析cpu过高问题
+
+#### 示例代码
+
+```java
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * className: TestCpuHight
+ * description:
+ * author: MrR
+ * date: 2024/11/25 13:03
+ * version: 1.0
+ */
+public class TestCpuHight{
+
+    private static ExecutorService executorService = Executors.newFixedThreadPool(5);
+
+    private static Object lock = new Object();
+
+    public static void main(String[] args) {
+        Task task1 = new Task();
+        Task task2 = new Task();
+        System.out.println("提交task1....");
+        executorService.submit(task1);
+        System.out.println("提交task2....");
+        executorService.submit(task2);
+    }
+
+    static class Task implements Runnable{
+
+        @Override
+        public void run() {
+            synchronized (lock){
+                long sum = 0;
+                while (true){
+                    try {
+                        Thread.sleep(200);
+                        sum++;
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+            }
+        }
+    }
+}
+```
+循环导致cpu占用过高；
+
+使用jstack分析cpu过高问题步骤：
+
+
+1. top
+2. top -Hp pid
+3. jstack pid
+4. jstack -l [PID] >/tmp/log.txt
+5. 分析堆栈信息
+
+
+#### 使用top命令查看占用cpu过高的进程
+
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241125171918.png)
+
+在服务器上，我们可以通过top命令查看各个进程的cpu使用情况，它默认是按cpu使用率由高到低排序的；
+
+从上图中，我们可以看到pid为11957的进程cpu占用很高；
+
+
+#### 查看各个线程cpu占用情况
+
+top -Hp pid:查看进程中线程cpu占用情况；
+
+通过top -Hp 11975可以查看该进程下，各个线程的cpu使用情况，如下：
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241125171945.png)
+
+上图中看到线程12010 cpu占用率为99.9%，因此我们重点分析该线程的堆栈数据；
+
+#### jstack命令查看进程堆栈信息
+
+jstack -l pid 命令查看进程堆栈信息；
+
+通过top命令定位到cpu占用率较高的线程之后，接着使用jstack pid命令来查看当前java进程的堆栈状态；
+
+将线程堆栈信息重定向到本地文件，然后将cpu占用率较高的线程id号转换为十六进制；
+
+例如本例子中线程号12010转换为16进制为：2eea，我们使用此编号去堆栈文件中定位线程的堆栈信息；
+
+```text
+"pool-1-thread-2" #19 prio=5 os_prio=0 tid=0x00007f36b0127000 nid=0x2eeb waiting for monitor entry [0x00007f362f9fa000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+        at TestCpuHight$Task.run(TestCpuHight.java:31)
+        - waiting to lock <0x00000000d86744f0> (a java.lang.Object)
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+        at java.lang.Thread.run(Thread.java:748)
+
+   Locked ownable synchronizers:
+        - <0x00000000d8676ca8> (a java.util.concurrent.ThreadPoolExecutor$Worker)
+
+"pool-1-thread-1" #18 prio=5 os_prio=0 tid=0x00007f36b0125800 nid=0x2eea runnable [0x00007f362fafa000]
+   java.lang.Thread.State: RUNNABLE
+        at TestCpuHight$Task.run(TestCpuHight.java:33)
+        - locked <0x00000000d86744f0> (a java.lang.Object)
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+        at java.lang.Thread.run(Thread.java:748)
+
+   Locked ownable synchronizers:
+        - <0x00000000d8676870> (a java.util.concurrent.ThreadPoolExecutor$Worker)
+```
+
+如上，我们定位到：pool-1-thread-1,nid=0x2eea,可以看到该线程处于running状态，并且处于锁占用状态；具体代码在TestCpuHight.java:33位置；
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241125173307.png)
+
+这段代码刚好就是true循环位置，因此也就定位到cpu占用高的原因；

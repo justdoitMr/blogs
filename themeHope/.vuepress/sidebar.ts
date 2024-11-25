@@ -258,24 +258,24 @@ export const sidebarConfig = sidebar({
     // --------------------------------------------------下面是目录结构-----------------------------------------------------
 
   "/": [
-    {
-        text: "一、导读",
-        collapsible: true,
-        children:
-            [
-                // Java核心
-                {
-                    prefix: "/introduction/",
-                    text: "1、导读",
-                    link: "readme"
-                },
-                {
-                    prefix: "introduction/",
-                    text: "2、引言",
-                    link: "intrd"
-                }
-            ]
-    },
+    // {
+    //     text: "一、导读",
+    //     collapsible: true,
+    //     children:
+    //         [
+    //             // Java核心
+    //             {
+    //                 prefix: "/introduction/",
+    //                 text: "1、导读",
+    //                 link: "readme"
+    //             },
+    //             {
+    //                 prefix: "introduction/",
+    //                 text: "2、引言",
+    //                 link: "intrd"
+    //             }
+    //         ]
+    // },
       // 第二章节：java篇
       {
           text: "二、java核心",
@@ -470,17 +470,11 @@ export const sidebarConfig = sidebar({
       {
           text: "六、工具篇",
           collapsible: true,
+          prefix: "tools/",
           children:
               [
-                  // 第五章 第一节
-                  {
-                      prefix: "tools/",
-                      text: "1、Maven",
-                      collapsible: true,
-                      children: [
-                          "act-one-maven-basic.md"
-                      ],
-                  },
+              "act-one-maven-basic.md",
+                "20241125-linuxCommand.md"
               ]
       },
   ],
