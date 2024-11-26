@@ -82,18 +82,20 @@ count：用于指定输出多少次记录，缺省则会一直打印
 
 option参数解释：
 
-- -class:class loader的行为统计
-- -compiler:HotSpt JIT编译器行为统计
-- -gc:垃圾回收堆的行为统计
-- -gccapacity:各个垃圾回收代容量(young,old,perm)和他们相应的空间统计
-- -gcutil:垃圾回收统计概述
-- -gccause 垃圾收集统计概述（同-gcutil），附加最近两次垃圾回收事件的原因
-- -gcnew:新生代行为统计
-- -gcnewcapacity:新生代与其相应的内存空间的统计
-- -gcold:年老代和永生代行为统计
-- -gcoldcapacity:年老代行为统计
-- -gcpermcapacity:永生代行为统计
-- -printcompilation:HotSpot编译方法统计
+```text
+-class:class loader的行为统计
+-compiler:HotSpt JIT编译器行为统计
+-gc:垃圾回收堆的行为统计
+-gccapacity:各个垃圾回收代容量(young,old,perm)和他们相应的空间统计
+-gcutil:垃圾回收统计概述
+-gccause 垃圾收集统计概述（同-gcutil），附加最近两次垃圾回收事件的原因
+-gcnew:新生代行为统计
+-gcnewcapacity:新生代与其相应的内存空间的统计
+-gcold:年老代和永生代行为统计
+-gcoldcapacity:年老代行为统计
+-gcpermcapacity:永生代行为统计
+-printcompilation:HotSpot编译方法统计
+```
 
 ### 案例
 
@@ -143,7 +145,7 @@ Compiled Failed Invalid   Time   FailedType FailedMethod
 jstat -gc 进程号
    
 jstat -gc 5052
- S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT
+S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT
 7680.0 7680.0  0.0    0.0   206848.0 110596.4  67584.0    10392.8   35496.0 33196.7 4608.0 4210.7      6    0.072   2      0.068    0.139
 ```
 
@@ -165,6 +167,8 @@ jstat -gc 5052
 - FGCT：从应用程序启动到采样时old代(全gc)gc所用时间(s)
 - GCT：从应用程序启动到采样时gc用的总时间(s)
 
+> GCT = YGCT + FGCT
+
 
 #### 查看不同堆区域内存使用大小
 
@@ -174,11 +178,11 @@ jstat -gc 5052
 jstat -gccapacity 进程号
 
 jstat -gccapacity 5052
- NGCMN    NGCMX     NGC     S0C   S1C       EC      OGCMN      OGCMX       OGC         OC       MCMN     MCMX      MC     CCSMN    CCSMX     CCSC    YGC    FGC
- 40960.0 649216.0 224256.0 7680.0 7680.0 206848.0    81920.0  1298432.0    67584.0    67584.0      0.0 1081344.0  35496.0      0.0 1048576.0   4608.0      6     2
+NGCMN    NGCMX     NGC     S0C   S1C       EC      OGCMN      OGCMX       OGC         OC       MCMN     MCMX      MC     CCSMN    CCSMX     CCSC    YGC    FGC
+40960.0 649216.0 224256.0 7680.0 7680.0 206848.0    81920.0  1298432.0    67584.0    67584.0      0.0 1081344.0  35496.0      0.0 1048576.0   4608.0      6     2
 
 
- jstat -gccapacity -h5 5052 1000 #-h5：每5行显示一次表头 1000：每1秒钟显示一次，单位为毫秒
+jstat -gccapacity -h5 5052 1000 #-h5：每5行显示一次表头 1000：每1秒钟显示一次，单位为毫秒
 
 ```
 
@@ -205,8 +209,9 @@ jstat -gccapacity 5052
 
 ```java
 jstat -gcmetacapacity 5052
-   MCMN       MCMX        MC       CCSMN      CCSMX       CCSC     YGC   FGC    FGCT     GCT
-   0.0  1081344.0    35496.0        0.0  1048576.0     4608.0     6     2    0.068    0.139
+
+MCMN       MCMX        MC       CCSMN      CCSMX       CCSC     YGC   FGC    FGCT     GCT
+0.0  1081344.0    35496.0        0.0  1048576.0     4608.0     6     2    0.068    0.139
 ```
 
 - MCMN：最小元数据容量
@@ -391,24 +396,140 @@ S0     S1     E      O      M     CCS    YGC     YGCT    FGC    FGCT     GCT    
 在很多情况下，Java应用程序不会指定所有的Java虚拟机参数。而此时，开发人员可能不知道某一个具体的Java虚拟机参数的默认值。在这种情况下，可能需要通过查找文档获取某个参数的默认值。这个查找过程可能是非常艰难的。但有了 jinfo工具，开发人员可以很方便地找到Java虚拟机参数的当前值。
 
 jinfo不仅可以查看运行时某一个Java虚拟机参数的实际取值， 甚至可以在运行时修改部分参 数，并使之立即生效。 但是，并非所有参数都支持动态修改。参数只有被标记 manageable的flag可以被实时修改。其实，这个修改能力是 极其有限的。
+
+### 基本命令
+
 **基本语法**
+
 
 ```java
 jinfo [options] pid
 ```
 
-| 选项             | 选项说明                                                     |
-| ---------------- | ------------------------------------------------------------ |
-| no option        | 输出全部的参数和系统属性                                     |
-| -flag name       | 输出对应名称的参数                                           |
-| -flag [+-]name   | 开启或者关闭对应名称的参数 只有被标记为 manageable 的参数才可以被动态修改 |
-| -flag name=value | 设定对应名称的参数                                           |
-| -flags           | 输出全部的参数                                               |
-| -sysprops        | 输出系统属性                                                 |
+
+```text
+jinfo -sysprops pid:输出系统属性
+no option：输出全部的参数和系统属性
+-flag name：输出对应名称的参数
+-flag [+|-]name：开启或者关闭对应名称的参数 只有被标记为 manageable 的参数才可以被动态修改
+-flag name=value：设定对应名称的参数
+-flags：输出全部的参数
+
+```
+
 
 ### 使用案例
 
-> 其中11888为pid
+#### 查看是否打印GC详细日志
+
+```text
+jinfo -flag PrintGCDetails 6936
+
+输出:
+-XX:-PrintGCDetails
+PrintGCDetails前面有个-号，就表示没开启GC日志;
+```
+
+#### jinfo -flags pid:查看曾经赋过值的参数值
+
+
+**开启GC日志打印参数**
+
+`jinfo -flag +PrintGCDetails 6936`
+
+**查看修改后的参数**
+
+```text
+jinfo -flag PrintGCDetails 6936
+-XX:+PrintGCDetails
+
++PrintGCDetails:+表示已开启参数
+```
+
+**使用jinfo -flags 6936命令查看**
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241126134607.png)
+
+#### jinfo -flag <具体参数> pid： 查看具体参数的值
+
+```text
+jinfo -flag MaxHeapSize 6936
+-XX:MaxHeapSize=1994391552
+```
+
+#### 使用jinfo修改运行时参数值
+
+jinfo不仅可以查看运行时某一个Java虚拟机参数的实际取值， 甚至可以在运行时修改部分参 数，并使之立即生效。 但是，并非所有参数都支持动态修改。参数只有被标记 manageable的flag可以被实时修改。其实，这个修改能力是 极其有限的;
+
+首先查看那些值可以被修改：`java -XX:+PrintFlagsFinal -version | grep "manageable"`
+
+```text
+java -XX:+PrintFlagsFinal -version | grep "manageable"
+     intx CMSAbortablePrecleanWaitMillis            = 100                                 {manageable}
+     intx CMSTriggerInterval                        = -1                                  {manageable}
+     intx CMSWaitDuration                           = 2000                                {manageable}
+     bool HeapDumpAfterFullGC                       = false                               {manageable}
+     bool HeapDumpBeforeFullGC                      = false                               {manageable}
+     bool HeapDumpOnOutOfMemoryError                = false                               {manageable}
+    ccstr HeapDumpPath                              =                                     {manageable}
+    uintx MaxHeapFreeRatio                          = 100                                 {manageable}
+    uintx MinHeapFreeRatio                          = 0                                   {manageable}
+     bool PrintClassHistogram                       = false                               {manageable}
+     bool PrintClassHistogramAfterFullGC            = false                               {manageable}
+     bool PrintClassHistogramBeforeFullGC           = false                               {manageable}
+     bool PrintConcurrentLocks                      = false                               {manageable}
+     bool PrintGC                                   = false                               {manageable}
+     bool PrintGCDateStamps                         = false                               {manageable}
+     bool PrintGCDetails                            = false                               {manageable}
+     bool PrintGCID                                 = false                               {manageable}
+     bool PrintGCTimeStamps                         = false                               {manageable}
+java version "1.8.0_161"
+Java(TM) SE Runtime Environment (build 1.8.0_161-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.161-b12, mixed mode)
+```
+
+修改参数值语法：
+
+- 布尔类型: jinfo -flag +-参数 pid
+
+- 非布尔类型: jinfo -flag 参数名=参数值 pid
+
+修改布尔类型参数：
+
+```text
+jinfo -flag +PrintGC 6936
+```
+
+查看修改后的值：
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241126134950.png)
+
+或者使用命令：`jinfo -flag PrintGC 6936`
+
+
+#### 查看jvm参数值
+
+- java -XX: -PrintFlagslnitial 查看所有JVM参数启动的初始值
+- java -XX:+PrintFlagsFinal 查看所有JVM参数的最终值(这个用的更多一些)
+- java -XX: +PrintCommandLineFlags 查看那些已经被用户或者JVM设置过的详细的XX参数的名称和值
+
+上面前两个用的比较多一些，特别是第二个
+
+**查看jvm所有最终参数值**
+
+输出所有jvm最终参数到文件中：
+```java -XX:+PrintFlagsFinal >  PrintFlagsFinal1.log```
+
+
+**输出jvm初始参数**
+
+输出jvm初始参数到jvm:
+
+`java -XX:+PrintFlagsInitial > PrintFlagsInitial.log`
+
+**输出用户修改过的参数**
+
+java -XX:+PrintCommandLineFlags >> PrintCommandLineFlags.log
 
 #### 查看JVM参数和系统配置
 
@@ -445,19 +566,19 @@ jinfo -flag -PrintGCDetails 11888
 java -XX:+PrintFlagsFinal -version | grep manageable
 ```
 
-常用JVM参数：
+#### 常用JVM参数
 
-> -Xms：初始堆大小，默认为物理内存的1/64(<1GB)；默认(MinHeapFreeRatio参数可以调整)空余堆内存小于40%时，JVM就会增大堆直到-Xmx的最大限制
-> -Xmx：最大堆大小，默认(MaxHeapFreeRatio参数可以调整)空余堆内存大于70%时，JVM会减少堆直到 -Xms的最小限制
-> -Xmn：新生代的内存空间大小，注意：此处的大小是（eden+ 2 survivor space)。与jmap -heap中显示的New gen是不同的。整个堆大小=新生代大小 + 老生代大小 + 永久代大小。
->    在保证堆大小不变的情况下，增大新生代后,将会减小老生代大小。此值对系统性能影响较大,Sun官方推荐配置为整个堆的3/8。
-> -XX:SurvivorRatio：新生代中Eden区域与Survivor区域的容量比值，默认值为8。两个Survivor区与一个Eden区的比值为2:8,一个Survivor区占整个年轻代的1/10。
-> -Xss：每个线程的堆栈大小。JDK5.0以后每个线程堆栈大小为1M,以前每个线程堆栈大小为256K。应根据应用的线程所需内存大小进行适当调整。在相同物理内存下,
->    减小这个值能生成更多的线程。但是操作系统对一个进程内的线程数还是有限制的，不能无限生成，经验值在3000~5000左右。一般小的应用， 如果栈不是很深， 应该是128k够用的，
->    大的应用建议使用256k。这个选项对性能影响比较大，需要严格的测试。和threadstacksize选项解释很类似,官方文档似乎没有解释,
->    在论坛中有这样一句话:"-Xss ``is` `translated ``in` `a VM flag named ThreadStackSize”一般设置这个值就可以了。
-> -XX:PermSize：设置永久代(perm gen)初始值。默认值为物理内存的1/64。
-> -XX:MaxPermSize：设置持久代最大值。物理内存的1/4。
+1. -Xms：初始堆大小，默认为物理内存的1/64(<1GB)；默认(MinHeapFreeRatio参数可以调整)空余堆内存小于40%时，JVM就会增大堆直到-Xmx的最大限制
+2. -Xmx：最大堆大小，默认(MaxHeapFreeRatio参数可以调整)空余堆内存大于70%时，JVM会减少堆直到 -Xms的最小限制
+3. -Xmn：新生代的内存空间大小，注意：此处的大小是（eden+ 2 survivor space)。与jmap -heap中显示的New gen是不同的。整个堆大小=新生代大小 + 老生代大小 + 永久代大小。
+   1. 在保证堆大小不变的情况下，增大新生代后,将会减小老生代大小。此值对系统性能影响较大,Sun官方推荐配置为整个堆的3/8。
+4. -XX:SurvivorRatio：新生代中Eden区域与Survivor区域的容量比值，默认值为8。两个Survivor区与一个Eden区的比值为2:8,一个Survivor区占整个年轻代的1/10。
+5. -Xss：每个线程的堆栈大小。JDK5.0以后每个线程堆栈大小为1M,以前每个线程堆栈大小为256K。应根据应用的线程所需内存大小进行适当调整。
+   1. 在相同物理内存下,减小这个值能生成更多的线程。但是操作系统对一个进程内的线程数还是有限制的，不能无限生成，经验值在3000~5000左右。一般小的应用， 如果栈不是很深， 应该是128k够用的，
+   2. 大的应用建议使用256k。这个选项对性能影响比较大，需要严格的测试。和threadstacksize选项解释很类似,官方文档似乎没有解释,
+   3. 在论坛中有这样一句话:"-Xss ``is` `translated ``in` `a VM flag named ThreadStackSize”一般设置这个值就可以了。
+6.  -XX:PermSize：设置永久代(perm gen)初始值。默认值为物理内存的1/64。
+7.  -XX:MaxPermSize：设置持久代最大值。物理内存的1/4。
 
 
 
@@ -471,7 +592,14 @@ java -XX:+PrintFlagsFinal -version | grep manageable
 
 jmap是用来生成堆dump文件和查看堆相关的各类信息的命令，例如查看finalize执行队列，heap的详细信息和使用情况。
 
-命令格式：
+堆Dump是反应Java堆使用情况的内存镜像，其中主要包括系统信息、虚拟机属性、完整的线程Dump、所有类和对象的状态等。 一般，在内存不足、GC异常等情况下，我们就会怀疑有内存泄露。这个时候我们就可以制作堆Dump来查看具体情况。分析原因。
+
+常见错误：
+- outOfMemoryError 年老代内存不足。
+- outOfMemoryError:PermGen Space 永久代内存不足。
+- outOfMemoryError:GC overhead limit exceed  垃圾回收时间占用系统运行时间的98%或以上。
+
+### 命令格式
 
 ```java
 jmap [option] <pid> (连接正在执行的进程)
@@ -481,20 +609,194 @@ jmap [option] [server_id@]<remote server IP or hostname> (链接远程服务器)
 
 option参数解释：
 
-- `<none> to print same info as Solaris pmap`
+- `<no option>`如果使用不带选项参数的jmap打印共享对象映射，将会打印目标虚拟机中加载的每个共享对象的起始地址、映射大小以及共享对象文件的路径全称。这与Solaris的pmap工具比较相似。
 - -heap :打印java heap摘要
-- -histo[:live]: 打印堆中的java对象统计信息
+- -histo：打印jvm heap的直方图。其输出信息包括类名，对象数量，对象占用大小。
+- -histo[:live]打印每个class的实例数目,内存占用,类全名信息. VM的内部类名字开头会加上前缀”*”. 如果live子参数加上后,只统计活的对象数量.
+- -dump:[live,]format=b,file=<filename>使用hprof二进制形式,输出jvm的heap内容到文件, live子选项是可选的，假如指定live选项,那么只输出活的对象到文件.
+- -permstat：打印permanent generation heap情况， 包含每个classloader的名字,活泼性,地址,父classloader和加载的class数量. 另外,内部String的数量和占用内存数也会打印出来.
+- -F强迫.在pid没有响应的时候使用-dump或者-histo参数. 在这个模式下,live子参数无效.
 - -clstats :打印类加载器统计信息
-- -finalizerinfo:打印在f-queue中等待执行finalizer方法的对象
+- -finalizerinfo:打印在f-queue中等待执行finalizer方法的对象,即正等候回收的对象的信息.
 - `-dump:<dump-options> 生成java堆的dump文件`
     - dump-options:
         - live         只转储存活的对象，如果没有指定则转储所有对象
         - format=b     二进制格式
         - `file=<file>  转储文件到 <file>`
 
-- -F:强制选项
+
+> 从安全点日志看，从Heap Dump开始，整个JVM都是停顿的，考虑到IO（虽是写到Page Cache，但或许会遇到background flush），几G的Heap可能产生几秒的停顿，在生产环境上执行时谨慎再谨慎。
+> live的选项，实际上是产生一次Full GC来保证只看还存活的对象。有时候也会故意不加live选项，看历史对象。
+
+Dump出来的文件建议用JDK自带的VisualVM或Eclipse的MAT插件打开，对象的大小有两种统计方式：
+
+- 本身大小(Shallow Size)：对象本来的大小。
+- 保留大小(Retained Size)： 当前对象大小 + 当前对象直接或间接引用到的对象的大小总和。
+
+看本身大小时，占大头的都是char[] ,byte[]之类的，没什么意思（用jmap -histo:live pid 看的也是本身大小）。所以需要关心的是保留大小比较大的对象，看谁在引用这些char[], byte[]。
+
+(MAT能看的信息更多，但VisualVM胜在JVM自带，用法如下：命令行输入jvisualvm，文件->装入->堆Dump－>检查 -> 查找20保留大小最大的对象，就会触发保留大小的计算，然后就可以类视图里浏览，按保留大小排序了)
+
+
+**参数信息**
+
+- executable Java executable from which the core dump was produced.(可能是产生core dump的java可执行程序)
+- core 将被打印信息的core dump文件
+- remote-hostname-or-IP 远程debug服务的主机名或ip
+- server-id 唯一id,假如一台主机上多个远程debug服务，用此选项参数标识服务器
+
 
 ### 案例
+
+#### jmap -heap pid 展示pid的整体堆信息
+
+```shell
+jmap -heap 6936
+
+Attaching to process ID 6936, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 25.161-b12
+
+using thread-local object allocation.
+Parallel GC with 13 thread(s)
+
+Heap Configuration: # 堆内存初始化配置
+   MinHeapFreeRatio         = 0 #-XX:MinHeapFreeRatio设置JVM堆最小空闲比率  
+   MaxHeapFreeRatio         = 100 #-XX:MaxHeapFreeRatio设置JVM堆最大空闲比率
+   MaxHeapSize              = 1994391552 (1902.0MB) #-XX:MaxHeapSize=设置JVM堆的最大大小
+   NewSize                  = 41943040 (40.0MB) #-XX:NewSize=设置JVM堆的‘新生代’的默认大小
+   MaxNewSize               = 664797184 (634.0MB) #-XX:MaxNewSize=设置JVM堆的‘新生代’的最大大小
+   OldSize                  = 83886080 (80.0MB) #-XX:OldSize=设置JVM堆的‘老生代’的大小
+   NewRatio                 = 2 #-XX:NewRatio=:‘新生代’和‘老生代’的大小比率
+   SurvivorRatio            = 8 #-XX:SurvivorRatio=设置年轻代中Eden区与Survivor区的大小比值
+   MetaspaceSize            = 21807104 (20.796875MB) `#-XX:PermSize=<value>`:设置JVM堆的‘持久代’的初始大小  
+   CompressedClassSpaceSize = 1073741824 (1024.0MB) `#-XX:MaxPermSize=<value>`:设置JVM堆的‘持久代’的最大大小  
+   MaxMetaspaceSize         = 17592186044415 MB # 元空间最大的大小
+   G1HeapRegionSize         = 0 (0.0MB)
+
+Heap Usage:
+PS Young Generation #新生代区内存分布，包含伊甸园区+1个Survivor区
+Eden Space: # eden区域
+   capacity = 208666624 (199.0MB) # eden区域容量
+   used     = 190727624 (181.89203643798828MB) # eden区域使用量
+   free     = 17939000 (17.10796356201172MB) # eden区域空闲大小
+   91.40303338592376% used # eden区域使用比率
+From Space: #其中一个Survivor区的内存分布
+   capacity = 7864320 (7.5MB)
+   used     = 0 (0.0MB)
+   free     = 7864320 (7.5MB)
+   0.0% used
+To Space: #另一个Survivor区的内存分布
+   capacity = 8388608 (8.0MB)
+   used     = 0 (0.0MB)
+   free     = 8388608 (8.0MB)
+   0.0% used
+PS Old Generation # 老年代内存分布
+   capacity = 70254592 (67.0MB)
+   used     = 10615008 (10.123260498046875MB)
+   free     = 59639584 (56.876739501953125MB)
+   15.109344026935634% used
+
+17170 interned Strings occupying 1725592 bytes.
+```
+
+如果from区使用率一直是100% 说明程序创建大量的短生命周期的实例，使用jstat统计一下jvm在内存回收中发生的频率耗时以及是否有full gc，使用这个数据来评估一内存配置参数、gc参数是否合理；
+
+#### jmap -histo pid 展示class的内存情况
+
+> 说明：instances（实例数）、bytes（大小）、classs name（类名）。它基本是按照使用使用大小逆序排列的。
+
+```shell
+
+jmap -histo 6936
+
+ num     #instances         #bytes  class name
+----------------------------------------------
+   1:        112625       10723936  [C
+   2:         18918        3440224  [I
+   3:         36930        1866560  [Ljava.lang.Object;
+   4:         71009        1704216  java.lang.String
+   5:         26666        1573816  [B
+   6:          8476         942728  java.lang.Class
+   7:         37708         904992  java.util.ArrayList
+   8:         25216         806912  java.util.concurrent.ConcurrentHashMap$Node
+   9:         10655         784616  [Ljava.util.HashMap$Node;
+  10:         15112         725376  java.nio.HeapByteBuffer
+  11:         19957         638624  java.util.HashMap$Node
+  12:          6588         579744  java.lang.reflect.Method
+  13:         11807         566736  java.util.HashMap
+  14:         14679         469728  java.util.ArrayList$Itr
+  15:          6715         429760  java.util.stream.ReferencePipeline$2
+  16:         10733         429320  java.util.LinkedHashMap$Entry
+  17:         10567         422680  java.util.HashMap$EntryIterator
+  18:          7343         411208  java.util.stream.ReferencePipeline$Head
+  19:          6101         390464  java.util.regex.Matcher
+  20:         12202         292848  java.util.Formatter$FixedString
+  21:          7100         284000  java.util.HashMap$KeyIterator
+  22:          4870         272720  java.util.LinkedHashMap
+  23:          4842         271152  sun.nio.cs.UTF_8$Encoder
+  24:         16865         269840  java.lang.Object
+  25:          4719         264264  java.util.concurrent.ConcurrentHashMap$ValueIterator
+  26:          5287         253776  org.apache.kafka.common.utils.Timer
+  27:          6305         252200  java.util.HashMap$KeySpliterator
+  28:          6123         245624  [J
+  29:         10212         245088  java.lang.StringBuilder
+  30:          6101         244040  [Ljava.util.Formatter$Flags;
+  31:          6101         244040  java.util.Formatter$FormatSpecifier
+```
+
+**说明**
+```text
+#instance 是对象的实例个数 
+#bytes 是总占用的字节数 
+class name 对应的就是 Class 文件里的 class 的标识 
+B 代表 byte
+C 代表 char
+D 代表 double
+F 代表 float
+I 代表 int
+J 代表 long
+Z 代表 boolean
+前边有 [ 代表数组， [I 就相当于 int[]
+对象用 [L+ 类名表示
+```
+
+从打印结果看，存在大量的[C，[I对象，只知道它占用了那么大的内存，但不知道由什么对象创建的。下一步需要将其他dump出来，使用内存分析工具进一步明确它是由谁引用的、由什么对象。
+
+####  jmap -histo:live pid>a.log
+
+可以观察heap中所有对象的情况（heap中所有生存的对象的情况）。包括对象数量和所占空间大小。 可以将其保存到文本中去，在一段时间后，使用文本对比工具，可以对比出GC回收了哪些对象。
+
+jmap -histo:live 这个命令执行，JVM会先触发gc，然后再统计信息。
+
+
+#### dump 将内存使用的详细情况输出到文件
+
+`jmap -dump:live,format=b,file=a.log pid`
+
+说明：内存信息dump到a.log文件中。
+
+这个命令执行，JVM会将整个heap的信息dump写入到一个文件，heap如果比较大的话，就会导致这个过程比较耗时，并且执行的过程中为了保证dump的信息是可靠的，所以会暂停应用。
+
+该命令通常用来分析内存泄漏OOM，通常做法是：
+
+1. 首先配置JVM启动参数，让JVM在遇到OutOfMemoryError时自动生成Dump文件
+
+```java
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/path
+```
+
+2. 然后使用命令
+
+```
+jmap  -dump:format=b,file=/path/heap.bin 进程ID 
+```
+
+如果只dump heap中的存活对象，则加上选项-live。
+
+3. 然后使用MAT分析工具，如jhat命令，eclipse的mat插件。
+
 
 #### 转存存活对象
 
@@ -522,11 +824,11 @@ num     #instances         #bytes  class name
 5:         28561         436016  java.lang.Object
 ```
 
-
-
 #### 查看进程详细堆信息
 
 **jmap命令可以用来查看堆中的活动对象及大小**
+
+jmap -heap 6936
 
 ```java
 Attaching to process ID 12888, please wait...
@@ -577,7 +879,65 @@ PS Old Generation
 15884 interned Strings occupying 2075304 bytes.
 ```
 
+### 性能分析
 
+#### 发现问题
+
+1. 使用uptime或者top命令查看CPU的Load情况，Load越高说明问题越严重；
+2. 使用jstat查看FGC发生的频率及FGC所花费的时间，FGC发生的频率越快、花费的时间越高，问题越严重；
+
+#### 导出数据：在应用快要发生FGC的时候把堆导出来
+
+
+**查看快要发生FGC使用命令:**
+
+`jmap -heap <pid>`
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/6487d60330a8fe2c7457503bf4de9063-1.png)
+
+以上截图包括了新生代、老年代及持久代的当前使用情况，如果不停的重复上面的命令，会看到这些数字的变化，变化越大说明系统存在问题的可能性越大，特别是被红色圈起来的老年代的变化情况。现在看到的这个值为使用率为99%或才快接近的时候，就立即可以执行导出堆栈的操作了。
+
+> 注：这是因为我这里没有在jvm参数中使用"-server"参数，也没有指定FGC的阀值，在线上的应用中通过会指定CMSInitiatingOccupancyFraction这个参数来指定当老年代使用了百分之多少的时候，通过CMS进行FGC，当然这个参数需要和这些参数一起使用“-XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:+UseCMSCompactAtFullCollection -XX:+UseCMSInitiatingOccupancyOnly”，CMSInitiatingOccupancyFraction的默认值是68，现在中文站线上的应用都是70，也就是说当老年代使用率真达到或者超过70%时，就会进行FGC。
+
+#### 导出dump数据文件
+
+`jmap -dump:format=b,file=heap.bin <pid>`
+
+这个时候会在当前目录以生成一个heap.bin这个二进制文件。
+
+#### 通过命令查看大对象
+
+也是使用jmap的命令，只不过参数使用-histo
+使用：`jmap -histo <pid>|less`
+
+可得到如下包含对象序号、某个对象示例数、当前对象所占内存的大小、当前对象的全限定名，如下图：
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/497411586ba55e9e11b15b79e0062753-1.png)
+
+
+查看对象数最多的对象，并按降序排序输出：
+执行：`jmap -histo <pid>|grep alibaba|sort -k 2 -g -r|less`
+
+
+查看占用内存最多的最象，并按降序排序输出：
+执行：`jmap -histo <pid>|grep alibaba|sort -k 3 -g -r|less`
+
+
+#### 数据分析，将dump文件使用工具打开
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241126111546.png)
+
+
+
+### 总结
+
+1. 如果程序内存不足或者频繁GC，很有可能存在内存泄露情况，这时候就要借助Java堆Dump查看对象的情况。
+2. 要制作堆Dump可以直接使用jvm自带的jmap命令
+3. 可以先使用jmap -heap命令查看堆的使用情况，看一下各个堆空间的占用情况。
+4. 使用jmap -histo:[live]查看堆内存中的对象的情况。如果有大量对象在持续被引用，并没有被释放掉，那就产生了内存泄露，就要结合代码，把不用的对象释放掉。
+5. 也可以使用 jmap -dump:format=b,file=命令将堆信息保存到一个文件中，再借助jhat命令查看详细内容
+6. 在内存出现泄露、溢出或者其它前提条件下，建议多dump几次内存，把内存文件进行编号归档，便于后续内存整理分析。
+7. 在用cms gc的情况下，执行jmap -heap有些时候会导致进程变T，因此强烈建议别执行这个命令，如果想获取内存目前每个区域的使用状况，可通过jstat -gc或jstat -gccapacity来拿到。
 
 ## Jhat
 
@@ -585,14 +945,25 @@ PS Old Generation
 
 jhat是用来分析jmap生成dump文件的命令，jhat内置了应用服务器，可以通过网页查看dump文件分析结果，jhat一般是用在离线分析上。
 
+jhat 一般与 jmap 搭配使用，用于分析 jmap 生成的堆转储快照。jhat 是一个命令行工具，使用起来比较简便，但功能也相对简陋。如果条件允许的话，建议使用 JProfiler 或者 IBM HeapAnalyzer 等功能更强大的工具来分析 heapdump 文件。
+
 命令格式：`jhat [option] [dumpfile]`
 
 option参数解释：
 
 ```text
-- -stack false: 关闭对象分配调用堆栈的跟踪
-- -refs false: 关闭对象引用的跟踪
-- -port <port>: HTTP服务器端口，默认是7000
+
+-J<flag>：因为 jhat 命令实际上会启动一个 JVM 来执行，通过 -J 可以在启动 JVM 时传入一些启动参数。例如，-J-Xmx512m 指定运行 jhat 的 JVM 使用的最大堆内存为 512 MB。 如果需要使用多个 JVM 启动参数，则传入多个 -Jxxxxxx。
+
+-stack false|true：关闭跟踪对象分配调用堆栈。如果分配位置信息在堆转储中不可用，则必须将此标志设置为 false。默认值为 true。
+
+-refs false|true：关闭对象引用跟踪。默认情况下，返回的指针是指向其他特定对象的对象，如反向链接或输入引用(referrers or incoming references),，会统计/计算堆中的所有对象。
+-port port-number：设置 jhat HTTP server 的端口号，默认值 7000。
+-exclude exclude-file：指定对象查询时需要排除的数据成员列表文件。 例如，如果文件列出了 java.lang.String.value，那么当从某个特定对象 Object o 计算可达的对象列表时，引用路径涉及 java.lang.String.value 的都会被排除。
+-baseline exclude-file：指定一个基准堆转储(baseline heap dump)。 在两个 heap dump 文件中有相同 object ID 的对象会被标记为不是新的(marked as not being new)，其他对象被标记为新的(new)。在比较两个不同的堆转储时很有用。
+-debug int：设置 debug 级别，0 表示不输出调试信息。 值越大则表示输出更详细的 debug 信息。
+-version：启动后只显示版本信息就退出。
+
 - -debug <int>: debug级别
     - 0: 无debug输出
     - Debug hprof file parsing
@@ -606,7 +977,21 @@ option参数解释：
 jhat dump.hprof
 ```
 
+ip:7000 既可以访问
 
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241126112520.png)
+
+最底部给出了可以查看的列表：
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241126112731.png)
+
+分别为：
+
+1. All classes including platform：所有在堆中创建对象的类，包括 JDK 中定义的类。
+2. Show all members of the rootset：从根集能引用到的对象。
+3. Show instance counts for all classes (including platform)：所有类(包括 JDK 中定义的类)的实例数量。
+4. Show instance counts for all classes (excluding platform)：所有类(不包括 JDK 中定义的类)的实例数量。
+5. Show heap histogram：堆实例的分布表。
 
 ## jstack
 
@@ -631,7 +1016,7 @@ option参数解释：
 
 ```text
 -F 当使用jstack <pid>无响应时，强制输出线程堆栈。
--m  同时输出java和本地堆栈(混合模式)
+-m  同时输出java和本地堆栈(混合模式)，以星号为前缀的帧是Java方法栈帧，而不以星号为前缀的是本地方法栈帧。
 -l  除堆栈外，显示关于锁的附加信息，在发生死锁时可以用jstack -l pid来观察锁持有情况
 ```
 
@@ -815,3 +1200,99 @@ jstack -l pid 命令查看进程堆栈信息；
 ![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241125173307.png)
 
 这段代码刚好就是true循环位置，因此也就定位到cpu占用高的原因；
+
+
+### jstack分析死锁问题
+
+什么是死锁：死锁是指两个或两个以上的线程在执行过程中，因争夺资源而造成的一种互相等待的现象，若无外力作用，它们都将无法进行下去。
+
+
+#### 死锁代码
+
+```java
+import java.util.concurrent.locks.ReentrantLock;
+
+/**
+ * className: DeadLock
+ * description:
+ * author: MrR
+ * date: 2024/11/25 20:15
+ * version: 1.0
+ */
+public class DeadhLock {
+
+    public static ReentrantLock lock1 = new ReentrantLock();
+    public static ReentrantLock lock2 = new ReentrantLock();
+
+    public static void deadhLock(){
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    lock1.lock();
+                    System.out.println(Thread.currentThread().getName() + " get the lock1");
+                    Thread.sleep(1000);
+                    lock2.lock();
+                    System.out.println(Thread.currentThread().getName() + " get the lock2");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    lock2.lock();
+                    System.out.println(Thread.currentThread().getName() + " get the lock1");
+                    Thread.sleep(1000);
+                    lock1.lock();
+                    System.out.println(Thread.currentThread().getName() + " get the lock2");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        //设置线程名字，方便分析堆栈信息
+        thread1.setName("mythread-thread1");
+        thread2.setName("mythread-thread2");
+
+        thread1.start();
+        thread2.start();
+
+    }
+
+    public static void main(String[] args) {
+
+        deadhLock();
+    }
+}
+```
+
+两个线程已经抢占到自己的锁，然后分别在去抢占对方的锁，因此会发生僵持，在没有打断的情况下，很明显发生了死锁：
+```text
+mythread-thread1 get the lock1
+mythread-thread2 get the lock1
+```
+
+
+#### jstack排查死锁的步骤
+
+1. 在终端中输入jps查看当前运行的java程序
+2. 使用 jstack -l pid 查看线程堆栈信息
+3. 分析堆栈信息
+
+首先通过jps命令进程pid号：
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241125202751.png)
+
+
+通过jstack -l 59281 >> jstack.log 重定向进程的堆栈信息；
+
+
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/20241125203253.png)
+
+从堆栈数据，可以看到mythread-thread2线程在获取` 0x00000000d8673350`锁对象，但是这把锁被mythread-thread1所持有；
+
+然后mythread-thread1线程在获取`0x00000000d8673380`这把锁，但是被mythread-thread2线程2所持有，因此两个线程分别抢占对方的锁，发生死锁；

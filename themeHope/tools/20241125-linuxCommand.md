@@ -50,6 +50,7 @@ copyright: bugcode
     - [指令模式](#指令模式)
   - [grep用法](#grep用法)
     - [基础用法](#基础用法)
+    - [grep基本查找匹配](#grep基本查找匹配)
     - [正则表达式](#正则表达式)
   - [文件目录类操作](#文件目录类操作)
     - [PWD](#pwd)
@@ -98,6 +99,10 @@ copyright: bugcode
     - [find命令](#find命令)
     - [grep在文件内搜索字符匹配的行并且输出](#grep在文件内搜索字符匹配的行并且输出)
     - [which](#which)
+    - [whereis查找](#whereis查找)
+    - [基础语法](#基础语法)
+    - [Locate查找](#locate查找)
+    - [查找总结](#查找总结)
   - [进程线程类](#进程线程类)
     - [使用ps -aux](#使用ps--aux)
     - [使用ps -elf](#使用ps--elf)
@@ -106,8 +111,15 @@ copyright: bugcode
     - [查看系统进程中所有的线程：](#查看系统进程中所有的线程)
     - [pstree：查看进程树](#pstree查看进程树)
     - [kill:杀死进程](#kill杀死进程)
+  - [网络命令](#网络命令)
+    - [基础语法](#基础语法-1)
+      - [列出所有端口信息](#列出所有端口信息)
+    - [列出所有tcp端口](#列出所有tcp端口)
+    - [列出所有监听端口](#列出所有监听端口)
+    - [禁止域名解析](#禁止域名解析)
     - [netstat:显示网络统计信息情况](#netstat显示网络统计信息情况)
     - [查看端口占用情况](#查看端口占用情况)
+    - [找出应用的端口](#找出应用的端口)
   - [解压类](#解压类)
     - [gzip/gunzip压缩](#gzipgunzip压缩)
     - [zip/unzip压缩](#zipunzip压缩)
@@ -129,10 +141,6 @@ copyright: bugcode
     - [yum仓库配置](#yum仓库配置)
 
 <!-- /TOC -->
-
-
-
-
 
 
 # Linux命令手册
@@ -447,39 +455,114 @@ Command 模式是vi或vim的默认模式，如果我们处于其它命令模式�
 
 以 `vi `打开一个档案就直接进入一般模式了(这是默认的模式)。在这个模式中， 你可以使用『上下左右』按键来移动光标，你可以使用『删除字符』或『删除整行』来处理档案内容， 也可以使用『复制、贴上』来处理你的文件数据。
 
+> ① 移动光标 ② 复制 粘贴 ③ 剪切 粘贴 删除 ④ 撤销与恢复
+
 **语法介绍**
 
 ```text
-1）yy（功能描述：复制光标当前一行）
+1. yy（功能描述：复制光标当前一行）
 
-   y数字y	（功能描述：复制一段(从第几行到第几行)）
+  y数字y（功能描述：复制一段(从第几行到第几行)）
 
-2）p（功能描述：箭头移动到目的行粘贴）
+2. p（功能描述：箭头移动到目的行粘贴）
 
-3）u	（功能描述：撤销上一步）
+3. u（功能描述：撤销上一步）
 
-4）dd（功能描述：删除光标当前行）
+4. dd（功能描述：删除光标当前行）
 
 	d数字d	（功能描述：删除光标(含)后多少行）
 
-5）x	（功能描述：删除一个字母，相当于del）
+5. x（功能描述：删除一个字母，相当于del）
 
    X（功能描述：删除一个字母，相当于Backspace）
 
-6）yw（功能描述：复制一个词）
+6. yw（功能描述：复制一个词）
 
-7）dw（功能描述：删除一个词）
+7. dw（功能描述：删除一个词）
 
-8）shift+^（功能描述：移动到行头）
+8. shift+^（功能描述：移动到行头）
 
-9）shift+$（功能描述：移动到行尾）
+9. shift+$（功能描述：移动到行尾）
 
-10）1+shift+g（功能描述：移动到页头，数字）
+1. 1+shift+g（功能描述：移动到页头，数字）
 
-11）shift+g（功能描述：移动到页尾）
+11. shift+g（功能描述：移动到页尾）
 
-12）数字N+shift+g（功能描述：移动到目标行）
+12. 数字N+shift+g（功能描述：移动到目标行）
+
+13. gg:移动到行首
+
+14. G：移动到行尾
 ```
+
+**复制黏贴**
+
+```text
+复制当前行（光标所在那一行）
+
+按键：yy
+
+粘贴：在想要粘贴的地方按下p 键【将粘贴在光标所在行的下一行】,如果想粘贴在光标所在行之前，则使用P键
+
+
+从当前行开始复制指定的行数，如复制5行，5yy
+
+粘贴：在想要粘贴的地方按下p 键【将粘贴在光标所在行的下一行】,如果想粘贴在光标所在行之前，则使用P键
+```
+
+**剪切和删除**
+
+```text
+在VIM编辑器中，剪切与删除都是dd
+
+如果剪切了文件，但是没有使用p进行粘贴，就是删除操作
+
+如果剪切了文件，然后使用p进行粘贴，这就是剪切操作
+
+1. 剪切/删除当前光标所在行
+
+按键：dd （删除之后下一行上移）
+
+粘贴：p
+
+注意：dd 严格意义上说是剪切命令，但是如果剪切了不粘贴就是删除的效果。
+
+2. 剪切/删除多行（从当前光标所在行开始计算）
+
+按键：数字dd
+
+粘贴：p
+
+特殊用法：
+
+3. 剪切/删除光标所在的当前行（光标所在位置）之后的内容，但是删除之后下一行不上移
+
+按键：D （删除之后当前行会变成空白行）
+```
+
+**撤销和恢复**
+
+```text
+撤销：u（undo）
+
+恢复：ctrl + r 恢复（取消）之前的撤销操作【重做，redo】
+```
+
+**翻屏指令**
+
+```text
+向上 翻屏，按键：ctrl + b （before） 或 PgUp
+
+向下 翻屏，按键：ctrl + f （after） 或 PgDn
+
+向上翻半屏，按键：ctrl + u （up）
+
+向下翻半屏，按键：ctrl + d （down）
+```
+
+**快速定位光标到指定行**
+
+行号 + G，如150G代表快速移动光标到第150行。
 
 ### 编辑模式
 
@@ -509,6 +592,8 @@ Command 模式是vi或vim的默认模式，如果我们处于其它命令模式�
 
 在这个模式当中， 可以提供你『搜寻资料』的动作，而读取、存盘、大量取代字符、离开 `vi `、显示行号等动作是在此模式中达成的！
 
+> 文件保存、退出、查找与替换、显示行号、paste模式等等
+
 **语法说明**
 
 ```text
@@ -516,14 +601,20 @@ Command 模式是vi或vim的默认模式，如果我们处于其它命令模式�
 
 （1）: 选项
 
+  w	代表对当前文件进行保存操作，但是其保存完成后，并没有退出这个文件
 
-  w	保存
+  q	代表退出当前正在编辑的文件，但是一定要注意，文件必须先保存，然后才能退出
 
-  q	退出
+  wq 代表文件先保存后退出（保存并退出）
+  如果一个文件在编辑时没有名字，则可以使用:wq 文件名称，代表把当前正在编辑的文件保存到指定的名称中，然后退出
+
+  q! => 代表强制退出但是文件未保存（不建议使用）
 
   ！  感叹号强制执行
 
 （2）/  查找，/被查找词，n是查找下一个，shift+n是往上查找
+  存在多个满足条件的结果。在搜索结果中切换上/下一个结果：N/n （大写N代表上一个结果，小写n代表next）
+  如果需要取消高亮，则需要在末行模式中输入:noh【no highlight】
 
 （3）?  查找，?被查找词，n是查找上一个，shift+n是往下查找
 
@@ -533,20 +624,127 @@ Command 模式是vi或vim的默认模式，如果我们处于其它命令模式�
 :set nu 显示行号
 ```
 
+**显示行号**
+
+```text
+:set nu
+【nu = number】，行号
+
+取消行号 => :set nonu
+```
+
+**set paste模式**
+
+为什么要使用paste模式？
+
+问题：在终端Vim中粘贴代码时，发现插入的代码会有多余的缩进，而且会逐行累加。原因是终端把粘贴的文本存入键盘缓存（Keyboard Buffer）中，Vim则把这些内容作为用户的键盘输入来处理。导致在遇到换行符的时候，如果Vim开启了自动缩进，就会默认的把上一行缩进插入到下一行的开头，最终使代码变乱。
+
+在粘贴数据之前，输入下面命令开启paste模式
+:set paste
+
+粘贴完毕后，输入下面命令关闭paste模式
+:set nopaste
+
+
 ## grep用法
 
 ### 基础用法
 
 ```java
-grep [-acinv] [--color=auto] '带查找字符' filename
--a:将二进制文件已文本文件方式进行查找
--c:计算找到“查找字符”的次数
--i:忽略大小写
--n:顺便输出行号
--v:反向选择，也就是选择没有查找字符的哪一行
+grep  <Options> <Search String>  <File-Name>
+
+-a --text  # 不要忽略二进制数据。
+-A <显示行数>   --after-context=<显示行数>   # 除了显示符合范本样式的那一行之外，并显示该行之后的内容。
+-b --byte-offset                           # 在显示符合范本样式的那一行之外，并显示该行之前的内容。
+-B<显示行数>   --before-context=<显示行数>   # 除了显示符合样式的那一行之外，并显示该行之前的内容。
+-c --count    # 计算符合范本样式的列数。
+-C<显示行数> --context=<显示行数>或-<显示行数> # 除了显示符合范本样式的那一列之外，并显示该列之前后的内容。
+-d<进行动作> --directories=<动作>  # 当指定要查找的是目录而非文件时，必须使用这项参数，否则grep命令将回报信息并停止动作。
+-e<范本样式> --regexp=<范本样式>   # 指定字符串作为查找文件内容的范本样式。
+-E --extended-regexp             # 将范本样式为延伸的普通表示法来使用，意味着使用能使用扩展正则表达式。
+-f<范本文件> --file=<规则文件>     # 指定范本文件，其内容有一个或多个范本样式，让grep查找符合范本条件的文件内容，格式为每一列的范本样式。
+-F --fixed-regexp   # 将范本样式视为固定字符串的列表。
+-G --basic-regexp   # 将范本样式视为普通的表示法来使用。
+-h --no-filename    # 在显示符合范本样式的那一列之前，不标示该列所属的文件名称。
+-H --with-filename  # 在显示符合范本样式的那一列之前，标示该列的文件名称。
+-i --ignore-case    # 忽略字符大小写的差别。
+-l --file-with-matches   # 列出文件内容符合指定的范本样式的文件名称。
+-L --files-without-match # 列出文件内容不符合指定的范本样式的文件名称。
+-n --line-number         # 在显示符合范本样式的那一列之前，标示出该列的编号。
+-P --perl-regexp         # PATTERN 是一个 Perl 正则表达式
+-q --quiet或--silent     # 不显示任何信息。
+-R/-r  --recursive       # 此参数的效果和指定“-d recurse”参数相同。
+-s --no-messages  # 不显示错误信息。
+-v --revert-match # 反转查找。
+-V --version      # 显示版本信息。   
+-w --word-regexp  # 只显示全字符合的列。
+-x --line-regexp  # 只显示全列符合的列。
+-y # 此参数效果跟“-i”相同。
+-o # 只输出文件中匹配到的部分。
+-m <num> --max-count=<num> # 找到num行结果后停止查找，用来限制匹配行数
 ```
 
 > grep是以行以单位进行输出
+
+**规则表达式**
+
+```text
+^    # 锚定行的开始 如：'^grep'匹配所有以grep开头的行。    
+$    # 锚定行的结束 如：'grep$' 匹配所有以grep结尾的行。
+.    # 匹配一个非换行符的字符 如：'gr.p'匹配gr后接一个任意字符，然后是p。    
+*    # 匹配零个或多个先前字符 如：'*grep'匹配所有一个或多个空格后紧跟grep的行。    
+.*   # 一起用代表任意字符。   
+[]   # 匹配一个指定范围内的字符，如'[Gg]rep'匹配Grep和grep。    
+[^]  # 匹配一个不在指定范围内的字符，如：'[^A-FH-Z]rep'匹配不包含A-R和T-Z的一个字母开头，紧跟rep的行。    
+(..)  # 标记匹配字符，如'(love)'，love被标记为1。    
+<      # 锚定单词的开始，如:'<grep'匹配包含以grep开头的单词的行。    
+>      # 锚定单词的结束，如'grep>'匹配包含以grep结尾的单词的行。    
+x{m}  # 重复字符x，m次，如：'0{5}'匹配包含5个o的行。    
+x{m,}   # 重复字符x,至少m次，如：'o{5,}'匹配至少有5个o的行。    
+x{m,n}  # 重复字符x，至少m次，不多于n次，如：'o{5,10}'匹配5--10个o的行。   
+\w    # 匹配文字和数字字符，也就是[A-Za-z0-9]，如：'G\w*p'匹配以G后跟零个或多个文字或数字字符，然后是p。   
+\W    # \w的反置形式，匹配一个或多个非单词字符，如点号句号等。   
+\b    # 单词锁定符，如: '\bgrep\b'只匹配grep。  
+```
+
+### grep基本查找匹配
+
+在文件中搜索一个单词，命令会返回一个包含 “match_pattern” 的文本行：
+
+```text
+grep match_pattern file_name
+grep "match_pattern" file_name
+```
+
+在多个文件中查找:
+
+```text
+grep "match_pattern" file_1 file_2 file_3 ...
+```
+
+输出除之外的所有行 -v 选项:
+
+```text
+grep -v "kafka" nohup-2024-11-25.log
+
+输出的内容是不包含kafka的内容
+```
+
+统计文件或者文本中包含匹配字符串的行数 -c 选项：
+```text
+ grep -c "kafka" nohup-2024-11-25.log
+```
+
+略匹配样式中的字符大小写：
+```text
+grep -i "KAFKA" nohup-2024-11-25.log
+```
+
+显示带有行号：
+```text
+grep -in "KAFKA" nohup-2024-11-25.log
+```
+
 
 ### 正则表达式
 
@@ -1166,7 +1364,7 @@ root用户切换普通用户：su 用户名
 1）修改配置文件
 
 修改 /etc/sudoers 文件，找到下面一行，在root下面添加一行，如下所示：
-## Allow root to run any commands anywhere
+Allow root to run any commands anywhere
 root    ALL=(ALL)     ALL
 rzf   ALL=(ALL)     ALL
 修改完毕，现在可以用rzf帐号登录，然后用命令 su - ，即可获得root权限进行操作。
@@ -1387,27 +1585,81 @@ df查看硬盘
 
 ### find命令
 
+**基础语法**
+
 ```text
-1）基本语法：
+语法：find [路径] [选项] [表达式]
+完整命令：find   path  -option  【 -print 】  【 -exec   -ok   |xargs  |grep  】 【  command  {} \;  】
 
-find [搜索范围] [匹配条件]
+功能：查找文件及其绝对路径。
 
-- find /home/ -name "*.txt"// 在/home/目录下面按照名字查找.txt的文件，-name标示根据文件名称查找
+path：要查找的目录路径。 
 
-find /home/rzf/ -name "*.txt"
-find /home/rui/ -user rui// 在此目录下根据文件拥有者查找文件拥有者为rui的文件
-（1）按文件名：根据名称查找/目录下的filename.txt文件。
+  ~ 表示$HOME目录
+  . 表示当前目录
+  / 表示根目录
 
-[root@hadoop106 ~]# find /opt/ -name *.txt
+print：表示将结果输出到标准输出。 
 
-（2）按拥有者：查找/opt目录下，用户名称为-user的文件
+exec：对匹配的文件执行该参数所给出的shell命令。 
+形式为command {} \;，注意{}与\;之间有空格 
 
-[root@hadoop106 ~]# find /opt/ -user rzf
+ok：与exec作用相同，区别在于，在执行命令之前，都会给出提示，让用户确认是否执行 
 
-（3）按文件大小：在/home目录下查找大于200m的文件（+n 大于  -n小于   n等于）
+|xargs  与exec作用相同 ，起承接作用，区别在于 |xargs 主要用于承接删除操作 ，而 -exec 都可用 如复制、移动、重命名等
 
-[root@hadoop106 ~]find /home –size +204800
+options ：表示查找方式
+
+常用选项：
+
+  -name   filename  #查找名为filename的文件
+  -perm   #按执行权限来查找
+  -user username  #按文件属主来查找
+  -group groupname #按组来查找
+  -mtime   -n +n   #按文件更改时间来查找文件，-n指n天以内，+n指n天以前
+  -atime    -n +n   #按文件访问时间来查找文件，-n指n天以内，+n指n天以前
+  -ctime   -n +n  #按文件创建时间来查找文件，-n指n天以内，+n指n天以前
+  -nogroup  #查无有效属组的文件，即文件的属组在/etc/groups中不存在
+  -nouser #查无有效属主的文件，即文件的属主在/etc/passwd中不存
+  -type    b/d/c/p/l/f   #查是块设备、目录、字符设备、管道、符号链接、普通文件
+  -size  n[c] #查长度为n块[或n字节]的文件
+  -mount  #查文件时不跨越文件系统mount点
+  -follow  #如果遇到符号链接文件，就跟踪链接所指的文件
+  -prune #忽略某个目录
+
+参数说明：
+
+    [路径]：查找的目录路径。
+    [选项]：命令的可选参数，用于控制查找条件。
+    [表达式]：查找的具体条件，如文件名、类型等。
 ```
+
+**基本用法**
+
+**按照文件名字查找**
+
+```text
+在当前目录及子目录中，查找小写字母开头的txt文件 
+
+find . -name '[a-z]*.sh' -print
+
+在/etc及其子目录中，查找host开头的文件 
+find /etc -name 'host*' -print
+```
+
+**按照权限查找**
+```text
+在当前目录及子目录中，查找属主具有读写执行，其他具有读执行权限的文件
+ find . -perm 755 -print
+
+查找用户有写权限或者组用户有写权限的文件或目录
+find ./ -perm /220
+find ./ -perm /u+w,g+w
+find ./ -perm /u=w,g=w
+```
+
+> 参考:https://blog.csdn.net/l_liangkk/article/details/81294260
+
 
 ### grep在文件内搜索字符匹配的行并且输出
 
@@ -1465,21 +1717,188 @@ https://linux.cn/article-1672-1.html//find和grep命令详解
 
 ### which
 
-which文件搜索命令
+which命令在Linux中是一个非常有用的命令，用于定位系统中的可执行文件。如果你想知道某个程序究竟在哪里，只需使用which命令即可。which命令会在你的shell的搜索路径中定位一个可执行文件。
 
 ```text
-1）基本语法：
-
-which 命令		（功能描述：搜索命令所在目录及别名信息）
-
-which ls
-alias ls='ls --color=auto'
-/bin/ls      //标示搜索到ls可执行文件放在那里
-
-which java  标识搜索java在那些目录
+语法：which [选项] 文件
+功能：用于查找可执行文件的位置。
+常用选项：
+  -a：显示所有匹配的路径，而不仅仅是第一个。
+  --version：显示版本信息。
+参数说明：
+  [选项]：命令的可选参数，可以指定显示所有匹配的路径或版本信息。
+  文件：需要查找的可执行文件名。
 ```
 
+**擦护照单个命令的位置**
+
+```text
+which java
+
+/home/jdk1.8.0_161//bin/java
+这告诉我们java命令的位置在/home/jdk1.8.0_161//bin/java;
+```
+
+**查找多个命令位置**
+
+```shell
+which java man ls cat
+/home/jdk1.8.0_161//bin/java
+/usr/bin/man
+/usr/bin/ls
+/usr/bin/cat
+```
+
+**显示所有匹配的路径**
+
+如果一个程序在两个地方都有可执行文件，比如在/usr/bin/program和/usr/local/bin/program，你可以使用-a选项显示所有的路径。
+
+```shell
+which -a program
+```
+
+**查找自定义脚本位置**
+
+假设你有一个名为myscript的自定义脚本，并且它在你的PATH中。你可以使用which命令来找到它的位置：
+
+```shell
+which myscript
+```
+
+> which命令只适用于可执行文件。
+> 如果which命令在当前路径中找不到可执行文件，它将返回空。
+
+
+### whereis查找
+
+### 基础语法
+
+```text
+语法：whereis [选项] 文件
+功能：查找特定文件名的文件，包括可执行文件、源代码文件和man手册。
+
+常用选项：
+    -b：仅查找二进制文件。
+    -m：仅查找手册文件。
+    -s：仅查找源代码文件。
+    -B：指定要查找二进制文件的路径。
+    -M：指定要查找手册文件的路径。
+    -S：指定要查找源代码文件的路径。
+
+参数说明：
+    [选项]：命令的可选参数，用于指定查找的文件类型和路径。
+    文件：需要查找的文件名。
+```
+
+whereis ls
+ls: /usr/bin/ls /usr/share/man/man1/ls.1.gz
+
+
+### Locate查找
+
+```text
+语法：locate [选项] 模式  locate [options] [pattern]
+
+功能：locate是一个Unix实用程序，用于快速查找文件和目录。它是find命令的一个更方便和高效的替代品，find命令搜索整个文件系统，而locate命令则查看系统中定期更新的文件数据库。因此，搜索完成得更快。
+
+常用选项：
+  -A, --all:显示匹配所有指定模式的条目
+  -b, --basename:只将基本名称与指定的模式匹配
+  -c, --count:输出匹配条目的数量，而不是文件名
+  -i：忽略大小写。
+  -r：使用正则表达式。
+  -n：指定显示的最大条目数。
+  -b, --basename  # 仅匹配路径名的基本名称
+-c, --count     # 只输出找到的数量
+-d, --database DBPATH # 使用DBPATH指定的数据库，而不是默认数据库 /var/lib/mlocate/mlocate.db
+-e, --existing  # 仅打印当前现有文件的条目
+-1 # 如果 是 1．则启动安全模式。在安全模式下，使用者不会看到权限无法看到 的档案。这会始速度减慢，因为 locate 必须至实际的档案系统中取得档案的  权限资料。
+-0, --null            # 在输出上带有NUL的单独条目
+-S, --statistics      # 不搜索条目，打印有关每个数据库的统计信息
+-q                    # 安静模式，不会显示任何错误讯息。
+-P, --nofollow, -H    # 检查文件存在时不要遵循尾随的符号链接
+-l, --limit, -n LIMIT # 将输出（或计数）限制为LIMIT个条目
+-n                    # 至多显示 n个输出。
+-m, --mmap            # 被忽略，为了向后兼容
+-r, --regexp REGEXP   # 使用基本正则表达式
+    --regex           # 使用扩展正则表达式
+-q, --quiet           # 安静模式，不会显示任何错误讯息
+-s, --stdio           # 被忽略，为了向后兼容
+-o                    # 指定资料库存的名称。
+-h, --help            # 显示帮助
+-i, --ignore-case     # 忽略大小写
+-V, --version         # 显示版本信息
+
+
+参数说明：
+
+  [选项]：命令的可选参数，用于控制查找行为。
+  模式：匹配文件名的模式，可以包含通配符或正则表达式。
+```
+
+**基本使用**
+
+```text
+locate filename:这个命令会在文件数据库中查找名为filename的文件。
+
+locate -i filename:这个命令会忽略大小写，查找名为filename的文件。
+
+locate *pattern*:这个命令会在文件数据库中查找包含pattern的文件,会匹配文件名字；
+
+locate -n 10 filename：这个命令会在文件数据库中查找名为filename的文件，并且只显示前10个结果。
+
+sudo updatedb：这个命令会更新locate命令的数据库，以便包含最新的文件信息。
+```
+
+
+### 查找总结
+
+1. which：常用于查找可直接执行的命令。只能查找可执行文件，该命令基本只在$PATH路径中搜索，查找范围最小，查找速度快。默认只返回第一个匹配的文件路径，通过选项 -a 可以返回所有匹配结果。
+
+2. whereis：不只可以查找命令，其他文件类型都可以（man中说只能查命令、源文件
+和man文件，实际测试可以查大多数文件）。在$PATH路径基础上增加了一些系统目录的查找，查找范围比which稍大，查找速度快。可以通过 -b 选项，限定只搜索二进制文件；
+
+3. locate：超快速查找任意文件。它会从linux内置的索引数据库查找文件的路径，索引速度超快。刚刚新建的文件可能需要一定时间才能加入该索引数据库，可以通过执行updatedb命令来强制更新一次索引，这样确保不会遗漏文件。该命令通常会返回大量匹配项，可以使用 -r 选项通过正则表达式来精确匹配。
+
+4. find：直接搜索整个文件目录，默认直接从根目录开始搜索，建议在以上命令都无法解决问题时才用它，功能最强大但速度超慢。除非你指定一个很小的搜索范围。通过 -name 选项指定要查找的文件名，支持通配符。
+
 ## 进程线程类
+
+```text
+ps命令查找与进程相关的PID号：
+ 
+ps a 显示现行终端机下的所有程序，包括其他用户的程序。
+ 
+ps -A 显示所有程序。
+ 
+ps c 列出程序时，显示每个程序真正的指令名称，而不包含路径，参数或常驻服务的标示。
+ 
+ps -e 此参数的效果和指定"A"参数相同。
+ 
+ps e 列出程序时，显示每个程序所使用的环境变量。
+ 
+ps f 用ASCII字符显示树状结构，表达程序间的相互关系。
+ 
+ps -H 显示树状结构，表示程序间的相互关系。
+ 
+ps -N 显示所有的程序，除了执行ps指令终端机下的程序之外。
+ 
+ps s 采用程序信号的格式显示程序状况。
+ 
+ps S 列出程序时，包括已中断的子程序资料。
+ 
+ps -t<终端机编号> 指定终端机编号，并列出属于该终端机的程序的状况。
+ 
+ps u 以用户为主的格式来显示程序状况。
+ 
+ps x 显示所有程序，不以终端机来区分。
+   
+最常用的方法是ps aux,然后再通过管道使用grep命令过滤查找特定的进程,然后再对特定的进程进行操作。
+ 
+ps aux | grep program_filter_word,ps -ef |grep tomcat
+ 
+ps -ef|grep java|grep -v grep 显示出所有的java进程，去处掉当前的grep进程。
+```
 
 ### 使用ps -aux
 
@@ -1496,16 +1915,17 @@ which java  标识搜索java在那些目录
 ps查看系统中的所有进程
 
 1）基本语法：
-ps -aux - 显示进程信息，包括无终端的（x）和针对用户（u）的进程：如USER, PID, %CPU, %MEM等
-​	ps –aux		（功能描述：查看系统中所有进程）
+ps -aux - 显示进程信息，包括无终端的（x）和针对用户（u）的进程：如USER, PID, %CPU, %MEM等;
 
-ps -aux |grep 10216//查看某一个进程相信情况
+​ps –aux（功能描述：查看系统中所有进程）
+
+ps -aux |grep 10216 #查看某一个进程相信情况
 
 2）功能说明
 
-​	USER：该进程是由哪个用户产生的
+​USER：该进程是由哪个用户产生的
 
-​	PID：进程的ID号
+​PID：进程的ID号
 
 %CPU：该进程占用CPU资源的百分比，占用越高，进程越耗费资源；
 
@@ -1524,10 +1944,13 @@ START：该进程的启动时间
 TIME：该进程占用CPU的运算时间，注意不是系统时间
 
 COMMAND：产生此进程的命令名
+
+
 //案例演示
 [root@VM-8-10-centos bin]# ps -aux
 
 //查看系统中所有的进程
+
 ps -ef 
 //通过管道查找某一个进程
 [rzf@hadoop01 hive]$ ps -ef | grep hive
@@ -1545,6 +1968,8 @@ ps -ef
  - -f:使用完整的（full）格式显示进程信息
 
 ### 使用pstree -aup命令来查看
+
+> pstree以树状显示正在运行的进程。树的根节点为pid或init。如果指定了用户名，进程树将以用户所拥有的进程作为根节点。
 
 使用pstree -aup命令来查看
 
@@ -1690,21 +2115,188 @@ pstree -d
 ~~~ java
 1）基本语法：
 
-	kill -9 pid进程号
+kill -9 pid进程号
 
-	选项
+选项
 
-	-9 表示强迫进程立即停止
+-9 表示强迫进程立即停止
 ~~~
+
+## 网络命令
+
+### 基础语法
+
+`netstat[<options>]`
+
+**可选项**
+
+```text
+常用参数：
+-a或--all：显示所有连线中的Socket；监听和未监听都会输出
+-t或--tcp：显示TCP传输协议的连线状况；
+-x或--unix：此参数的效果和指定"-A unix"参数相同；
+-u或--udp：显示UDP传输协议的连线状况；
+-l或--listening：显示监控中的服务器的Socket；
+-p或--programs：显示正在使用Socket的程序识别码和程序名称；
+-n或--numeric：直接使用ip地址，而不通过域名服务器；
+-c或--continuous：持续列出网络状态；
+-s或--statistice：显示网络工作信息统计表；
+-r或--route：显示Routing Table；
+
+其他参数；
+-e或--extend：显示网络其他相关信息；
+-A<网络类型>或--<网络类型>：列出该网络类型连线中的相关地址；
+-C或--cache：显示路由器配置的快取信息；
+-F或--fib：显示FIB；
+-g或--groups：显示多重广播功能群组组员名单；
+-h或--help：在线帮助；
+-i或--interfaces：显示网络界面信息表单；
+-M或--masquerade：显示伪装的网络连线；
+-N或--netlink或--symbolic：显示网络硬件外围设备的符号连接名称；
+-o或--timers：显示计时器；
+-v或--verbose：显示指令执行过程；
+-V或--version：显示版本信息；
+-w或--raw：显示RAW传输协议的连线状况；
+--ip或--inet：此参数的效果和指定"-A inet"参数相同。
+```
+
+netstat -ntlp //查看当前所有tcp端口
+netstat -ntulp |grep 80 //查看所有80端口使用情况
+netstat -an | grep 3306 //查看所有3306端口使用情况
+netstat -lanp //查看一台服务器上面哪些服务及端口
+ps -ef |grep mysqld //查看一个服务有几个端口。比如要查看mysqld
+netstat -pnt |grep :3306 |wc //查看某一端口的连接数量,比如3306端口
+netstat -anp |grep 3306 //查看某一端口的连接客户端IP 比如3306端口
+
+
+#### 列出所有端口信息
+
+> 包括监听和未监听的
+
+```text
+netsta -a 
+
+输出:
+
+netstat -a
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 localhost:41835         0.0.0.0:*               LISTEN
+tcp        0      0 localhost:33060         0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:ssh             0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:9000            0.0.0.0:*               LISTEN
+tcp        0      0 127.0.0.53:domain       0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:8011            0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:8001            0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:redis           0.0.0.0:*               LISTEN
+tcp        0      0 localhost:mysql         0.0.0.0:*               LISTEN
+tcp6       0      0 [::]:ssh                [::]:*                  LISTEN
+```
+
+
+### 列出所有tcp端口
+
+```text
+netstat -at
+
+输出:
+
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 localhost:41835         0.0.0.0:*               LISTEN
+tcp        0      0 localhost:33060         0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:ssh             0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:9000            0.0.0.0:*               LISTEN
+tcp        0      0 127.0.0.53:domain       0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:8011            0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:8001            0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:redis           0.0.0.0:*               LISTEN
+tcp        0      0 localhost:mysql         0.0.0.0:*               LISTEN
+tcp6       0      0 [::]:ssh                [::]:*                  LISTEN
+tcp6       0      0 [::]:9092               [::]:*                  LISTEN
+tcp6       0      0 [::]:9000               [::]:*                  LISTEN
+tcp6       0      0 [::]:45693              [::]:*                  LISTEN
+tcp6       0      0 [::]:http-alt           [::]:*                  LISTEN
+tcp6       0      0 [::]:36803              [::]:*                  LISTEN
+tcp6       0      0 [::]:8011               [::]:*                  LISTEN
+tcp6       0      0 [::]:8001               [::]:*                  LISTEN
+tcp6       0      0 [::]:2181               [::]:*                  LISTEN
+tcp6       0      0 [::]:redis              [::]:*                  LISTEN
+tcp6       0      0 localhost:46842         127.0.1.1:9092          ESTABLISHED
+tcp6       0      0 127.0.1.1:9092          localhost:47864         ESTABLISHED
+tcp6       0      0 localhost:47864         127.0.1.1:9092          ESTABLISHED
+tcp6       0      0 localhost:46848         127.0.1.1:9092          ESTABLISHED
+
+列出所有udp端口：
+
+netstat -au
+```
+
+### 列出所有监听端口
+
+```text
+netsta -l
+
+只列出所有监听 tcp 端口:netstat -lt
+只列出所有监听 udp 端口:netstat -lu
+只列出所有监听 UNIX 端口:netstat -lx
+```
+
+
+### 禁止域名解析
+
+**正常输出**
+
+```text
+ netstat -ltp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 localhost:41835         0.0.0.0:*               LISTEN      886/docker-proxy
+tcp        0      0 localhost:33060         0.0.0.0:*               LISTEN      355/mysqld
+tcp        0      0 0.0.0.0:ssh             0.0.0.0:*               LISTEN      295/sshd: /usr/sbin
+tcp        0      0 0.0.0.0:9000            0.0.0.0:*               LISTEN      863/docker-proxy
+tcp        0      0 127.0.0.53:domain       0.0.0.0:*               LISTEN      153/systemd-resolve
+tcp        0      0 0.0.0.0:8011            0.0.0.0:*               LISTEN      900/docker-proxy
+tcp        0      0 0.0.0.0:8001            0.0.0.0:*               LISTEN      923/docker-proxy
+tcp        0      0 0.0.0.0:redis           0.0.0.0:*               LISTEN      256/redis-server *:
+tcp        0      0 localhost:mysql         0.0.0.0:*               LISTEN      355/mysqld
+```
+
+**禁止域名解析**
+
+```text
+netstat -nltp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 127.0.0.1:41835         0.0.0.0:*               LISTEN      886/docker-proxy
+tcp        0      0 127.0.0.1:33060         0.0.0.0:*               LISTEN      355/mysqld
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      295/sshd: /usr/sbin
+tcp        0      0 0.0.0.0:9000            0.0.0.0:*               LISTEN      863/docker-proxy
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      153/systemd-resolve
+tcp        0      0 0.0.0.0:8011            0.0.0.0:*               LISTEN      900/docker-proxy
+tcp        0      0 0.0.0.0:8001            0.0.0.0:*               LISTEN      923/docker-proxy
+tcp        0      0 0.0.0.0:6379            0.0.0.0:*               LISTEN      256/redis-server *:
+tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN      355/mysqld
+tcp6       0      0 :::22                   :::*                    LISTEN      295/sshd: /usr/sbin
+tcp6       0      0 :::9092                 :::*                    LISTEN      6300/java
+tcp6       0      0 :::9000                 :::*                    LISTEN      870/docker-proxy
+tcp6       0      0 :::45693                :::*                    LISTEN      6300/java
+tcp6       0      0 :::8080                 :::*                    LISTEN      6936/java
+tcp6       0      0 :::36803                :::*                    LISTEN      5800/java
+tcp6       0      0 :::8011                 :::*                    LISTEN      909/docker-proxy
+tcp6       0      0 :::8001                 :::*                    LISTEN      930/docker-proxy
+tcp6       0      0 :::2181                 :::*                    LISTEN      5800/java
+tcp6       0      0 :::6379                 :::*                    LISTEN      256/redis-server *:
+```
 
 ### netstat:显示网络统计信息情况
 
 ~~~ java
 1）基本语法：
 
-    netstat –anp
+netstat –anp
     
-    （功能描述：此命令用来显示整个系统目前的网络情况。例如目前的连接、数据包传递数据、或是路由表内容）
+（功能描述：此命令用来显示整个系统目前的网络情况。例如目前的连接、数据包传递数据、或是路由表内容）
 
 选项：
 
@@ -1743,6 +2335,16 @@ pstree -d
  //杀死断后号所在的进程
  kill -9 pid
 ~~~
+
+### 找出应用的端口
+
+```text
+并不是所有的进程都能找到，没有权限的会不显示，使用 root 权限查看所有的信息。
+# netstat -ap | grep ssh
+ 
+找出运行在指定端口的进程
+# netstat -an | grep ':80'
+```
 
 ## 解压类
 
