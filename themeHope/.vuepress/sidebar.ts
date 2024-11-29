@@ -186,7 +186,8 @@ export const sidebarConfig = sidebar({
         "20241119-dataImbalance-bigdata.md",
         "20241119-DevelopmentExperience-bigdata.md",
         "20241119-SpringbootRefreshCacheMethod.md",
-        "20241119-kafkaProperties.md"
+        "20241119-kafkaProperties.md",
+        "20241129-wiresharkAnalyze.md"
     ],
     // 业务
     "/business/": [

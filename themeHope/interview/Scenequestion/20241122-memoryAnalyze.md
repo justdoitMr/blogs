@@ -608,12 +608,13 @@ jmap [option] [server_id@]<remote server IP or hostname> (链接远程服务器)
 ```
 
 option参数解释：
+```text
 
 - `<no option>`如果使用不带选项参数的jmap打印共享对象映射，将会打印目标虚拟机中加载的每个共享对象的起始地址、映射大小以及共享对象文件的路径全称。这与Solaris的pmap工具比较相似。
 - -heap :打印java heap摘要
 - -histo：打印jvm heap的直方图。其输出信息包括类名，对象数量，对象占用大小。
-- -histo[:live]打印每个class的实例数目,内存占用,类全名信息. VM的内部类名字开头会加上前缀”*”. 如果live子参数加上后,只统计活的对象数量.
-- -dump:[live,]format=b,file=<filename>使用hprof二进制形式,输出jvm的heap内容到文件, live子选项是可选的，假如指定live选项,那么只输出活的对象到文件.
+- -histo`[:live]`打印每个class的实例数目,内存占用,类全名信息. VM的内部类名字开头会加上前缀”*”. 如果live子参数加上后,只统计活的对象数量.
+- -dump:`[live,]`format=b,file=<filename>使用hprof二进制形式,输出jvm的heap内容到文件, live子选项是可选的，假如指定live选项,那么只输出活的对象到文件.
 - -permstat：打印permanent generation heap情况， 包含每个classloader的名字,活泼性,地址,父classloader和加载的class数量. 另外,内部String的数量和占用内存数也会打印出来.
 - -F强迫.在pid没有响应的时候使用-dump或者-histo参数. 在这个模式下,live子参数无效.
 - -clstats :打印类加载器统计信息
@@ -623,7 +624,7 @@ option参数解释：
         - live         只转储存活的对象，如果没有指定则转储所有对象
         - format=b     二进制格式
         - `file=<file>  转储文件到 <file>`
-
+```
 
 > 从安全点日志看，从Heap Dump开始，整个JVM都是停顿的，考虑到IO（虽是写到Page Cache，但或许会遇到background flush），几G的Heap可能产生几秒的停顿，在生产环境上执行时谨慎再谨慎。
 > live的选项，实际上是产生一次Full GC来保证只看还存活的对象。有时候也会故意不加live选项，看历史对象。
