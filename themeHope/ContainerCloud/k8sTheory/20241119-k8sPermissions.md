@@ -1,12 +1,12 @@
 ---
 # 这是文章的标题
-title: K8s中权限管理
+title: 2、K8s中权限管理
 # 你可以自定义封面图片
 #cover: /assets/images/cover1.jpg
 # 这是页面的图标
 icon: file
 # 这是侧边栏的顺序
-order: 5
+order: 3
 # 设置作者
 author: bugcode
 # 设置写作时间
@@ -27,6 +27,35 @@ footer: 分布式
 # 你可以自定义版权信息
 copyright: bugcode
 ---
+
+<!-- TOC -->
+
+- [K8s权限管理](#k8s权限管理)
+- [k8s授权简介](#k8s授权简介)
+  - [Rbac 基础](#rbac-基础)
+  - [k8s 中的RBAC](#k8s-中的rbac)
+    - [核心元素](#核心元素)
+- [用户分类](#用户分类)
+  - [**普通用户**](#普通用户)
+  - [**ServiceAccount**（服务账户）](#serviceaccount服务账户)
+- [K8s角色\&角色绑定（以ServiceAccount展开讲解）](#k8s角色角色绑定以serviceaccount展开讲解)
+  - [授权介绍](#授权介绍)
+  - [角色（Role和ClusterRole）](#角色role和clusterrole)
+- [案例](#案例)
+  - [Role：角色](#role角色)
+  - [ClusterRole：集群角色](#clusterrole集群角色)
+  - [RoleBinding：角色绑定，ClusterRoleBinding：集群角色绑定](#rolebinding角色绑定clusterrolebinding集群角色绑定)
+- [练习](#练习)
+    - [1）User](#1user)
+    - [1、创建K8S 用户](#1创建k8s-用户)
+    - [2）Group](#2group)
+    - [1、创建K8S 用户和用户组](#1创建k8s-用户和用户组)
+    - [2、对组授权](#2对组授权)
+    - [3）ServiceAccount](#3serviceaccount)
+    - [5）默认的Token](#5默认的token)
+  - [五、总结](#五总结)
+
+<!-- /TOC -->
 
 # K8s权限管理
 

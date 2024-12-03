@@ -1,6 +1,6 @@
 ---
 # 这是文章的标题
-title: Pod异常状态排错
+title: 3、Pod异常状态排错
 # 你可以自定义封面图片
 #cover: /assets/images/cover1.jpg
 # 这是页面的图标
@@ -31,7 +31,24 @@ footer: 云原生
 copyright: bugcode
 ---
 
-2、Pod异常状态排错
+<!-- TOC -->
+
+- [2、Pod异常状态排错](#2pod异常状态排错)
+  - [一、常用命令](#一常用命令)
+  - [二、Pod状态](#二pod状态)
+  - [三、pod遇到的问题](#三pod遇到的问题)
+    - [1、pod一直处于Pending状态](#1pod一直处于pending状态)
+    - [2、Pod 一直处于 ContainerCreating 或 Waiting 状 态](#2pod-一直处于-containercreating-或-waiting-状-态)
+    - [3、Pod 处于 CrashLoopBackOff 状态](#3pod-处于-crashloopbackoff-状态)
+    - [4、Pod 一直处于 Terminating 状态](#4pod-一直处于-terminating-状态)
+    - [5、Pod 一直处于 Unknown 状态](#5pod-一直处于-unknown-状态)
+    - [6、Pod 一直处于 Error 状态](#6pod-一直处于-error-状态)
+    - [7、Pod 一直处于 ImagePullBackOff 状态](#7pod-一直处于-imagepullbackoff-状态)
+    - [8、Pod 健康检查失败](#8pod-健康检查失败)
+
+<!-- /TOC -->
+
+# 2、Pod异常状态排错
 
 ## 一、常用命令
 

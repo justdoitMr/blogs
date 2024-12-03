@@ -1,6 +1,6 @@
 ---
 # 这是文章的标题
-title: K8s中负载均衡原理
+title: 4、K8s中负载均衡原理
 # 你可以自定义封面图片
 #cover: /assets/images/cover1.jpg
 # 这是页面的图标
@@ -30,6 +30,36 @@ footer: 云原生
 # 你可以自定义版权信息
 copyright: bugcode
 ---
+<!-- TOC -->
+
+- [1、K8s中负载均衡原理](#1k8s中负载均衡原理)
+  - [Kube-porxy组件](#kube-porxy组件)
+  - [1、Service介绍](#1service介绍)
+    - [Service的分类](#service的分类)
+      - [ClusterIp（集群内部使用）](#clusterip集群内部使用)
+      - [NodePort（对外暴露应用）](#nodeport对外暴露应用)
+      - [LoadBalancer（对外暴露应用，适用于公有云）](#loadbalancer对外暴露应用适用于公有云)
+      - [ExternalName](#externalname)
+    - [Service工作原理](#service工作原理)
+    - [Endpoints](#endpoints)
+      - [工作流程](#工作流程)
+    - [Service、endpoints、pod关系](#serviceendpointspod关系)
+    - [Service资源清单](#service资源清单)
+    - [service资源的4种port](#service资源的4种port)
+      - [1)nodePort](#1nodeport)
+      - [2)port](#2port)
+      - [3)targetPort](#3targetport)
+      - [4)containerPort](#4containerport)
+    - [k8S服务发现](#k8s服务发现)
+    - [Service代理模式](#service代理模式)
+      - [1)userspace模式](#1userspace模式)
+      - [2)iptables模式（默认模式）](#2iptables模式默认模式)
+      - [3)ipvs模型](#3ipvs模型)
+    - [Service负载均衡策略](#service负载均衡策略)
+
+<!-- /TOC -->
+
+
 # 1、K8s中负载均衡原理
 
 ## Kube-porxy组件

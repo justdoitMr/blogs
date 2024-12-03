@@ -419,7 +419,7 @@ export const sidebarConfig = sidebar({
                   // 第四章 第一节
                   {
                       prefix: "ContainerCloud/docker/",
-                      text: "1、Docker",
+                      text: "1、Docker基础",
                       collapsible: true,
                       children: [
                           "act_one_docker_one.md",
@@ -429,16 +429,34 @@ export const sidebarConfig = sidebar({
                   // 第三章 第二节
                   {
                       prefix: "ContainerCloud/k8s/",
-                      text: "2、K8S",
+                      text: "2、K8S基础",
                       collapsible: true,
                       children: [
-                          "act_one_k8s中负载均衡原理.md.md",
-                          "act_none_pod异常状态排查.md",
-                          "act_two_k8s基础学习.md",
-                          "20241119-k8s-ingressAndService.md",
-                          "20241119-k8sPermissions.md"
+                        "20241203-k8sgaishu.md",
+                        "20241203-initK8sCluster.md",
+                        "20241203-k8sCoreObject.md",
+                        "20241203-k8sResourcesList.md",
+                        "20241203-podStatusAndphase.md",
+                        "202412-3-podController.md",
+                        "20241203-k8sDiscover.md",
+                        "20241203-k8sVolumn.md",
+                        "act_two_k8s基础学习.md",
+                        "20241203-k8sSummary.md",
+                        "20241203-k8sClusterBuild.md",
                       ],
-                  }
+                  },
+                  // 第三章 第四节
+                  {
+                    prefix: "ContainerCloud/k8sTheory/",
+                    text: "3、K8S原理篇",
+                    collapsible: true,
+                    children: [
+                      "act_one_k8s中负载均衡原理.md.md",
+                      "act_none_pod异常状态排查.md",
+                      "20241119-k8s-ingressAndService.md",
+                      "20241119-k8sPermissions.md"
+                    ],
+                }
               ]
       },
       // 第五章节: 前端

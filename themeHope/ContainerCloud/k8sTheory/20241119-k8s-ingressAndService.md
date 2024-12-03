@@ -1,12 +1,12 @@
 ---
 # 这是文章的标题
-title: K8s service和ingress
+title: 1、K8s service和ingress
 # 你可以自定义封面图片
 #cover: /assets/images/cover1.jpg
 # 这是页面的图标
 icon: file
 # 这是侧边栏的顺序
-order: 5
+order: 4
 # 设置作者
 author: bugcode
 # 设置写作时间
@@ -27,6 +27,30 @@ footer: 分布式
 # 你可以自定义版权信息
 copyright: bugcode
 ---
+<!-- TOC -->
+
+- [K8s service和ingress](#k8s-service和ingress)
+- [1、Service介绍](#1service介绍)
+  - [1.1、Service配置多端口](#11service配置多端口)
+- [2、kube-proxy工作模式](#2kube-proxy工作模式)
+  - [2.1、**userspace 模式**](#21userspace-模式)
+  - [2.2、**iptables 模式**](#22iptables-模式)
+  - [2.3、**ipvs 模式**](#23ipvs-模式)
+- [3、Service类型](#3service类型)
+- [4、如何使用Service](#4如何使用service)
+  - [4.1、**ClusterIP类型的Service**](#41clusterip类型的service)
+  - [4.2、HeadLiness类型的Service](#42headliness类型的service)
+  - [4.3、NodePort类型的Service](#43nodeport类型的service)
+  - [4.4、LoadBalancer类型的Service](#44loadbalancer类型的service)
+  - [4.5、ExternalName类型的Service](#45externalname类型的service)
+- [5、Ingress](#5ingress)
+  - [5.1、Ingress介绍](#51ingress介绍)
+  - [5.2、Ingress的使用](#52ingress的使用)
+  - [5.3、Http代理](#53http代理)
+  - [5.3、Https代理](#53https代理)
+
+<!-- /TOC -->
+
 
 # K8s service和ingress
 
