@@ -29,7 +29,8 @@ footer: 云原生
 copyright: bugcode
 ---
 
-# 2 Docker复杂安装详说
+
+# 1 Docker复杂安装详说
 
 ## 1.1 安装MySQL主从复制
 
@@ -43,11 +44,12 @@ copyright: bugcode
 
 ```plain
 docker run -p 3307:3306 --name mysql-master \
--v /mydata/mysql-master/log:/var/log/mysql \
--v /mydata/mysql-master/data:/var/lib/mysql \
--v /mydata/mysql-master/conf:/etc/mysql \
+-v /opt/mysql-master/log:/var/log/mysql \
+-v /opt/mysql-master/data:/var/lib/mysql \
+-v /opt/mysql-master/conf:/etc/mysql \
 -e MYSQL_ROOT_PASSWORD=root  \
 -d mysql:5.7
+-d:后台运行容器
 ```
 
 1. 进入/mydata/mysql-master/conf目录下新建my.cnf
@@ -157,10 +159,11 @@ change master to master_host='宿主机ip', master_user='slave', master_password
 master_port=3307, master_log_file='mall-mysql-bin.000001', master_log_pos=617, master_connect_retry=30;
 ```
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1658995661799-39e995e2-73e0-4e7d-bc9d-59c1fa0b8e3c.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1658995661799-39e995e2-73e0-4e7d-bc9d-59c1fa0b8e3c.png)
 
 主从复制命令参数说明
 
+```text
 master_host：主数据库的IP地址；
 
 master_port：主数据库的运行端口；
@@ -174,6 +177,7 @@ master_log_file：指定从数据库要复制数据的日志文件，通过查�
 master_log_pos：指定从数据库从哪个位置开始复制数据，通过查看主数据的状态，获取Position参数；
 
 master_connect_retry：连接失败重试的时间间隔，单位为秒。
+```
 
 1. 在从数据库中查看主从同步状态
 
@@ -181,7 +185,7 @@ master_connect_retry：连接失败重试的时间间隔，单位为秒。
 show slave status \G;
 ```
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1658995728716-90fc0143-7a4d-465e-83c1-a17bad83823e.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1658995728716-90fc0143-7a4d-465e-83c1-a17bad83823e.png)
 
 1. 在从数据库中开启主从同步
 
@@ -189,11 +193,11 @@ show slave status \G;
 start slave;
 ```
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1658995798230-fbe9f08c-af5d-4e83-915d-62302a5ad1a1.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1658995798230-fbe9f08c-af5d-4e83-915d-62302a5ad1a1.png)
 
 1. 查看从数据库状态发现已经同步
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1658995805394-60a39a9a-8be4-43b7-9489-84afd4ef0310.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1658995805394-60a39a9a-8be4-43b7-9489-84afd4ef0310.png)
 
 1. 主从复制测试
 
@@ -216,7 +220,7 @@ cluster(集群)模式-docker版
 
 1. 哈希取余分区
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1658996785793-2ca8867b-2254-45ee-8bc7-8f566d737db2.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1658996785793-2ca8867b-2254-45ee-8bc7-8f566d737db2.png)
 
 2亿条记录就是2亿个k,v，我们单机不行必须要分布式多机，假设有3台机器构成一个集群，用户每次读写操作都是根据公式：
 
@@ -232,67 +236,55 @@ hash(key) % N个机器台数，计算出哈希值，用来决定数据映射到�
 
 某个redis机器宕机了，由于台数数量变化，会导致hash取余全部数据重新洗牌。
 
-1. 一致性哈希算法分区
+1. 一致性Hash算法背景
+   一致性哈希算法在1997年由麻省理工学院中提出的，设计目标是为了解决分布式缓存数据变动和映射问题，某个机器宕机了，分母数量改变了，自然取余数不OK了。
 
-1. 1. 是什么
+2. 能干嘛:提出一致性Hash解决方案。 目的是当服务器个数发生变动时， 尽量减少影响客户端到服务器的映射关系
+3. 大步骤
 
-一致性Hash算法背景
+算法构建一致性哈希环:一致性哈希环
 
-一致性哈希算法在1997年由麻省理工学院中提出的，设计目标是为了解决分布式缓存数据变动和映射问题，某个机器宕机了，分母数量改变了，自然取余数不OK了。
+一致性哈希算法必然有个hash函数并按照算法产生hash值，这个算法的所有可能哈希值会构成一个全量集，这个集合可以成为一个hash空间[0,2^32-1]，这个是一个线性空间，但是在算法中，我们通过适当的逻辑控制将它首尾相连(0 = 2^32),这样让它逻辑上形成了一个环形空间。
 
-1. 1. 能干嘛
+它也是按照使用取模的方法，前面笔记介绍的节点取模法是对节点（服务器）的数量进行取模。而一致性Hash算法是对2^32取模，简单来说，一致性Hash算法将整个哈希值空间组织成一个虚拟的圆环，如假设某哈希函数H的值空间为0-2^32-1（即哈希值是一个32位无符号整形），整个哈希环如下图：整个空间按顺时针方向组织，圆环的正上方的点代表0，0点右侧的第一个点代表1，以此类推，2、3、4、……直到2^32-1，也就是说0点左侧的第一个点代表2^32-1， 0和2^32-1在零点中方向重合，我们把这个由2^32个点组成的圆环称为Hash环。
 
-提出一致性Hash解决方案。 目的是当服务器个数发生变动时， 尽量减少影响客户端到服务器的映射关系
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1658999862145-25f18b54-2e15-47f3-a873-a5d44a16f866.png)
 
-1. 1. 3大步骤
-
-1. 1. 1. 算法构建一致性哈希环
-
-一致性哈希环
-
-​        一致性哈希算法必然有个hash函数并按照算法产生hash值，这个算法的所有可能哈希值会构成一个全量集，这个集合可以成为一个hash空间[0,2^32-1]，这个是一个线性空间，但是在算法中，我们通过适当的逻辑控制将它首尾相连(0 = 2^32),这样让它逻辑上形成了一个环形空间。
-
-​        它也是按照使用取模的方法，前面笔记介绍的节点取模法是对节点（服务器）的数量进行取模。而一致性Hash算法是对2^32取模，简单来说，一致性Hash算法将整个哈希值空间组织成一个虚拟的圆环，如假设某哈希函数H的值空间为0-2^32-1（即哈希值是一个32位无符号整形），整个哈希环如下图：整个空间按顺时针方向组织，圆环的正上方的点代表0，0点右侧的第一个点代表1，以此类推，2、3、4、……直到2^32-1，也就是说0点左侧的第一个点代表2^32-1， 0和2^32-1在零点中方向重合，我们把这个由2^32个点组成的圆环称为Hash环。
-
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1658999862145-25f18b54-2e15-47f3-a873-a5d44a16f866.png)
-
-1. 1. 1. 服务器IP节点映射
-
-节点映射
+服务器IP节点映射:节点映射
 
 将集群中各个IP节点映射到环上的某一个位置。
 
 将各个服务器使用Hash进行一个哈希，具体可以选择服务器的IP或主机名作为关键字进行哈希，这样每台机器就能确定其在哈希环上的位置。假如4个节点NodeA、B、C、D，经过IP地址的哈希函数计算(hash(ip))，使用IP地址哈希后在环空间的位置如下：
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1658999891472-39767eb6-5396-4b43-9cfb-71103e0758ec.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1658999891472-39767eb6-5396-4b43-9cfb-71103e0758ec.png)
 
-1. 1. 1. key落到服务器的落键规则
+key落到服务器的落键规则
 
 当我们需要存储一个kv键值对时，首先计算key的hash值，hash(key)，将这个key使用相同的函数Hash计算出哈希值并确定此数据在环上的位置，从此位置沿环顺时针“行走”，第一台遇到的服务器就是其应该定位到的服务器，并将该键值对存储在该节点上。
 
 如我们有Object A、Object B、Object C、Object D四个数据对象，经过哈希计算后，在环空间上的位置如下：根据一致性Hash算法，数据A会被定为到Node A上，B被定为到Node B上，C被定为到Node C上，D被定为到Node D上。
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1658999908647-d6826cc9-9435-4701-8e42-9aaf09cee0be.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1658999908647-d6826cc9-9435-4701-8e42-9aaf09cee0be.png)
 
-1. 1. 优点
+优点
 
-1. 1. 1. 一致性哈希算法的容错性
+一致性哈希算法的容错性
 
 容错性
 
-假设Node C宕机，可以看到此时对象A、B、D不会受到影响，只有C对象被重定位到Node D。一般的，在一致性Hash算法中，如果一台服务器不可用，则受影响的数据仅仅是此服务器到其环空间中前一台服务器（即沿着逆时针方向行走遇到的第一台服务器）之间数据，其它不会受到影响。简单说，就是C挂了，受到影响的只是B、C之间的数据，并且这些数据会转移到D进行存储。
+设Node C宕机，可以看到此时对象A、B、D不会受到影响，只有C对象被重定位到Node D。一般的，在一致性Hash算法中，如果一台服务器不可用，则受影响的数据仅仅是此服务器到其环空间中前一台服务器（即沿着逆时针方向行走遇到的第一台服务器）之间数据，其它不会受到影响。简单说，就是C挂了，受到影响的只是B、C之间的数据，并且这些数据会转移到D进行存储。
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1658999941543-94276993-0b80-4c0d-8804-662831456bc2.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1658999941543-94276993-0b80-4c0d-8804-662831456bc2.png)
 
-1. 1. 1. 一致性哈希算法的扩展性
+一致性哈希算法的扩展性
 
 数据量增加了，需要增加一台节点NodeX，X的位置在A和B之间，那收到影响的也就是A到X之间的数据，重新把A到X的数据录入到X上即可，
 
 不会导致hash取余全部数据重新洗牌。
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1659000035920-385ef89f-50cc-497a-9954-b91df3b4e84a.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1659000035920-385ef89f-50cc-497a-9954-b91df3b4e84a.png)
 
-1. 1. 缺点
+缺点
 
 一致性哈希算法的数据倾斜问题
 
@@ -302,15 +294,13 @@ Hash环的数据倾斜问题
 
 例如系统中只有两台服务器：
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1659000055531-fe1191aa-34b3-46d8-9981-b7ff2ad7f2a7.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1659000055531-fe1191aa-34b3-46d8-9981-b7ff2ad7f2a7.png)
 
-1. 1. 小总结
+小总结
 
 为了在节点数目发生改变时尽可能少的迁移数据
 
-将所有的存储节点排列在收尾相接的Hash环上，每个key在计算Hash后会顺时针找到临近的存储节点存放。
-
-而当有节点加入或退出时仅影响该节点在Hash环上顺时针相邻的后续节点。
+将所有的存储节点排列在收尾相接的Hash环上，每个key在计算Hash后会顺时针找到临近的存储节点存放。而当有节点加入或退出时仅影响该节点在Hash环上顺时针相邻的后续节点。
 
 优点
 
@@ -320,21 +310,17 @@ Hash环的数据倾斜问题
 
 数据的分布和节点的位置有关，因为这些节点不是均匀的分布在哈希环上的，所以数据在进行存储时达不到均匀分布的效果。
 
-1. 哈希槽分区
+哈希槽分区是什么？为什么出现？
 
-1. 1. 是什么
-
-1 为什么出现
-
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1659000479815-61ec964c-ad1b-4a75-a379-a5aa680199f1.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1659000479815-61ec964c-ad1b-4a75-a379-a5aa680199f1.png)
 
 哈希槽实质就是一个数组，数组[0,2^14 -1]形成hash slot空间。
 
-2 能干什么
+能干什么
 
 解决均匀分配的问题，在数据和节点之间又加入了一层，把这层称为哈希槽（slot），用于管理数据和节点之间的关系，现在就相当于节点上放的是槽，槽里放的是数据。
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1659000487455-b7174e19-35ee-472e-8884-2fad95f1edbc.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1659000487455-b7174e19-35ee-472e-8884-2fad95f1edbc.png)
 
 槽解决的是粒度问题，相当于把粒度变大了，这样便于数据移动。
 
@@ -348,9 +334,9 @@ Hash环的数据倾斜问题
 
 Redis 集群中内置了 16384 个哈希槽，redis 会根据节点数量大致均等的将哈希槽映射到不同的节点。当需要在 Redis 集群中放置一个 key-value时，redis 先对 key 使用 crc16 算法算出一个结果，然后把结果对 16384 求余数，这样每个 key 都会对应一个编号在 0-16383 之间的哈希槽，也就是映射到某个节点上。如下代码，key之A 、B在Node2， key之C落在Node3上
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1659000531546-75739be6-1aee-4165-9dfb-6ac727deddf6.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1659000531546-75739be6-1aee-4165-9dfb-6ac727deddf6.png)
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1659000521473-2a5a3350-1bd4-4394-b4dd-496f4e024034.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1659000521473-2a5a3350-1bd4-4394-b4dd-496f4e024034.png)
 
 ### 1.2.2 3主3从redis集群扩缩容配置案例架构说明
 
@@ -358,8 +344,7 @@ Redis 集群中内置了 16384 个哈希槽，redis 会根据节点数量大致�
 
 ### 1.2.3 开打步骤
 
-/todo
-
+```text
 3主3从redis集群配置
 
 关闭防火墙+启动docker后台服务
@@ -503,6 +488,7 @@ docker exec -it redis-node-7 /bin/bash
 将6387删除
 
 检查集群情况第三次
+```
 
 # 2 DockerFile解析
 
@@ -512,7 +498,7 @@ Dockerfile是用来构建Docker镜像的文本文件，是由一条条构建镜�
 
 **概述**
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660012864805-18937b87-0167-4c81-9d75-f485a61c5304.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660012864805-18937b87-0167-4c81-9d75-f485a61c5304.png)
 
 **官网**
 
@@ -530,7 +516,7 @@ https://docs.docker.com/engine/reference/builder/
 
 1. 每条保留字指令都必须为大写字母且后面要跟随至少一个参数
 2. 指令按照从上到下，顺序执行
-3. \#表示注释
+3. `#`表示注释
 4. 每条指令都会创建一个新的镜像层并对镜像进行提交
 
 ### 2.2.2 Docker执行Dockerfile的大致流程
@@ -551,7 +537,7 @@ https://docs.docker.com/engine/reference/builder/
 
 Dockerfile面向开发，Docker镜像成为交付标准，Docker容器则涉及部署与运维，三者缺一不可，合力充当Docker体系的基石。
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660013094449-a1af09f8-c696-4f09-a5de-6ee1844fb424.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660013094449-a1af09f8-c696-4f09-a5de-6ee1844fb424.png)
 
 1. Dockerfile，需要定义一个Dockerfile，Dockerfile定义了进程需要的一切东西。Dockerfile涉及的内容包括执行代码或者是文件、环境变量、依赖包、运行时环境、动态链接库、操作系统的发行版、服务进程和内核进程(当应用进程需要和系统服务和内核进程打交道，这时需要考虑如何设计namespace的权限控制)等等;
 2. Docker镜像，在用Dockerfile定义一个文件之后，docker build时会产生一个Docker镜像，当运行 Docker镜像时会真正开始提供服务;
@@ -561,7 +547,7 @@ Dockerfile面向开发，Docker镜像成为交付标准，Docker容器则涉及�
 
 **参考tomcat8的dockerfile入门**
 
-https://github.com/docker-library/tomcat
+`https://github.com/docker-library/tomcat`
 
 **FROM**
 
@@ -579,7 +565,7 @@ https://github.com/docker-library/tomcat
 
 1. shell格式
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660013238837-86e640c5-49ef-424a-81d0-bc702f35389b.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660013238837-86e640c5-49ef-424a-81d0-bc702f35389b.png)
 
 ```
 RUN yum -y install vim
@@ -587,7 +573,7 @@ RUN yum -y install vim
 
 1. exec格式
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660013257101-5b63a752-99eb-4678-b2de-a527717ccbcc.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660013257101-5b63a752-99eb-4678-b2de-a527717ccbcc.png)
 
 RUN是在 docker build时运行
 
@@ -644,7 +630,7 @@ COPY ["src", "dest"]
 
 指定容器启动后的要干的事情
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660013470341-d8868461-36e0-412b-9763-233d14746823.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660013470341-d8868461-36e0-412b-9763-233d14746823.png)
 
 **注意：**
 
@@ -654,11 +640,11 @@ Dockerfile 中可以有多个 CMD 指令，但只有最后一个生效，CMD 会
 
 官网最后一行命令
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660013529609-d6979855-7c7d-4782-803c-43b2d6c871c0.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660013529609-d6979855-7c7d-4782-803c-43b2d6c871c0.png)
 
 我们演示自己的覆盖操作
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660013524209-af8d1240-9240-4fa7-8582-78e3e6704212.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660013524209-af8d1240-9240-4fa7-8582-78e3e6704212.png)
 
 它和前面RUN命令的区别
 
@@ -675,19 +661,19 @@ Dockerfile 中可以有多个 CMD 指令，但只有最后一个生效，CMD 会
 
 命令格式：
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660013696660-44f47c05-55ed-49ea-b01b-d5c5ceaad1f9.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660013696660-44f47c05-55ed-49ea-b01b-d5c5ceaad1f9.png)
 
 ENTRYPOINT可以和CMD一起用，一般是变参才会使用 CMD ，这里的 CMD 等于是在给 ENTRYPOINT 传参。
 
 当指定了ENTRYPOINT后，CMD的含义就发生了变化，不再是直接运行其命令而是将CMD的内容作为参数传递给ENTRYPOINT指令，他两个组合会变成
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660013728508-f1d618bc-11f9-4fc2-acdd-c5b111ee1804.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660013728508-f1d618bc-11f9-4fc2-acdd-c5b111ee1804.png)
 
 案例如下：假设已通过 Dockerfile 构建了 nginx:test 镜像：
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660013737191-54f5780e-bc5f-419a-92e5-95f980e7cb7d.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660013737191-54f5780e-bc5f-419a-92e5-95f980e7cb7d.png)
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660013973533-8d49c0c9-0ea4-45a0-b2e3-14d3f28a33a0.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660013973533-8d49c0c9-0ea4-45a0-b2e3-14d3f28a33a0.png)
 
 优点：在执行docker run的时候可以指定 ENTRYPOINT 运行所需的参数。
 
@@ -695,7 +681,7 @@ ENTRYPOINT可以和CMD一起用，一般是变参才会使用 CMD ，这里的 C
 
 **小总结**
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660013999567-eea06f1d-f9ac-425e-a851-c5dda92b5ce5.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660013999567-eea06f1d-f9ac-425e-a851-c5dda92b5ce5.png)
 
 ## 2.4 案例
 
@@ -705,11 +691,11 @@ ENTRYPOINT可以和CMD一起用，一般是变参才会使用 CMD ，这里的 C
 
 Centos7镜像具备vim+ifconfig+jdk8
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660014531015-748a0daa-758a-44ea-9496-34d5e34810e0.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660014531015-748a0daa-758a-44ea-9496-34d5e34810e0.png)
 
 JDK的下载镜像地址：https://www.oracle.com/java/technologies/downloads/#java8
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660014469696-1c74ba76-2119-4031-8337-4ab9880aec14.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660014469696-1c74ba76-2119-4031-8337-4ab9880aec14.png)
 
 https://mirrors.yangxingzhen.com/jdk/
 
@@ -756,9 +742,9 @@ docker build -t 新镜像名字:TAG .
 docker build -t centosjava8:1.5 .
 ```
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660014597535-9bd29a0a-3a5e-4e51-bad4-df136dd6c0fd.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660014597535-9bd29a0a-3a5e-4e51-bad4-df136dd6c0fd.png)
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660014603485-ae9f7bae-798e-4538-9a35-05ddd6226cc5.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660014603485-ae9f7bae-798e-4538-9a35-05ddd6226cc5.png)
 
 注意，上面TAG后面有个空格，有个点
 
@@ -770,13 +756,11 @@ docker run -it 新镜像名字:TAG
 docker run -it centosjava8:1.5 /bin/bash
 ```
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660014631293-415ef8b0-d5c7-4107-9c47-19b58f568931.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660014631293-415ef8b0-d5c7-4107-9c47-19b58f568931.png)
 
 **再体会下UnionFS（联合文件系统）**
 
 UnionFS（联合文件系统）：Union文件系统（UnionFS）是一种分层、轻量级并且高性能的文件系统，它支持对文件系统的修改作为一次提交来一层层的叠加，同时可以将不同目录挂载到同一个虚拟文件系统下(unite several directories into a single virtual filesystem)。Union 文件系统是 Docker 镜像的基础。镜像可以通过分层来进行继承，基于基础镜像（没有父镜像），可以制作各种具体的应用镜像。
-
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660014653132-0f14d9d0-133d-436f-93ec-4a4dc6625ff4.png)
 
 特性：一次同时加载多个文件系统，但从外面看起来，只能看到一个文件系统，联合加载会把各层文件系统叠加起来，这样最终的文件系统会包含所有底层的文件和目录
 
@@ -784,22 +768,20 @@ UnionFS（联合文件系统）：Union文件系统（UnionFS）是一种分层�
 
 **是什么**
 
-```text
-仓库名、标签都是<none>的镜像，俗称dangling image
-```
+仓库名、标签都是`<none>`的镜像，俗称dangling image
 
 Dockerfile写一个
 
 1. `vim Dockerfile`
 
-```text
+```dockerfile
 from ubuntu
 CMD echo 'action is success'
 ```
 
 1. `docker build .`
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660014736138-8bb82a47-f06e-458d-b445-24077db9bdcd.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660014736138-8bb82a47-f06e-458d-b445-24077db9bdcd.png)
 
 **查看**
 
@@ -809,7 +791,7 @@ docker image ls -f dangling=true
 
 命令结果
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660014743652-1ed51439-61d8-4641-b75d-529e8bc74eb6.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660014743652-1ed51439-61d8-4641-b75d-529e8bc74eb6.png)
 
 **删除**
 
@@ -819,7 +801,7 @@ docker image prune
 
 虚悬镜像已经失去存在价值，可以删除
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660014763642-61295eb3-d313-4f8b-873c-ca674dff3b4d.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660014763642-61295eb3-d313-4f8b-873c-ca674dff3b4d.png)
 
 ### 2.4.3 家庭作业-自定义镜像myubuntu
 
@@ -827,7 +809,7 @@ docker image prune
 
 准备编写DockerFile文件
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660014788578-6dfe4fa8-d48d-402a-8c88-0ec91503aa7a.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660014788578-6dfe4fa8-d48d-402a-8c88-0ec91503aa7a.png)
 
 ```dockerfile
 FROM ubuntu
@@ -862,7 +844,7 @@ docker run -it 新镜像名字:TAG
 
 ## 2.5 小总结
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660014827592-6677a045-601e-40ae-b864-752c300a67ec.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660014827592-6677a045-601e-40ae-b864-752c300a67ec.png)
 
 # 3 Docker微服务实战
 
@@ -874,7 +856,7 @@ docker_boot
 
 **改POM**
 
-```text
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -1005,7 +987,7 @@ public class OrderController
 
 docker_boot-0.0.1-SNAPSHOT.jar
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660015228582-d53dce4a-89a7-4f66-bbc1-4efc307f24d3.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660015228582-d53dce4a-89a7-4f66-bbc1-4efc307f24d3.png)
 
 **编写Dockerfile**
 
@@ -1027,7 +1009,7 @@ EXPOSE 6001
 
 将微服务jar包和Dockerfile文件上传到同一个目录下/mydocker
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660015279664-11ace734-3cac-448d-acf2-415ff4618e8e.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660015279664-11ace734-3cac-448d-acf2-415ff4618e8e.png)
 
 ```
 docker build -t zzyy_docker:1.6 .
@@ -1041,7 +1023,7 @@ docker build -t zzyy_docker:1.6 .
 
 打包成镜像文件
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660015379854-488ba2d7-ee4a-4e28-8b07-9fa24f239263.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660015379854-488ba2d7-ee4a-4e28-8b07-9fa24f239263.png)
 
 **运行容器**
 
@@ -1049,11 +1031,11 @@ docker build -t zzyy_docker:1.6 .
  docker run -d -p 6001:6001 zzyy_docker:1.6
 ```
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660015407249-1b8e1153-a117-406c-bc76-f9688c909e0d.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660015407249-1b8e1153-a117-406c-bc76-f9688c909e0d.png)
 
 **访问测试**
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660015422129-27734091-90d4-43cf-8725-27c4eef8548e.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660015422129-27734091-90d4-43cf-8725-27c4eef8548e.png)
 
 # 4 Docker网络
 
@@ -1061,7 +1043,7 @@ docker build -t zzyy_docker:1.6 .
 
 **docker不启动，默认网络情况**
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660016500199-9bfcce87-7c5d-4ac4-8d40-3e9e9491a0fd.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660016500199-9bfcce87-7c5d-4ac4-8d40-3e9e9491a0fd.png)
 
 ens33
 
@@ -1081,17 +1063,17 @@ yum remove libvirt-libs.x86_64
 
 会产生一个名为docker0的虚拟网桥
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660016581784-bbd7401b-0304-40e5-b3d4-143e1b6adbcd.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660016581784-bbd7401b-0304-40e5-b3d4-143e1b6adbcd.png)
 
 查看docker网络模式命令，默认创建3大网络模式。
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660016611099-39c73410-3a1c-4576-b566-48234db9c1bc.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660016611099-39c73410-3a1c-4576-b566-48234db9c1bc.png)
 
 ## 常用基本命令
 
 **All命令**
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660020074503-4a28db4d-8a0f-4f21-ab74-0b999e579207.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660020074503-4a28db4d-8a0f-4f21-ab74-0b999e579207.png)
 
 **查看网络**
 
@@ -1113,7 +1095,7 @@ docker network rm XXX网络名字
 
 **案例**
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660020104133-dbc519f6-d0e1-4bec-af0c-40ec9db8d1e4.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660020104133-dbc519f6-d0e1-4bec-af0c-40ec9db8d1e4.png)
 
 ## 能干嘛
 
@@ -1125,7 +1107,7 @@ docker network rm XXX网络名字
 
 **总体介绍**
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660028923163-79ad77b4-a9ae-4dd6-8786-aacd45788733.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660028923163-79ad77b4-a9ae-4dd6-8786-aacd45788733.png)
 
 bridge模式：使用--network bridge指定，默认使用docker0
 
@@ -1139,18 +1121,19 @@ container模式：使用--network container:NAME或者容器ID指定
 
 1. 先启动两个ubuntu容器实例
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660028984092-3cd2b316-73da-4072-b045-de7fbcb392a3.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660028984092-3cd2b316-73da-4072-b045-de7fbcb392a3.png)
 
 1. docker inspect 容器ID or 容器名字
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660028988258-aa1db7cd-2f6f-4e08-b991-875723ee24de.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660028988258-aa1db7cd-2f6f-4e08-b991-875723ee24de.png)
 
 1. 关闭u2实例，新建u3，查看ip变化
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660028995174-805d3a36-8f02-4c56-a753-0048a859cd73.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660028995174-805d3a36-8f02-4c56-a753-0048a859cd73.png)
 
 结论
 
+```text
 docker容器内部的ip是有可能会发生改变的
 
 **案例说明**
@@ -1278,6 +1261,7 @@ docker run -d -p 8082:8080 --network zzyy_network --name tomcat82 billygoo/tomca
 自定义网络本身就维护好了主机名和ip的对应关系（ip和域名都能通）
 
 自定义网络本身就维护好了主机名和ip的对应关系（ip和域名都能通）
+```
 
 ## Docker平台架构图解
 
@@ -1303,27 +1287,26 @@ Docker 运行的基本流程为：
 
 **整体架构**
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660032915706-ca6ff6ae-5f12-4932-9a51-934cd86d5222.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660032915706-ca6ff6ae-5f12-4932-9a51-934cd86d5222.png)
 
 # 5 Docker-compose容器编排
 
+```text
 Docker-compose容器编排
 
 是什么
 
 Docker-Compose是Docker官方的开源项目， 负责实现对Docker容器集群的快速编排。
 
-能干嘛
-
-去哪下
+能干嘛,去哪下
 
 官网
 
-https://docs.docker.com/compose/compose-file/compose-file-v3/
+`https://docs.docker.com/compose/compose-file/compose-file-v3/`
 
 官网下载
 
-https://docs.docker.com/compose/install/
+`https://docs.docker.com/compose/install/`
 
 安装步骤
 
@@ -1436,6 +1419,7 @@ docker build -t zzyy_docker:1.6 .
 Compose常用命令
 
 关停
+```
 
 # 6 Docker轻量级可视化工具Portainer
 
@@ -1470,26 +1454,27 @@ portainer/portainer
 
 密码记得8位，随便你写
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660033430938-9526470c-089a-4cde-8ee9-5bd3328f32fb.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660033430938-9526470c-089a-4cde-8ee9-5bd3328f32fb.png)
 
 
 
 1. **设置admin用户和密码后首次登陆**
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660033444646-6696d6a3-ca9b-4546-88a4-89909eddf89d.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660033444646-6696d6a3-ca9b-4546-88a4-89909eddf89d.png)
 
 1. **选择local选项卡后本地docker详细信息展示**
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660033451033-300878aa-e6ba-42f1-9264-be57d65b87b3.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660033451033-300878aa-e6ba-42f1-9264-be57d65b87b3.png)
 
 1. **上一步的图形展示，能想得起对应命令吗？**
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660033457920-8e9618b2-6979-4d7c-8071-a2a098dc1128.png)
+![img](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/1660033457920-8e9618b2-6979-4d7c-8071-a2a098dc1128.png)
 
 ## 登陆并演示介绍常用操作case
 
 # 7 Docker容器监控之 CAdvisor+InfluxDB+Granfana
 
+```text
 Docker容器监控之 CAdvisor+InfluxDB+Granfana
 
 原生命令
@@ -1548,35 +1533,10 @@ ip+3000端口的方式访问,默认帐户密码（admin/admin）
 
 配置细节
 
-1
-
-2
-
 配置面板panel
 
-1
-
-2
-
-3
-
-4
-
-5
-
-6
-
 到这里cAdvisor+InfluxDB+Grafana容器监控系统就部署完成了
-
-# 8 终章の总结
-
-知识回顾简单串讲和总结
-
-![img](https://cdn.nlark.com/yuque/0/2022/png/27791237/1660034195809-591c7f4b-dd7b-46a2-9865-7e2c01ae8239.png)
-
-进阶篇：雷丰阳老师的K8S
-
-
+```
 
 参考：
 

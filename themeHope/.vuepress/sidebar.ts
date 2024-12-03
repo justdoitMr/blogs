@@ -179,7 +179,10 @@ export const sidebarConfig = sidebar({
         "20241117-Collection(1).md",
         "20241117-Collection(2).md",
         "20241118-SparkBasic.md",
-        "20241118-FlinkBasic.md"
+        "20241118-FlinkBasic.md",
+        "20241203-K8S-one.md",
+        "20241203-K8S-two.md",
+        "20241203-K8S-three.md"
     ],
     // 问题分析
     "/interview/ProductionAnalysis/":[
