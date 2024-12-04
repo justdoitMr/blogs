@@ -165,12 +165,12 @@ export default navbar([
         link: "/interview/Scenequestion/",
       },
       {
-        text: "综合面经",
+        text: "综合手册",
         icon: "pen-to-square",
         link: "/interview/Questions/",
       },
       {
-        text: "问题分析",
+        text: "实战分析",
         icon: "pen-to-square",
         link: "/interview/ProductionAnalysis/",
       },

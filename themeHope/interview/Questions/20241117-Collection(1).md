@@ -6,7 +6,7 @@ title: Java集合手册(基础)
 # 4. 这是页面的图标
 icon: file
 # 5. 这是侧边栏的顺序
-order: 6
+order: 
 # 6. 设置作者
 author: bugcode
 # 7. 设置写作时间
