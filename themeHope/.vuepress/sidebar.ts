@@ -160,7 +160,8 @@ export const sidebarConfig = sidebar({
         "20241207-k8sNamespaceResource.md",
         "20241207-k8sApiVersion.md",
         "20241207-springbeanLifecycle.md",
-        "20241207-druidParma.md"
+        "20241207-druidParma.md",
+        "20241207-k8sDeployKafka.md"
     ],
     // 场景题目
     "/interview/Scenequestion/":[
@@ -464,7 +465,8 @@ export const sidebarConfig = sidebar({
                       "act_one_k8s中负载均衡原理.md.md",
                       "act_none_pod异常状态排查.md",
                       "20241119-k8s-ingressAndService.md",
-                      "20241119-k8sPermissions.md"
+                      "20241119-k8sPermissions.md",
+                        "20241207-k8sStateFul.md"
                     ],
                 }
               ]
