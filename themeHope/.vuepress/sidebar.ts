@@ -156,7 +156,11 @@ export const sidebarConfig = sidebar({
         "20241113-performance.md",
         "20241122-memoryAnalyze.md",
         "20241204-interfaceIdempotence.md",
-        "20241205-mysqlThreeLog.md"
+        "20241205-mysqlThreeLog.md",
+        "20241207-k8sNamespaceResource.md",
+        "20241207-k8sApiVersion.md",
+        "20241207-springbeanLifecycle.md",
+        "20241207-druidParma.md"
     ],
     // 场景题目
     "/interview/Scenequestion/":[
