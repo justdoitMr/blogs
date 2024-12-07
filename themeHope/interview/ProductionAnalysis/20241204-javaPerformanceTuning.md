@@ -10,7 +10,7 @@ order: 5
 # 设置作者
 author: bugcode
 # 设置写作时间
-date: 2024/12/4
+date: 2024-12-04
 # 一个页面可以有多个分类
 category:
   - JAVA

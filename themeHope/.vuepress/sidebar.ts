@@ -146,9 +146,6 @@ export const sidebarConfig = sidebar({
         "act_one_aboutMyvideo.md"
     ],
     "/interview/TechnicalInterview/": [
-        "act_one_k8s基础面经一.md",
-        "act_six_k8s基础面经二.md",
-        "act_seven_k8s基础面经三.md",
         "act-two-分布式锁.md",
         "act_three-Redis和Mysql双写一致性问题.md",
         "act_four_分布式基础.md",
@@ -158,7 +155,8 @@ export const sidebarConfig = sidebar({
         "20241116-highConcurrency.md",
         "20241113-performance.md",
         "20241122-memoryAnalyze.md",
-        "20241204-interfaceIdempotence.md"
+        "20241204-interfaceIdempotence.md",
+        "20241205-mysqlThreeLog.md"
     ],
     // 场景题目
     "/interview/Scenequestion/":[
@@ -180,12 +178,13 @@ export const sidebarConfig = sidebar({
         "20241117-Thread(2).md",
         "20241117-Collection(1).md",
         "20241117-Collection(2).md",
+        "20241206-spring(1).md",
+        "20241206-Mybatis(1).md",
         "20241118-SparkBasic.md",
         "20241118-FlinkBasic.md",
         "20241203-K8S-one.md",
-        "20241203-K8S-two.md",
         "20241203-K8S-three.md",
-        "20241204-docker-one.md"
+        "20241204-docker-one.md",
     ],
     // 问题分析
     "/interview/ProductionAnalysis/":[
