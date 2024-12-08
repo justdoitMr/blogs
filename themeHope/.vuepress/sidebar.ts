@@ -76,7 +76,7 @@ export const sidebarConfig = sidebar({
             prefix: "twoPoint/",
             children:
             [
-            "20241121-twoPoint.md"
+
             ]
         },
         {
@@ -121,7 +121,7 @@ export const sidebarConfig = sidebar({
             prefix: "hotting/",
             children:
             [
-         
+                "20241121-twoSum.md"
             ]
         },
     ],
@@ -174,7 +174,9 @@ export const sidebarConfig = sidebar({
     // 综合面试题
     "/interview/Questions/":[
        "20241116-Redis.md",
+        "20241208-redisImprove.md",
         "20241116-Kafka.md",
+        "20241208-kafkaImprove.md",
         "20241117-Jvm(1).md",
         "20241117-Jvm(2).md",
         "20241117-Mysql(1).md",
