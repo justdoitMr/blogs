@@ -121,7 +121,10 @@ export const sidebarConfig = sidebar({
             prefix: "hotting/",
             children:
             [
-                "20241121-twoSum.md"
+                "20241121-twoSum.md",
+                "20241209-waterMuch.md",
+                "20241209-charectopic.md",
+                "20241209-longestConsecutive.md"
             ]
         },
     ],
