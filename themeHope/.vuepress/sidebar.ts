@@ -161,7 +161,8 @@ export const sidebarConfig = sidebar({
         "20241207-k8sApiVersion.md",
         "20241207-springbeanLifecycle.md",
         "20241207-druidParma.md",
-        "20241207-k8sDeployKafka.md"
+        "20241207-k8sDeployKafka.md",
+        "20241209-zookeeperLeaserSelecter.md"
     ],
     // 场景题目
     "/interview/Scenequestion/":[
