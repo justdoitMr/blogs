@@ -124,7 +124,11 @@ export const sidebarConfig = sidebar({
                 "20241121-twoSum.md",
                 "20241209-waterMuch.md",
                 "20241209-charectopic.md",
-                "20241209-longestConsecutive.md"
+                "20241209-longestConsecutive.md",
+                "20241210-moveZeroes.md",
+                "20241211-threeSum.md",
+                "20241212-trap.md",
+                "20241212-lengthOfLongestSubstring.md"
             ]
         },
     ],
@@ -165,7 +169,9 @@ export const sidebarConfig = sidebar({
         "20241207-springbeanLifecycle.md",
         "20241207-druidParma.md",
         "20241207-k8sDeployKafka.md",
-        "20241209-zookeeperLeaserSelecter.md"
+        "20241209-zookeeperLeaserSelecter.md",
+        "20241210-rediscluster.md",
+        "20241212-linux-zero-copy.md"
     ],
     // 场景题目
     "/interview/Scenequestion/":[
@@ -204,7 +210,8 @@ export const sidebarConfig = sidebar({
         "20241119-SpringbootRefreshCacheMethod.md",
         "20241119-kafkaProperties.md",
         "20241129-wiresharkAnalyze.md",
-        "20241204-javaPerformanceTuning.md"
+        "20241204-javaPerformanceTuning.md",
+        "20241211-mavenDependency.md"
     ],
     // 业务
     "/business/": [
