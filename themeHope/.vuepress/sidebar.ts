@@ -128,7 +128,8 @@ export const sidebarConfig = sidebar({
                 "20241210-moveZeroes.md",
                 "20241211-threeSum.md",
                 "20241212-trap.md",
-                "20241212-lengthOfLongestSubstring.md"
+                "20241212-lengthOfLongestSubstring.md",
+                "20241217-maxSlidingWindow.md"
             ]
         },
     ],
@@ -171,7 +172,8 @@ export const sidebarConfig = sidebar({
         "20241207-k8sDeployKafka.md",
         "20241209-zookeeperLeaserSelecter.md",
         "20241210-rediscluster.md",
-        "20241212-linux-zero-copy.md"
+        "20241212-linux-zero-copy.md",
+        "20241217-Threadpool.md"
     ],
     // 场景题目
     "/interview/Scenequestion/":[

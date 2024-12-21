@@ -280,6 +280,8 @@ request.required.asks=0
 
 **注意:这只能保证副本之间的数据一致性,并不能保证数据不丢失或者不重复,`ack`确认机制可以保证数据的不丢失和不重复,`LEO`和`hw`可以保证数据的一致性问题**
 
+> leader故障后,一般会从isr队列中选中第一个follower作为leader同步数据;
+
 ![](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202112/09/183219-639145.png)
 
 ![](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202112/09/183448-152461.png)
@@ -330,13 +332,13 @@ kafka包含三种分区算法:
 
 也称 Randomness 策略。所谓随机就是我们随意地将消息放置在任意一个分区上,如下图:
 
-![1639393614581](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202112/13/190702-905959.png)
+![](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202112/13/190702-905959.png)
 
 ### 按 key 分配策略
 
 kafka 允许为每条消息定义消息键,简称为 key。一旦消息被定义了 key,那么你就可以保证同一个 key 的所有消息都进入到相同的分区里面,由于每个分区下的消息处理都是有顺序的,如下图所示:
 
-![1639393656317](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202112/13/190737-845535.png)
+![](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202112/13/190737-845535.png)
 
 ## kafka消费者
 
@@ -350,7 +352,7 @@ kafka 允许为每条消息定义消息键,简称为 key。一旦消息被定义
 
 在 Kafka 中, 一个 Topic 是可以被一个消费组消费, 一个Topic 分发给 Consumer Group 中的Consumer 进行消费, 保证同一条 Message 不会被不同的 Consumer 消费。
 
-注意: 当Consumer Group的 Consumer 数量大于 Partition 的数量时, 超过 Partition 的数量将会拿不到消息
+> 注意: 当Consumer Group的 Consumer 数量大于 Partition 的数量时, 超过 Partition 的数量将会拿不到消息
 
 ### 分区分配策略
 
@@ -578,13 +580,11 @@ Kafka 能支撑 TB 级别数据, 在日志级别有两个原因:
 
 Kafka 在一个日志文件达到一定数据量 (1G) 之后, 会生成新的日志文件, 大数据情况下会有多个日志文件, 通过偏移量来确定到某行纪录时, 如果遍历所有的日志文件, 那效率自然是很差的. Kafka在日志级别上抽出来一层日志索引, 来方便根据 offset 快速定位到是某个日志文件;
 
-每一个 partition 对应多个log文件(最大 1G), 每一个 log 文件又对应一个 index 文件
-通过 offset 查找 Message 流程:
+每一个 partition 对应多个log文件(最大 1G), 每一个 log 文件又对应一个 index 文件,通过 offset 查找 Message 流程:
 
 1. 先根据 offset (例: 368773), 二分定位到最大 小于等于该 offset 的 index 文件
    (368769.index)
-2. . 通过二分(368773 - 368769 = 4)定位到 index 文件 (368769.index) 中最大 小于等于该
-   offset 的 对于的 log 文件偏移量(3, 497)
+2. 通过二分(368773 - 368769 = 4)定位到 index 文件 (368769.index) 中最大 小于等于该 offset 的 对于的 log 文件偏移量(3, 497)
 3. 通过定位到该文件的消息行(3, 497), 然后在往后一行一行匹配揭露(368773 830)
 
 ![](https://tprzfbucket.oss-cn-beijing.aliyuncs.com/hadoop/202112/09/184632-876670.png)
@@ -635,9 +635,7 @@ LW:Low Watermark 低水位, 代表 AR 集合中最小的 logStartOffset 值。
 
 (3) 如果有一个 `broker` 加入集群中,那么控制器就会通过 `Broker ID` 去判断新加入的 `broker` 中是否含有现有分区的副本,如果有,就会从分区副本中去同步数据。
 
-(4) 集群中每选举一次控制器,就会通过 zookeeper 创建一个 **controller epoch**,每一个选举都会创建一个更大,包含最新信息的 epoch,如果有 broker 收到比这个 epoch 旧的数据,就会忽略它们,kafka 也通过这个 epoch 来防止集群产生“脑裂”。
-
-
+(4) 集群中每选举一次控制器,就会通过 zookeeper 创建一个**controller epoch**,每一个选举都会创建一个更大,包含最新信息的 epoch,如果有 broker 收到比这个 epoch 旧的数据,就会忽略它们,kafka 也通过这个 epoch 来防止集群产生“脑裂”。
 
 ## 请说明Kafka 的消息投递保证(delivery guarantee)机制以及如何实现？
 
@@ -665,7 +663,7 @@ consumer在从broker读取消息后,可以选择commit,该操作会在Zookeeper�
 
 ## Kafka 的高可靠性是怎么实现的？
 
-注意:也可回答“Kafka在什么情况下会出现消息丢失？”数据可靠性(可回答“怎么尽可能保证Kafka的可靠性？”)
+> 注意:也可回答“Kafka在什么情况下会出现消息丢失？" 据可靠性(可回答“怎么尽可能保证Kafka的可靠性？”)
 
 Kafka 作为一个商业级消息中间件,消息可靠性的重要性可想而知。本文从Producter向Broker发送消息、Topic 分区副本以及 Leader选举几个角度介绍数据的可靠性。
 
