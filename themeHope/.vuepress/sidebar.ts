@@ -268,7 +268,9 @@ export const sidebarConfig = sidebar({
     "/designpattern/structural/" :[
         "act_one_adapterPattern.md",
         "act_two_proxyPattern.md",
-        "act_three_DecoratorPattern.md"
+        "act_three_DecoratorPattern.md",
+        "20241224-Facade.md",
+        "20241224-bridge.md"
     ],
     "/project/" :[
         "act_one-K8SDeployApplicatinn.md",
