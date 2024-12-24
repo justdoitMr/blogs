@@ -173,7 +173,8 @@ export const sidebarConfig = sidebar({
         "20241209-zookeeperLeaserSelecter.md",
         "20241210-rediscluster.md",
         "20241212-linux-zero-copy.md",
-        "20241217-Threadpool.md"
+        "20241217-Threadpool.md",
+        "20241221-ArchitectureEvolution.md"
     ],
     // 场景题目
     "/interview/Scenequestion/":[
@@ -246,17 +247,24 @@ export const sidebarConfig = sidebar({
     // 设计模式篇
     "/designpattern/designPrinciple/" :[
         "act_one_classDiagram.md",
+        "20241223-designPatternThinking.md"
     ],
+    // 创建型设计模式
     "/designpattern/creational/" :[
         "act_one_builderPattern.md",
         "act_two_factoryPattern.md",
-        "act_three_signPattern.md"
+        "act_three_signPattern.md",
+        "20241223-Prototype.md"
     ],
-    //
+    //行为型设计模式
     "/designpattern/Behavior/" :[
         "act_one_templatePattern.md",
-        "act_two_strategyPattern.md"
+        "act_two_strategyPattern.md",
+        "20241223-observer.md",
+        "20241223-Chain.md",
+        "20241223-state.md"
     ],
+    // 结构性设计模式
     "/designpattern/structural/" :[
         "act_one_adapterPattern.md",
         "act_two_proxyPattern.md",

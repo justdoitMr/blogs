@@ -1,4 +1,67 @@
+---
+# 这是文章的标题
+title: 设计模式类图总览
+# 你可以自定义封面图片
+#cover: /assets/images/cover1.jpg
+# 这是页面的图标
+icon: file
+# 这是侧边栏的顺序
+order: 1
+# 设置作者
+author: bugcode
+# 设置写作时间
+date: 2023-01-01
+# 一个页面可以有多个分类
+category:
+  - DESIGN PATTERN
+  - JAVA
+  - 设计模式
+# 一个页面可以有多个标签
+tag:
+  - 后端
+  - java
+  - 模板
+# 此页面会在文章列表置顶
+sticky: false
+# 此页面会出现在星标文章中
+star: true
+# 你可以自定义页脚
+footer: java基础
+# 你可以自定义版权信息
+copyright: bugcode
+---
+<!-- TOC -->
 
+- [1、类图总览](#1类图总览)
+  - [一、创建型](#一创建型)
+    - [1. Simple Factory Method（简单工厂方法）](#1-simple-factory-method简单工厂方法)
+    - [2、Factory Method（工厂方法）](#2factory-method工厂方法)
+    - [3. Abstract Factory（抽象工厂）](#3-abstract-factory抽象工厂)
+    - [3. Builder（生成器模式）](#3-builder生成器模式)
+    - [4. Prototype（原型模式）](#4-prototype原型模式)
+    - [5. Singleton（单件模式）](#5-singleton单件模式)
+  - [二、结构性](#二结构性)
+    - [1. Adapter（适配器模式（类、对象））](#1-adapter适配器模式类对象)
+    - [2. Bridge（桥连模式）](#2-bridge桥连模式)
+    - [3. Composite（组合模式）](#3-composite组合模式)
+    - [4. Decorator（装饰模式）](#4-decorator装饰模式)
+    - [5. Facade（外观模式）](#5-facade外观模式)
+    - [6. Flyweight（享元模式）](#6-flyweight享元模式)
+    - [7. Proxy（代理模式）](#7-proxy代理模式)
+  - [三、行为型](#三行为型)
+    - [1. Interpreter（解释器模式）](#1-interpreter解释器模式)
+    - [2. Template Method（模板方法）](#2-template-method模板方法)
+    - [3. Chain of Responsibility（职责链模式）](#3-chain-of-responsibility职责链模式)
+    - [4. Command（命令模式）](#4-command命令模式)
+    - [5. Iterator（迭代模式）](#5-iterator迭代模式)
+    - [6. Mediator（中介模式）](#6-mediator中介模式)
+    - [7. Memento（备忘录模式）](#7-memento备忘录模式)
+    - [8. Observer（观察者模式）](#8-observer观察者模式)
+    - [9. State（状态模式）](#9-state状态模式)
+    - [10. Strategy（策略模式）](#10-strategy策略模式)
+    - [11. Visitor（访问者模式）](#11-visitor访问者模式)
+
+<!-- /TOC -->
 
 # 1、类图总览
 
@@ -10,7 +73,7 @@
 
 类图：
 
-![image-20240611195324067](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406111953482.png)
+![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406111953482.png)
 
 案例说明：
 ![](https://vscodepic.oss-cn-beijing.aliyuncs.com/blog/202406201837277.png)
