@@ -174,7 +174,8 @@ export const sidebarConfig = sidebar({
         "20241210-rediscluster.md",
         "20241212-linux-zero-copy.md",
         "20241217-Threadpool.md",
-        "20241221-ArchitectureEvolution.md"
+        "20241221-ArchitectureEvolution.md",
+        "20241225-k8spod.md"
     ],
     // 场景题目
     "/interview/Scenequestion/":[
@@ -204,6 +205,7 @@ export const sidebarConfig = sidebar({
         "20241118-FlinkBasic.md",
         "20241203-K8S-one.md",
         "20241203-K8S-three.md",
+        "20241203-K8S-four.md",
         "20241204-docker-one.md",
     ],
     // 问题分析
@@ -491,7 +493,8 @@ export const sidebarConfig = sidebar({
                       "act_none_pod异常状态排查.md",
                       "20241119-k8s-ingressAndService.md",
                       "20241119-k8sPermissions.md",
-                        "20241207-k8sStateFul.md"
+                        "20241207-k8sStateFul.md",
+                        "20241225-k8sHpa.md"
                     ],
                 }
               ]
